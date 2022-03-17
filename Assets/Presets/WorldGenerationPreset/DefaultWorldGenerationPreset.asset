@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2a4218d086a5ac40ac754768b70828d, type: 3}
+  m_Name: DefaultWorldGenerationPreset
+  m_EditorClassIdentifier: 
+  chunkSize: 8
+  maxHeight: 256
+  minHeight: 0
+  surfaceLevel: 0.5
+  nPreset: {fileID: 11400000, guid: 8f04f41eb0ba8b54e8c1c9fc4f44a268, type: 2}
+  caveNPreset: {fileID: 11400000, guid: 2acba547cc8385348a62865bc5f0d5cc, type: 2}
+  waterGroundDecreaseNoisePreset: {fileID: 11400000, guid: cc17b85a15c55274b8aaebe0989208ad,
+    type: 2}
+  biomeNPreset: {fileID: 11400000, guid: 75614b996e33e3f4caacf05a4d598db9, type: 2}

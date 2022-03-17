@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c355a2b8f6c4b849a4034423c580858, type: 3}
+  m_Name: CraftingBench
+  m_EditorClassIdentifier: 
+  image: {fileID: 21300000, guid: ff84e925d3ba41146b3095a82f78bd2b, type: 3}
+  usingAnimationName: place
+  coolTime: 0.8
+  blockInstance: {fileID: 2564259218821609997, guid: 53565f73e3855d249b979ae0b48a43cb,
+    type: 3}
+  placeDelay: 0.19
+  snapPosition: 0
+  snapGridSize: 0
+  lookAtPlayer: 0
+  placeSound: WoodPlace
+  isToolForModifyingTerrain: 0
+  maxDiggableYLevel: 0
+  minDiggableYLevel: 0
+  modifyDelay: 0
+  hasCamShake: 0
+  attainCamShakeByModifyingTerrain: 0
+  camShakeDelay: 0
+  camShakeTime: 0
+  camShakePower: 0
+  camShakeFade: 0
+  modifableObjectType: 0
+  furnaceResult: {fileID: 0}
+  fuel_usable: 1
+  damage: 1
+  knockBackTime: 0.2
+  knockBackPower: 1
+  hungerFillAmount: 0

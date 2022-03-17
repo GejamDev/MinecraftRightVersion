@@ -1,0 +1,110 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+public class ChunkScript : MonoBehaviour
+{
+    [Header("Objects")]
+    public GameObject objectBundle;
+    public GameObject meshObject;
+    public GameObject bedrock;
+    public MeshFilter waterMF;
+    public MeshCollider waterMC;
+
+    [Header("Properties")]
+    public bool activated;
+    public Vector2 position;
+    public float[,,] terrainMap;
+    public float[,] heightMap;
+    public List<GrassScript> grassList = new List<GrassScript>();
+    public BiomeProperty biomeProperty;
+
+
+
+    public UniversalScriptManager usm;
+    MeshGenerator mg;
+    WaterManager wm;
+    WorldGenerator wg;
+    ObjectPool objectPool;
+
+
+    [HideInInspector] public MeshRenderer mr;
+    [HideInInspector] public MeshCollider mc;
+    [HideInInspector] public MeshFilter mf;
+
+
+    [HideInInspector]public List<Vector3> vertices = new List<Vector3>();
+    [HideInInspector]public List<int> triangles = new List<int>();
+    [HideInInspector] public List<Vector2> uvs = new List<Vector2>();
+    [HideInInspector] public Dictionary<Vector3, int> verticesRangeDictionary = new Dictionary<Vector3, int>();
+
+
+    [HideInInspector] public List<Vector2> waterSurfaceData = new List<Vector2>();
+    [HideInInspector] public List<Vector3> waterData = new List<Vector3>();
+
+    [HideInInspector] public List<Vector3> vertices_water = new List<Vector3>();
+    [HideInInspector] public List<int> triangles_water = new List<int>();
+    [HideInInspector] public Dictionary<Vector3, int> verticesRangeDictionary_water = new Dictionary<Vector3, int>();
+
+    [HideInInspector] public Dictionary<Vector3, WaterPointData> waterPointDictionary = new Dictionary<Vector3, WaterPointData>();
+    [HideInInspector] public List<WaterPointData> wpdList = new List<WaterPointData>();
+
+    [HideInInspector] public bool waterBeingModified;
+
+    [HideInInspector] public ChunkScript rightChunk;
+    [HideInInspector] public ChunkScript leftChunk;
+    [HideInInspector] public ChunkScript frontChunk;
+    [HideInInspector] public ChunkScript backChunk;
+
+    [HideInInspector] public bool generatingMesh;
+
+    [HideInInspector] public List<GameObject> ores = new List<GameObject>();
+
+
+
+    public void GetVariables()
+    {
+
+        mg = usm.meshGenerator;
+        wm = usm.waterManager;
+        wg = usm.worldGenerator;
+        objectPool = usm.objectPool;
+        bedrock.transform.localScale = new Vector3(usm.worldGenerationPreset.chunkSize, 1, usm.worldGenerationPreset.chunkSize);
+        bedrock.transform.localPosition = new Vector3(usm.worldGenerationPreset.chunkSize * 0.5f, bedrock.transform.localPosition.y, usm.worldGenerationPreset.chunkSize);
+
+    }
+    public void Activate()
+    {
+        objectBundle.SetActive(true);
+        wg.GenerateOres(this);
+        activated = true;
+    }
+    public void Deactivate()
+    {
+        activated = false;
+        objectBundle.SetActive(false);
+        foreach(GameObject g in ores)
+        {
+            g.SetActive(false);
+            g.transform.SetParent(objectPool.transform);
+        }
+        ores.Clear();
+    }
+    public void ReGenerateMesh()
+    {
+        mg.ReGenerateMesh(this);
+
+        if (!wm.modifiedChunkDataKeys.Contains(this))
+        {
+            wm.modifiedChunkDataKeys.Add(this);
+            wm.modifiedChunksDataDictionary.Add(this, new UpdatedChunkData { cs = this,modifiedPoses = new List<Vector3>( )});
+        }
+    }
+
+    
+}
+[System.Serializable]
+public class WaterPointData
+{
+    public List<Vector3> vertices = new List<Vector3>();
+    public List<int> triangles = new List<int>();
+}

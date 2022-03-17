@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98df1d03bf83ffd47befb42d5912c07a, type: 3}
+  m_Name: IronOre
+  m_EditorClassIdentifier: 
+  Name: Iron
+  maxYSpawnLevel: 60
+  spawnCountGraph:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 2
+      inSlope: 4.254555
+      outSlope: 4.254555
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.28382814
+      value: 3.2075624
+      inSlope: 3.4376721
+      outSlope: 3.4376721
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.7555674
+      value: 4.4438915
+      inSlope: 2.4758825
+      outSlope: 2.4758825
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.9941406
+      value: 5
+      inSlope: 2.3309758
+      outSlope: 2.3309758
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  minSize: {x: 0.8, y: 0.8, z: 0.8}
+  maxSize: {x: 1.5, y: 1.5, z: 1.5}
+  objectName: Ore_Iron

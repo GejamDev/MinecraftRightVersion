@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c355a2b8f6c4b849a4034423c580858, type: 3}
+  m_Name: Hand
+  m_EditorClassIdentifier: 
+  image: {fileID: 0}
+  usingAnimationName: 
+  coolTime: 0.8
+  blockInstance: {fileID: 0}
+  placeDelay: 0
+  snapPosition: 0
+  snapGridSize: 0
+  lookAtPlayer: 0
+  isToolForModifyingTerrain: 0
+  maxDiggableYLevel: 0
+  minDiggableYLevel: 0
+  modifyDelay: 0
+  hasCamShake: 1
+  attainCamShakeByModifyingTerrain: 1
+  camShakeDelay: 0
+  camShakeTime: 0.1
+  camShakePower: 50
+  camShakeFade: 1
+  modifableObjectType: 2
+  furnaceResult: {fileID: 0}
+  fuel_usable: 0

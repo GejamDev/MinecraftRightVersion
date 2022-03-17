@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff739c309258ca941b8a498b2b3c7e3b, type: 3}
+  m_Name: DesertGrassNoise
+  m_EditorClassIdentifier: 
+  noiseSpeed: 0.1
+  noiseWeight: 0.5
+  groundLevel: 0
+  octaves: 2
+  persistance: 0.5
+  lacunarity: 2
+  heightMultiplier:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -1.5
+      value: 0.5
+      inSlope: -0.19999999
+      outSlope: -0.19999999
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: -1
+      value: 0.4
+      inSlope: -0.25976682
+      outSlope: -0.25976682
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.39358592
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: -0.65
+      value: 0.1
+      inSlope: 0.025230791
+      outSlope: 0.025230791
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.14902443
+    - serializedVersion: 3
+      time: 0.65
+      value: 0.1
+      inSlope: -0.03373386
+      outSlope: -0.03373386
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.48299322
+    - serializedVersion: 3
+      time: 1.1
+      value: 0.4
+      inSlope: 0.43612763
+      outSlope: 0.43612763
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.26384833
+    - serializedVersion: 3
+      time: 1.5
+      value: 0.5
+      inSlope: 0.25
+      outSlope: 0.25
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
