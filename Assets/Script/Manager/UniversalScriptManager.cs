@@ -31,6 +31,8 @@ public class UniversalScriptManager : MonoBehaviour
     public ObjectPool objectPool;
     public PauseManager pauseManager;
     public SoundManager soundManager;
+    public WeatherManager weatherManager;
+    public ExplosionManager explosionManager;
 
     [Header("Layer")]
     public LayerMask groundLayer;

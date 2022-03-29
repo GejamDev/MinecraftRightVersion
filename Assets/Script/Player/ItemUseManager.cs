@@ -152,91 +152,115 @@ public class ItemUseManager : MonoBehaviour
 
         if (placable)
         {
-            GameObject block = Instantiate(usingItem.blockInstance);
-            block.transform.position = tm.touchingPosition;
-            if(tm.currentlyTouchingChunk!= null)
+
+            PlaceBlock(usingItem, usedCell);
+        }
+    }
+
+    public void PlaceBlock(Item usingItem, InventoryCell usedCell)
+    {
+        //check if colliding with player
+        Vector3 touchingPosition = tm.touchingPosition;
+        Vector3 playerPosition = player.transform.position;
+
+        
+
+
+
+        GameObject block = Instantiate(usingItem.blockInstance);
+        block.transform.position = tm.touchingPosition;
+        if (tm.currentlyTouchingChunk != null)
+        {
+            block.transform.SetParent(tm.currentlyTouchingChunk.objectBundle.transform);
+        }
+        else
+        {
+            block.transform.SetParent(tm.currentlyTouchingObject.transform.parent);
+        }
+
+        if (usingItem.snapPosition)
+        {
+            float gridSize = usingItem.snapGridSize;
+            if (tm.currentlyTouchingChunk != null)
             {
-                block.transform.SetParent(tm.currentlyTouchingChunk.objectBundle.transform);
+                block.transform.position = new Vector3(Mathf.RoundToInt(block.transform.position.x / gridSize) * gridSize,
+                    Mathf.RoundToInt(block.transform.position.y / gridSize) * gridSize,
+                    Mathf.RoundToInt(block.transform.position.z / gridSize) * gridSize);
             }
             else
             {
-                block.transform.SetParent(tm.currentlyTouchingObject.transform.parent);
+                block.transform.position = block.transform.position - (block.transform.position - Camera.main.transform.position).normalized * 0.3f;
+                block.transform.position = new Vector3(Mathf.RoundToInt(block.transform.position.x / gridSize) * gridSize,
+                    Mathf.RoundToInt(block.transform.position.y / gridSize) * gridSize,
+                    Mathf.RoundToInt(block.transform.position.z / gridSize) * gridSize);
             }
 
+            //check if collides with player
+            Vector3 blockPos = block.transform.position;
+            if (Mathf.Abs(playerPosition.x - blockPos.x) <= 0.5f + gridSize * 0.5f && Mathf.Abs(playerPosition.z - blockPos.z) <= 0.5f + gridSize * 0.5f && Mathf.Abs(playerPosition.y - blockPos.y) <= 0.5f + gridSize * 0.5f)
+            {
+                Destroy(block);
+                return;
+            }
+
+        }
+        if (usingItem.lookAtPlayer)
+        {
             if (usingItem.snapPosition)
             {
-                float gridSize = usingItem.snapGridSize;
-                if (tm.currentlyTouchingChunk != null)
-                {
-                    block.transform.position = new Vector3(Mathf.RoundToInt(block.transform.position.x / gridSize) * gridSize,
-                        Mathf.RoundToInt(block.transform.position.y / gridSize) * gridSize,
-                        Mathf.RoundToInt(block.transform.position.z / gridSize) * gridSize);
-                }
-                else
-                {
-                    block.transform.position = block.transform.position - (block.transform.position - Camera.main.transform.position).normalized * 0.3f;
-                    block.transform.position = new Vector3(Mathf.RoundToInt(block.transform.position.x / gridSize) * gridSize,
-                        Mathf.RoundToInt(block.transform.position.y / gridSize) * gridSize,
-                        Mathf.RoundToInt(block.transform.position.z / gridSize) * gridSize);
+                Vector2 blockPos = new Vector2(block.transform.position.x, block.transform.position.z);
+                Vector2 playerPos = new Vector2(player.transform.position.x, player.transform.position.z);
+                Vector2 dir = playerPos - blockPos;
 
-                }
-            }
-            if (usingItem.lookAtPlayer)
-            {
-                if (usingItem.snapPosition)
+                float rot = 0;
+                if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
                 {
-                    Vector2 blockPos = new Vector2(block.transform.position.x, block.transform.position.z);
-                    Vector2 playerPos = new Vector2(player.transform.position.x, player.transform.position.z);
-                    Vector2 dir = playerPos - blockPos;
-
-                    float rot = 0;
-                    if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+                    if (dir.x > 0)
                     {
-                        if (dir.x > 0)
-                        {
-                            rot = 0;
-                        }
-                        else
-                        {
-                            rot = 180;
-                        }
+                        rot = 0;
                     }
                     else
                     {
-                        if (dir.y > 0)
-                        {
-                            rot = 270;
-                        }
-                        else
-                        {
-                            rot = 90;
-                        }
+                        rot = 180;
                     }
-
-
-                    block.transform.eulerAngles = new Vector3(0, rot + 90, 0);
                 }
                 else
                 {
-                    Vector2 blockPos = new Vector2(block.transform.position.x, block.transform.position.z);
-                    Vector2 playerPos = new Vector2(player.transform.position.x, player.transform.position.z);
-                    Vector2 offset = playerPos - blockPos;
-                    float rot = Mathf.Atan2(offset.x, offset.y) * Mathf.Rad2Deg;
-
-
-                    block.transform.eulerAngles = new Vector3(0, rot, 0);
+                    if (dir.y > 0)
+                    {
+                        rot = 270;
+                    }
+                    else
+                    {
+                        rot = 90;
+                    }
                 }
-            }
 
-            if(usingItem.placeSound != "")
+
+                block.transform.eulerAngles = new Vector3(0, rot + 90, 0);
+            }
+            else
             {
-                sm.PlaySound(usingItem.placeSound, 1);
-            }
+                Vector2 blockPos = new Vector2(block.transform.position.x, block.transform.position.z);
+                Vector2 playerPos = new Vector2(player.transform.position.x, player.transform.position.z);
+                Vector2 offset = playerPos - blockPos;
+                float rot = Mathf.Atan2(offset.x, offset.y) * Mathf.Rad2Deg;
 
-            im.inventoryDictionary[usedCell].amount--;
-            usedCell.UpdateCell();
-            im.UpdateSeletedSlot();
+
+                block.transform.eulerAngles = new Vector3(0, rot, 0);
+            }
         }
+
+
+        if (usingItem.placeSound != "")
+        {
+            sm.PlaySound(usingItem.placeSound, 1);
+        }
+
+        im.inventoryDictionary[usedCell].amount--;
+        usedCell.UpdateCell();
+        im.UpdateSeletedSlot();
+
     }
     public void Reload()
     {

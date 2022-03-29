@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c25dd4ea8c4ff84cb21ca71ed53416d, type: 3}
+  m_Name: CreeperExplosion
+  m_EditorClassIdentifier: 
+  explosionParticle: {fileID: 191186, guid: 7efbc25a6983e6941b28b1d15208588e, type: 3}
+  DestructionRadius: 4
+  canDestroyObjectsInRadius: 1
+  maxDamageDistance: 6
+  damageByDistance:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 25
+      inSlope: -1.1667527
+      outSlope: -1.1667527
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1.7141594
+      value: 23
+      inSlope: -0.3247762
+      outSlope: -0.3247762
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 3.363346
+      value: 17.014492
+      inSlope: -2.5783207
+      outSlope: -2.5783207
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.09004789
+    - serializedVersion: 3
+      time: 6
+      value: 5
+      inSlope: -4.5567193
+      outSlope: -4.5567193
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  knockBackPower:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 15
+      inSlope: -0.774279
+      outSlope: -0.774279
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 6.4576206
+      value: 10
+      inSlope: -0.69882077
+      outSlope: -0.69882077
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.07899178
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 8
+      value: 0
+      inSlope: -6.483489
+      outSlope: -6.483489
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  camShakeTime: 0.3
+  camShakePower: 150
+  volume: 1

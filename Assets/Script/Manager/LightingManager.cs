@@ -4,6 +4,9 @@ using UnityEngine.UI;
 [ExecuteAlways]
 public class LightingManager : MonoBehaviour
 {
+    public UniversalScriptManager usm;
+
+
     //Scene References
     public Light DirectionalLight;
     public LightingPreset Preset;
@@ -12,6 +15,7 @@ public class LightingManager : MonoBehaviour
     public ColorGrading colorGrading;
     public GameObject SunMoon;
     public Image blackColor;
+    WeatherManager wm;
 
     //Variables
     [Range(0, 24)] public float TimeOfDay;
@@ -23,6 +27,10 @@ public class LightingManager : MonoBehaviour
     public float nightEndTime;
     public bool isNight;
 
+    void Awake()
+    {
+        wm = usm.weatherManager;
+    }
 
     private void Update()
     {
@@ -55,15 +63,15 @@ public class LightingManager : MonoBehaviour
         }
 
 
-        RenderSettings.fogColor = Preset.FogColor.Evaluate(timePercent);
+        RenderSettings.fogColor = BlendWithWeather(Preset.FogColor.Evaluate(timePercent), wm.rainLightSetting.FogColor.Evaluate(0));
         RenderSettings.ambientIntensity = Preset.lightingIntensity.Evaluate(timePercent);
         if (DirectionalLight != null)
         {
-            DirectionalLight.color = Preset.DirectionalColor.Evaluate(timePercent);
+            DirectionalLight.color = BlendWithWeather(Preset.DirectionalColor.Evaluate(timePercent), wm.rainLightSetting.DirectionalColor.Evaluate(0));
         }
         if (skybox != null)
         {
-            skybox.SetColor("_Tint", Preset.skyColor.Evaluate(timePercent));
+            skybox.SetColor("_Tint", BlendWithWeather(Preset.skyColor.Evaluate(timePercent), wm.rainLightSetting.skyColor.Evaluate(0)));
         }
         if(blackColor != null)
         {
@@ -96,5 +104,16 @@ public class LightingManager : MonoBehaviour
                 }
             }
         }
+        if(wm == null)
+        {
+            wm = usm.weatherManager;
+        }
+    }
+
+    public Color BlendWithWeather(Color origin, Color weather)
+    {
+        float rainPower = wm.rainPower * wm.maxLightImpact;
+
+        return origin * (1 - rainPower) + weather * rainPower;
     }
 }

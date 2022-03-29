@@ -20,8 +20,9 @@ MonoBehaviour:
   snapPosition: 0
   snapGridSize: 0
   lookAtPlayer: 0
+  placeSound: 
   isToolForModifyingTerrain: 1
-  maxDiggableYLevel: 66
+  maxDiggableYLevel: 256
   minDiggableYLevel: 0
   modifyDelay: 0.19
   hasCamShake: 1

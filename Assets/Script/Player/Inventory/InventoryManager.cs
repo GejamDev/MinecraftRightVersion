@@ -58,15 +58,14 @@ public class InventoryManager : MonoBehaviour
     public InventoryCell craftingOutputCell;
     public List<InventoryCell> craftingCells_Table = new List<InventoryCell>();
     public InventoryCell craftingOutputCell_Table;
+
+    public FurnaceScript currentlyTouchingFurnace;
     public InventoryCell furnaceInputCell;
     public InventoryCell furnaceFuelCell;
     public InventoryCell furnaceOutputCell;
 
     public CraftingRecipe[] craftingRecipes;
     
-    public float curFuelProgress;
-    public bool hasFuelPowerLeft;
-    public float furnaceSpeed;
     public Image furnaceProgress;
 
     public InventoryMode curMode;
@@ -227,6 +226,13 @@ public class InventoryManager : MonoBehaviour
         ui_furnace.SetActive(mode == InventoryMode.Furnace);
 
         curMode = mode;
+
+        if(curMode == InventoryMode.Furnace)
+        {
+            inventoryDictionary[furnaceInputCell] = currentlyTouchingFurnace.inputSlot;
+            inventoryDictionary[furnaceFuelCell] = currentlyTouchingFurnace.fuelSlot;
+            inventoryDictionary[furnaceOutputCell] = currentlyTouchingFurnace.outputSlot;
+        }
     }
 
     public void LateUpdate()
@@ -360,70 +366,20 @@ public class InventoryManager : MonoBehaviour
 
     public void UpdateFuelData()
     {
-        furnaceProgress.fillAmount = curFuelProgress;
-        if (inventoryDictionary[furnaceInputCell].amount == 0)
-        {
-            curFuelProgress = 0;
+        if (currentlyTouchingFurnace == null || curMode != InventoryMode.Furnace || !showingInventoryUI)
             return;
-        }
-        else if(inventoryDictionary[furnaceInputCell].item.furnaceResult == null)
-        {
-            curFuelProgress = 0;
-            return;
-        }
-        else if (inventoryDictionary[furnaceFuelCell].amount == 0 && !hasFuelPowerLeft)
-        {
-            curFuelProgress = 0;
-            return;
-        }
-        else if (!inventoryDictionary[furnaceFuelCell].item.fuel_usable)
-        {
-            curFuelProgress = 0;
-            return;
-        }
-        else if(inventoryDictionary[furnaceOutputCell].amount > 0)
-        {
-            if (inventoryDictionary[furnaceOutputCell].item != inventoryDictionary[furnaceInputCell].item.furnaceResult)
-            {
-                curFuelProgress = 0;
-                return;
-            }
-        }
 
-        if(curFuelProgress == 0)
-        {
-            if (inventoryDictionary[furnaceFuelCell].amount > 0)
-            {
-                //burn one fuel
-                inventoryDictionary[furnaceFuelCell].amount--;
-                furnaceFuelCell.UpdateCell();
-                curFuelProgress += Time.deltaTime * furnaceSpeed;
-            }
-            else
-            {
-                //nothing happens
-            }
-        }
-        else if (curFuelProgress >= 1)
-        {
-            //get one
-            curFuelProgress = 0;
-            inventoryDictionary[furnaceOutputCell].item = inventoryDictionary[furnaceInputCell].item.furnaceResult;
-            inventoryDictionary[furnaceOutputCell].amount++;
-            inventoryDictionary[furnaceInputCell].amount--;
-            furnaceInputCell.UpdateCell();
-            furnaceOutputCell.UpdateCell();
-            if (inventoryDictionary[furnaceFuelCell].amount <= 0)
-            {
 
-                hasFuelPowerLeft = false;
-            }
-            hasFuelPowerLeft = true;
-        }
-        else
-        {
-            curFuelProgress += Time.deltaTime * furnaceSpeed;
-        }
+
+        furnaceProgress.fillAmount = currentlyTouchingFurnace.curFuelProgress;
+
+
+        furnaceInputCell.UpdateCell();
+        furnaceFuelCell.UpdateCell();
+        furnaceOutputCell.UpdateCell();
+
+
+
 
     }
 

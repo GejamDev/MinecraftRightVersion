@@ -6,6 +6,7 @@ TagManager:
   tags:
   - DamageZone
   - Water
+  - ExplosionZone
   layers:
   - Default
   - TransparentFX

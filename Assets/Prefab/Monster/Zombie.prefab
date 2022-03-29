@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca5a6723f77e22146b9379d93d272a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  obj: 0
+  obj: 5
 --- !u!136 &837084375517562682
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -101,32 +101,13 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8500075914268072918}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: e2113229ff89baa4aa9f7927e5aed0ad, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.35266325
   m_Height: 2.4699554
   m_Direction: 1
   m_Center: {x: 0.010904521, y: 1.1748657, z: 0}
---- !u!95 &3059099647341068389
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8500075914268072918}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &2403641061380457396
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,7 +122,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usm: {fileID: 0}
   an: {fileID: 8237820178241473832}
-  moveSpeed: 6
+  moveSpeed: 4
   movingSynchronizeSpeed: 5
   rotateSpeed: 3
   playerDetectDistance: 100
@@ -155,6 +136,7 @@ MonoBehaviour:
     type: 3}
   deathParticle: {fileID: 6867620114681038427, guid: 25d7deb1ce4567248a12dccc6f4bc8dc,
     type: 3}
+  minRainPowerToSurvive: 0.5
   hp: 15
   playerDetected: 0
   walking: 0
@@ -162,9 +144,8 @@ MonoBehaviour:
   knockBackDirection: {x: 0, y: 0, z: 0}
   attakReloaded: 1
   attaking: 0
-  camShakeTime: 0.1
-  camShakePower: 25
-  camShakeFade: 1
+  hitCamShakeTime: 0.1
+  hitCamShakePower: 25
 --- !u!114 &4025338379595831041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,17 +194,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: e03adb99774598f469a92db4b434dc32,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 77.916
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e03adb99774598f469a92db4b434dc32,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.126
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e03adb99774598f469a92db4b434dc32,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e03adb99774598f469a92db4b434dc32,
         type: 3}
@@ -233,7 +214,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: e03adb99774598f469a92db4b434dc32,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e03adb99774598f469a92db4b434dc32,
         type: 3}
@@ -248,7 +229,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: e03adb99774598f469a92db4b434dc32,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 180
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e03adb99774598f469a92db4b434dc32,
         type: 3}

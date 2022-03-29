@@ -121,6 +121,7 @@ GameObject:
   - component: {fileID: 7754181497671517513}
   - component: {fileID: 7460272149184264283}
   - component: {fileID: 6614571455806055035}
+  - component: {fileID: 2900415449255071967}
   m_Layer: 0
   m_Name: WoodDoor
   m_TagString: Untagged
@@ -156,6 +157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09835187129cc7d4c851151f80b4836f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onlyDisable: 0
   hitParticle: {fileID: 6867620114681038427, guid: 874369910aabb1f45a50291d3ca7697c,
     type: 3}
   destroyParticle: {fileID: 6867620114681038427, guid: f35ec3dbfaae3d3479028ad7caf7b141,
@@ -313,6 +315,19 @@ MonoBehaviour:
   openAngle: -90
   openPos: {x: 1, y: 0, z: -1}
   speed: 10
+--- !u!114 &2900415449255071967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 870458044817839013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ef4395e028249749860f97236bf755f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  usm: {fileID: 0}
 --- !u!1 &2279719843442727194
 GameObject:
   m_ObjectHideFlags: 0

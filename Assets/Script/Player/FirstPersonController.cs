@@ -140,6 +140,8 @@ public class FirstPersonController : MonoBehaviour
 
     #endregion
 
+    public Vector3 knockBackForce;
+
     private void Awake()
     {
         usm = FindObjectOfType<UniversalScriptManager>();
@@ -176,7 +178,7 @@ public class FirstPersonController : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitUntil(() => isWalking && isGrounded && !im.showingInventoryUI);
+            yield return new WaitUntil(() => isWalking && isGrounded && !im.showingInventoryUI && !pm.paused);
 
             sm.PlaySound("Walk", 1);
             float delay = 0.2f;
@@ -418,7 +420,15 @@ public class FirstPersonController : MonoBehaviour
             HeadBob();
         }
     }
-
+    public void UpdateKnockBack()
+    {
+        rb.velocity += knockBackForce;
+        knockBackForce *= 0.8f * Time.deltaTime;
+        if (knockBackForce.magnitude <= 0.1f)
+        {
+            knockBackForce = Vector3.zero;
+        }
+    }
     void FixedUpdate()
     {
         if (pm.paused)
@@ -431,6 +441,9 @@ public class FirstPersonController : MonoBehaviour
         {
             rb.freezeRotation = true;
             rb.velocity = new Vector3(0, rb.velocity.y, 0);
+
+            //knock back
+            UpdateKnockBack();
             return;
         }
         #region Movement
@@ -507,6 +520,10 @@ public class FirstPersonController : MonoBehaviour
         }
 
         #endregion
+
+
+        //knock back
+        UpdateKnockBack();
     }
 
     // Sets isGrounded based on a raycast sent straigth down from the player object
@@ -601,6 +618,11 @@ public class FirstPersonController : MonoBehaviour
             timer = 0;
             joint.localPosition = new Vector3(Mathf.Lerp(joint.localPosition.x, jointOriginalPos.x, Time.deltaTime * bobSpeed), Mathf.Lerp(joint.localPosition.y, jointOriginalPos.y, Time.deltaTime * bobSpeed), Mathf.Lerp(joint.localPosition.z, jointOriginalPos.z, Time.deltaTime * bobSpeed));
         }
+    }
+
+    public void KnockBack(Vector3 force)
+    {
+        knockBackForce += force;
     }
 }
 

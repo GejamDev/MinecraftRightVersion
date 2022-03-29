@@ -34,6 +34,10 @@ public class ObjectUIInteraction : MonoBehaviour
         if (selected && Input.GetMouseButtonDown(1) && !Input.GetKey(KeyCode.LeftShift) && !im.showingInventoryUI)
         {
             //open ui
+            if(mode == InventoryMode.Furnace)
+            {
+                im.currentlyTouchingFurnace = GetComponent<FurnaceScript>();
+            }
             um.OpenUI(mode);
         }
     }

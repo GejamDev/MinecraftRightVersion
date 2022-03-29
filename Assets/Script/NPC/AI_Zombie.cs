@@ -11,6 +11,7 @@ public class AI_Zombie : MonoBehaviour
     HpManager hm;
     CapsuleCollider cc;
     LightingManager lm;
+    WeatherManager wm;
     Rigidbody rb;
     GameObject player;
     public Animator an;
@@ -32,6 +33,7 @@ public class AI_Zombie : MonoBehaviour
     public GameObject attakRange;
     public GameObject hitParticle;
     public GameObject deathParticle;
+    public float minRainPowerToSurvive;
 
     [Header("State")]
     public int hp;
@@ -43,9 +45,8 @@ public class AI_Zombie : MonoBehaviour
     public bool attaking;
 
     [Header("Camera Shake")]
-    public float camShakeTime;
-    public float camShakePower;
-    public bool camShakeFade;
+    public float hitCamShakeTime;
+    public float hitCamShakePower;
 
     void Awake()
     {
@@ -56,6 +57,7 @@ public class AI_Zombie : MonoBehaviour
         cm = usm.cameraManager;
         hm = usm.hpManager;
         lm = usm.lightingManager;
+        wm = usm.weatherManager;
 
         cc = GetComponent<CapsuleCollider>();
         rb = GetComponent<Rigidbody>();
@@ -65,7 +67,7 @@ public class AI_Zombie : MonoBehaviour
 
     public void Update()
     {
-        if (!lm.isNight)
+        if (!lm.isNight && wm.rainPower < minRainPowerToSurvive)
         {
             cc.isTrigger = true;
             if(transform.position.y < -10)
@@ -145,7 +147,7 @@ public class AI_Zombie : MonoBehaviour
         hp -= damage;
 
 
-        cm.ShakeCamera(camShakeTime, camShakePower * damage, camShakeFade, 0);
+        cm.ShakeCamera(hitCamShakeTime, hitCamShakePower * damage, true, 0);
 
         if (hp <= 0)
         {
