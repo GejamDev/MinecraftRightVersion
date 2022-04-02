@@ -37,6 +37,8 @@ public class TerrainModifier : MonoBehaviour
     public GameObject rockDestroyParticle;
     public float rockObtainMultiplier;
     public Item rockItem;
+    public Item flintItem;
+    public float flintObtainChance;
     void Awake()
     {
         cam = usm.cam.transform;
@@ -419,7 +421,13 @@ public class TerrainModifier : MonoBehaviour
         if(gettingRockCount != 0 && im.HasRoomFor(rockItem))
         {
             gettingRockCount = Mathf.RoundToInt(gettingRockCount * rockObtainMultiplier);
-            im.ObtainItem(new InventorySlot { item = rockItem, amount = gettingRockCount }, 0, 27);
+            im.ObtainItem(new InventorySlot { item = rockItem, amount = gettingRockCount }, 0, 36);
+        }
+
+        //get flint
+        if(Random.Range(0, 100) <= flintObtainChance * 100)
+        {
+            im.ObtainItem(new InventorySlot { item = flintItem, amount = 1 }, 0, 36);
         }
 
     }

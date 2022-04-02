@@ -48,6 +48,8 @@ public class Item : ScriptableObject
 
     [Header("Food")]
     public int hungerFillAmount;
+
+    
 }
 
 

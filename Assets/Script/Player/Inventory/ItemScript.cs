@@ -34,7 +34,7 @@ public class ItemScript : MonoBehaviour
         {
             if (im.HasRoomFor(holdingSlot.item))
             {
-                im.ObtainItem(holdingSlot, 0, 27);
+                im.ObtainItem(holdingSlot, 0, 36);
                 Destroy(gameObject);
             }
         }

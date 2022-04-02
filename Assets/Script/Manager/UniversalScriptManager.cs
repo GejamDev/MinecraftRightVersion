@@ -33,8 +33,12 @@ public class UniversalScriptManager : MonoBehaviour
     public SoundManager soundManager;
     public WeatherManager weatherManager;
     public ExplosionManager explosionManager;
+    public LavaManager lavaManager;
 
     [Header("Layer")]
     public LayerMask groundLayer;
     public LayerMask objectLayer;
+
+    [Header("Item")]
+    public Item arrow;
 }

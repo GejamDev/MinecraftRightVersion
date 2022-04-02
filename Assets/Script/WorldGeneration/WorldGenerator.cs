@@ -13,6 +13,7 @@ public class WorldGenerator : MonoBehaviour
     BiomeManager bm;
     WaterManager wm;
     EntitySpawner es;
+    LavaManager lm;
     ObjectPool objectPool;
 
     public GameObject chunkPrefab;
@@ -33,6 +34,7 @@ public class WorldGenerator : MonoBehaviour
         bm = usm.biomeManager;
         wm = usm.waterManager;
         es = usm.entitySpawner;
+        lm = usm.lavaManager;
         objectPool = usm.objectPool;
         wgPreset = usm.worldGenerationPreset;
     }
@@ -55,6 +57,7 @@ public class WorldGenerator : MonoBehaviour
 
 
         wm.GenerateWater(cs);
+        lm.GenerateLava(cs, 1);
 
 
         if (currentBiome.hasTree)

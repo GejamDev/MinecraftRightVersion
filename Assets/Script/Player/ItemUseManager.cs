@@ -17,6 +17,10 @@ public class ItemUseManager : MonoBehaviour
     public bool reloaded;
     GameObject player;
     public float placeCoolTime;
+    public List<CustomItemUseArray> customItemUseArray_L = new List<CustomItemUseArray>();
+    Dictionary<Item, MonoBehaviour> customItemUseDictionary_L = new Dictionary<Item, MonoBehaviour>();
+    public List<CustomItemUseArray> customItemUseArray_R = new List<CustomItemUseArray>();
+    Dictionary<Item, MonoBehaviour> customItemUseDictionary_R = new Dictionary<Item, MonoBehaviour>();
 
     void Awake()
     {
@@ -30,6 +34,16 @@ public class ItemUseManager : MonoBehaviour
         sm = usm.soundManager;
 
         player = usm.player;
+
+
+        foreach(CustomItemUseArray ci in customItemUseArray_L)
+        {
+            customItemUseDictionary_L.Add(ci.item, ci.behaviour);
+        }
+        foreach (CustomItemUseArray ci in customItemUseArray_R)
+        {
+            customItemUseDictionary_R.Add(ci.item, ci.behaviour);
+        }
     }
     void Update()
     {
@@ -43,22 +57,37 @@ public class ItemUseManager : MonoBehaviour
         }
 
 
+        Item usingItem;
+        if (im.currentlyUsingInventorySlot.amount < 1)
+        {
+            usingItem = im.hand;
+        }
+        else
+        {
+            usingItem = im.currentlyUsingInventorySlot.item;
+        }
+
+        
         if (Input.GetMouseButton(0))//use item
         {
+
+            //custom
+            if (customItemUseDictionary_L.ContainsKey(usingItem))
+            {
+                customItemUseDictionary_L[usingItem].Invoke("Use", 0);
+
+
+
+                return;
+            }
+
+
+
             if (!reloaded)
                 return;
 
 
 
-            Item usingItem;
-            if (im.currentlyUsingInventorySlot.amount < 1)
-            {
-                usingItem = im.hand;
-            }
-            else
-            {
-                usingItem = im.currentlyUsingInventorySlot.item;
-            }
 
 
             //reload
@@ -90,6 +119,15 @@ public class ItemUseManager : MonoBehaviour
         }
         else if (Input.GetMouseButton(1))
         {
+            //custom
+            if (customItemUseDictionary_R.ContainsKey(usingItem))
+            {
+                customItemUseDictionary_R[usingItem].Invoke("Use", 0);
+
+
+
+                return;
+            }
 
             if (im.currentlyUsingInventorySlot.amount < 1)
                 return;
@@ -97,9 +135,6 @@ public class ItemUseManager : MonoBehaviour
 
             if (!reloaded)
                 return;
-
-
-            Item usingItem = im.currentlyUsingInventorySlot.item;
 
             //reload
             reloaded = false;
@@ -118,7 +153,7 @@ public class ItemUseManager : MonoBehaviour
                 InventoryCell usedCell = im.inventoryCellList[im.curInventorySlot];
                 StartCoroutine(PlaceDelay(usingItem, usingItem.placeDelay, usedCell));
             }
-            else if(usingItem.hungerFillAmount >= 1 && hungerM.hunger< 20)
+            else if (usingItem.hungerFillAmount >= 1 && hungerM.hunger < 20)
             {
                 hungerM.hunger += usingItem.hungerFillAmount;
 
@@ -266,4 +301,11 @@ public class ItemUseManager : MonoBehaviour
     {
         reloaded = true;
     }
+}
+
+[System.Serializable]
+public class CustomItemUseArray
+{
+    public Item item;
+    public MonoBehaviour behaviour;
 }

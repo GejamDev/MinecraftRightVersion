@@ -596,7 +596,6 @@ public class InventoryManager : MonoBehaviour
                 else
                 {
                     int gettingAmount = Mathf.Clamp(Mathf.CeilToInt(touchedSlot.amount * 0.5f),0, inventoryDictionary[touchedCell].amount);
-                    Debug.Log(gettingAmount);
                     holding = true;
                     holdingInventorySlot.item = touchedSlot.item;
                     holdingInventorySlot.amount = gettingAmount;
@@ -717,5 +716,19 @@ public class InventoryManager : MonoBehaviour
                 return;
             }
         }
+    }
+
+    public bool HasItem(Item item, out InventoryCell havingCell)
+    {
+        for(int i =0; i < 36; i++)
+        {
+            if (inventoryDictionary[inventoryCellList[i]].item == item && inventoryDictionary[inventoryCellList[i]].amount > 0)
+            {
+                havingCell = inventoryCellList[i];
+                return true;
+            }
+        }
+        havingCell = null;
+        return false;
     }
 }

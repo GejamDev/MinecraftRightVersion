@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ChunkLoader : MonoBehaviour
 {
-    public bool turnedOn;
+    public bool setToSetting;
 
 
 
@@ -43,13 +43,12 @@ public class ChunkLoader : MonoBehaviour
         wgPreset = usm.worldGenerationPreset;
         wg = usm.worldGenerator;
         lm = usm.loadingManager;
-        viewDistance = Mathf.RoundToInt(PlayerPrefs.GetFloat("ViewDistance") * 9) + 6;
+        if(setToSetting)
+            viewDistance = Mathf.RoundToInt(PlayerPrefs.GetFloat("ViewDistance") * 9) + 6;
     }
 
     void Update()
     {
-        if (!turnedOn)
-            return;
 
         CheckPlayerPosition();
 
@@ -65,9 +64,10 @@ public class ChunkLoader : MonoBehaviour
 
         int preViewDistance = viewDistance;
 
-        viewDistance = Mathf.RoundToInt(PlayerPrefs.GetFloat("ViewDistance") * 9) + 6;
+        if (setToSetting)
+            viewDistance = Mathf.RoundToInt(PlayerPrefs.GetFloat("ViewDistance") * 9) + 6;
 
-        if(viewDistance != preViewDistance)
+        if (viewDistance != preViewDistance)
         {
             StartCoroutine(UpdateEnabledChunk_Cor());
         }

@@ -104,9 +104,9 @@ MonoBehaviour:
     type: 3}
   explosionPreset: {fileID: 11400000, guid: 0811d274f9751c340b44cc208558b4a2, type: 2}
   originScale: 0
-  explodeShakePower: 0.15
+  explodeShakePower: 0.2
   shakeDampen: 10
-  chargedColor: {r: 0.6226415, g: 0.6226415, b: 0.6226415, a: 1}
+  chargedColor: {r: 0.8392157, g: 0, b: 0, a: 1}
   noEmission: {r: 0, g: 0, b: 0, a: 0}
   chargeSpeed: 3
   calmSpeed: 6

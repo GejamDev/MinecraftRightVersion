@@ -8,7 +8,9 @@ public class ChunkScript : MonoBehaviour
     public GameObject meshObject;
     public GameObject bedrock;
     public MeshFilter waterMF;
+    public MeshFilter lavaMF;
     public MeshCollider waterMC;
+    public MeshCollider lavaMC;
 
     [Header("Properties")]
     public bool activated;
@@ -23,6 +25,7 @@ public class ChunkScript : MonoBehaviour
     public UniversalScriptManager usm;
     MeshGenerator mg;
     WaterManager wm;
+    LavaManager lm;
     WorldGenerator wg;
     ObjectPool objectPool;
 
@@ -60,12 +63,25 @@ public class ChunkScript : MonoBehaviour
     [HideInInspector] public List<GameObject> ores = new List<GameObject>();
 
 
+    [HideInInspector] public List<Vector3> lavaData = new List<Vector3>();
+
+    [HideInInspector] public List<Vector3> vertices_lava = new List<Vector3>();
+    [HideInInspector] public List<int> triangles_lava = new List<int>();
+    [HideInInspector] public Dictionary<Vector3, int> verticesRangeDictionary_lava = new Dictionary<Vector3, int>();
+
+    [HideInInspector] public Dictionary<Vector3, WaterPointData> lavaPointDictionary = new Dictionary<Vector3, WaterPointData>();
+    [HideInInspector] public List<WaterPointData> lpdList = new List<WaterPointData>();
+
+    [HideInInspector] public bool lavaBeingModified;
+
+
 
     public void GetVariables()
     {
 
         mg = usm.meshGenerator;
         wm = usm.waterManager;
+        lm = usm.lavaManager;
         wg = usm.worldGenerator;
         objectPool = usm.objectPool;
         bedrock.transform.localScale = new Vector3(usm.worldGenerationPreset.chunkSize, 1, usm.worldGenerationPreset.chunkSize);
@@ -97,6 +113,11 @@ public class ChunkScript : MonoBehaviour
         {
             wm.modifiedChunkDataKeys.Add(this);
             wm.modifiedChunksDataDictionary.Add(this, new UpdatedChunkData { cs = this,modifiedPoses = new List<Vector3>( )});
+        }
+        if (!lm.modifiedChunkDataKeys.Contains(this))
+        {
+            lm.modifiedChunkDataKeys.Add(this);
+            lm.modifiedChunksDataDictionary.Add(this, new UpdatedChunkData { cs = this, modifiedPoses = new List<Vector3>() });
         }
     }
 

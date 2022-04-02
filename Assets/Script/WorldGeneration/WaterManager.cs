@@ -352,12 +352,6 @@ public class WaterManager : MonoBehaviour
     };
 
 }
-[System.Serializable]
-public class UpdatedChunkData
-{
-    public ChunkScript cs;
-    public List<Vector3> modifiedPoses = new List<Vector3>();
-}
 
 
 

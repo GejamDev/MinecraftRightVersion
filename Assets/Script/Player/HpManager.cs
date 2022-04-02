@@ -102,7 +102,7 @@ public class HpManager : MonoBehaviour
             float fallHeight = lastGroundedHeight - player.transform.position.y;
             if (fallHeight > minFallDamageHeight)
             {
-                int damage = Mathf.RoundToInt((fallHeight - minFallDamageHeight) * fallDamageMultiplier);
+                int damage = Mathf.CeilToInt((fallHeight - minFallDamageHeight) * fallDamageMultiplier);
                 TakeDamage(damage);
             }
         }

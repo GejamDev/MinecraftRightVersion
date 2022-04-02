@@ -6,6 +6,7 @@ public class EntitySpawner : MonoBehaviour
 {
     public UniversalScriptManager usm;
     LightingManager lm;
+    ChunkLoader cl;
     GameObject player;
 
     public float minSpawnRange;
@@ -17,6 +18,7 @@ public class EntitySpawner : MonoBehaviour
     void Awake()
     {
         lm = usm.lightingManager;
+        cl = usm.chunkLoader;
         player = usm.player;
 
 
@@ -41,6 +43,31 @@ public class EntitySpawner : MonoBehaviour
 
             spawnPos += randomness;
             e.transform.position = spawnPos;
+
+
+
+            Vector2 chunkPosition = new Vector2(
+
+                spawnPos.x >= 0 ?
+                Mathf.Floor(spawnPos.x / 8) * 8 :
+                Mathf.Floor(-spawnPos.x / 8) * -8 - 8,
+
+                spawnPos.z >= 0 ?
+                Mathf.Floor(spawnPos.z / 8) * 8 :
+                Mathf.Floor(-spawnPos.z / 8) * -8 - 8
+                );
+
+            if (cl.chunkDictionary.ContainsKey(chunkPosition))
+            {
+                ChunkScript cs = cl.chunkDictionary[chunkPosition].cs;
+                Vector2Int posInChunk = new Vector2Int(Mathf.RoundToInt(spawnPos.x - cs.position.x), Mathf.RoundToInt(spawnPos.z - cs.position.y));
+                float yHeight = cs.heightMap[posInChunk.x, posInChunk.y];
+                if(spawnPos.y > yHeight)
+                {
+                    e.transform.position = new Vector3(spawnPos.x, yHeight, spawnPos.z);
+                }
+            }
+
         }
     }
 

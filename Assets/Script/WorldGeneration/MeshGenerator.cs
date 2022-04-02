@@ -18,10 +18,13 @@ public class MeshGenerator : MonoBehaviour
     NoisePreset nPreset;
     NoisePreset caveNPreset;
     NoisePreset waterGroundDecreaseNoise;
+    NoisePreset lavaNoisePreset;
     public float waterSurfaceLevel;
     public float maxWaterLevel;
     public float waterDefaultLevel;
     public float minWaterDepth;
+    public float lavaSurfaceLevel;
+    public float lavaStartHeight;
     public float grassStartHeight;
     public float rockStartHeight;
 
@@ -39,8 +42,11 @@ public class MeshGenerator : MonoBehaviour
         width = wgPreset.chunkSize;
         nPreset = wgPreset.nPreset;
         caveNPreset = wgPreset.caveNPreset;
+        lavaNoisePreset = wgPreset.lavaNoisePreset;
         waterGroundDecreaseNoise = wgPreset.waterGroundDecreaseNoisePreset;
     }
+
+    #region terrain
     public void GenerateMesh(ChunkScript cs, bool loadingTimeExists)
     {
         cs.terrainMap = new float[width + 1, height + 1, width + 1];
@@ -74,6 +80,9 @@ public class MeshGenerator : MonoBehaviour
         float[,,] caveNoiseMap = Noise.NoiseMap3D(cs.position.x, cs.position.y, width + 1, maxPossibleHeight + 1, caveNPreset, new Vector3(1, 1.5f, 1));
 
         float[,] waterGroundDecreaseMap2D = Noise.NoiseMap2D(cs.position.x, cs.position.y, width + 1, waterGroundDecreaseNoise);
+
+
+        float[,,] lavaNoiseMap = Noise.NoiseMap3D(cs.position.x, cs.position.y, width + 1, maxPossibleHeight + 1, lavaNoisePreset, new Vector3(1, 2, 1));
 
         cs.heightMap = new float[noiseMap2D.GetLength(0), noiseMap2D.GetLength(1)];
 
@@ -127,6 +136,39 @@ public class MeshGenerator : MonoBehaviour
                 }
             }
 
+        }
+
+        //generate lava
+        for(int x = 0; x < lavaNoiseMap.GetLength(0); x++)
+        {
+            for (int y = 0; y < lavaStartHeight; y++)
+            {
+                for (int z = 0; z < lavaNoiseMap.GetLength(2); z++)
+                {
+                    float lavaNoise = lavaNoiseMap[x, y, z];
+                    if (lavaNoise < lavaSurfaceLevel && cs.terrainMap[x, y, z] <= terrainSuface)
+                    {
+                        bool onGround = false;
+                        if(y == 0)
+                        {
+                            onGround = true;
+                        }
+                        else if(cs.terrainMap[x,y-1, z] <= terrainSuface)
+                        {
+                            onGround = true;
+                        }
+                        else if(cs.lavaData.Contains(new Vector3(x, y - 1, z)))
+                        {
+                            onGround = true;
+                        }
+                        if (onGround)
+                        {
+                            cs.terrainMap[x, y, z] = 1;
+                            cs.lavaData.Add(new Vector3(x, y, z));
+                        }
+                    }
+                }
+            }
         }
     }
     IEnumerator CreateMeshData_Cor(ChunkScript cs, bool onlySurface)
@@ -321,6 +363,10 @@ public class MeshGenerator : MonoBehaviour
         cs.mr.material.SetTexture("_RightFrontWallTex", bp_fr.terrainMaterial.GetTexture("_WallTex"));
 
     }
+
+    #endregion
+
+    #region water
 
     public void ReGenerateWaterMesh(ChunkScript cs, List<Vector3> modifiedPos)
     {
@@ -598,9 +644,264 @@ public class MeshGenerator : MonoBehaviour
 
 
 
+    #endregion
 
 
 
+    #region lava
+
+    public void ReGenerateLavaMesh(ChunkScript cs, List<Vector3> modifiedPos)
+    {
+        if (cs.lavaPointDictionary.Count == 0)
+            return;
+        int preVCount = cs.vertices_lava.Count;
+        int preTCount = cs.triangles_lava.Count;
+        cs.vertices_lava.Clear();
+        cs.triangles_lava.Clear();
+        cs.verticesRangeDictionary_lava.Clear();
+        for (int x = 0; x < width; x++)
+        {
+            for (int z = 0; z < width; z++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    if (!modifiedPos.Contains(new Vector3(x, y, z)))
+                    {
+                        WaterPointData lpd = cs.lavaPointDictionary[new Vector3(x, y, z)];
+                        MarchLavaCubeWithExistingVertices(cs, lpd);
+                    }
+                    else
+                    {
+                        bool needDelay;
+                        MarchLavaCube(cs, new Vector3(x, y, z), out needDelay);
+                    }
+                }
+            }
+        }
+
+        BuildLavaMesh(cs);
+
+        //yield return null;
+    }
+
+
+    public void GenerateLavaMesh(ChunkScript cs, bool delay)
+    {
+        if (cs.lavaData.Count == 0)
+        {
+            return;
+        }
+
+
+        StartCoroutine(GenerateLavaMesh_WaitForFinishedChunk(cs, delay));
+
+    }
+
+    IEnumerator GenerateLavaMesh_WaitForFinishedChunk(ChunkScript cs, bool delay)
+    {
+        yield return new WaitUntil(() =>
+
+        cl.chunkDictionary.ContainsKey(cs.position + Vector2.right * wgPreset.chunkSize) &&
+        cl.chunkDictionary.ContainsKey(cs.position + Vector2.left * wgPreset.chunkSize) &&
+        cl.chunkDictionary.ContainsKey(cs.position + Vector2.up * wgPreset.chunkSize) &&
+        cl.chunkDictionary.ContainsKey(cs.position + Vector2.down * wgPreset.chunkSize)
+
+
+        );
+
+        cs.rightChunk = cl.chunkDictionary[cs.position + Vector2.right * wgPreset.chunkSize].cs;
+        cs.leftChunk = cl.chunkDictionary[cs.position + Vector2.left * wgPreset.chunkSize].cs;
+        cs.frontChunk = cl.chunkDictionary[cs.position + Vector2.up * wgPreset.chunkSize].cs;
+        cs.backChunk = cl.chunkDictionary[cs.position + Vector2.down * wgPreset.chunkSize].cs;
+        
+        for (int x = 0; x < width; x++)
+        {
+            for (int z = 0; z < width; z++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    bool needDelay;
+                    MarchLavaCube(cs, new Vector3Int(x, y, z), out needDelay);
+                    if (delay && needDelay)
+                    {
+                        yield return new WaitForEndOfFrame();
+                    }
+                }
+            }
+        }
+        BuildLavaMesh(cs);
+    }
+
+    int GetCubeConfiguration_Lava(bool[] cube)
+    {
+        int configurationIndex = 0;
+        for (int i = 0; i < 8; i++)
+        {
+            if (!cube[i])
+            {
+                configurationIndex |= 1 << i;
+            }
+        }
+
+        return configurationIndex;
+    }
+
+    bool SampleTerrainLava(ChunkScript cs, Vector3Int point)
+    {
+
+
+        //return cs.waterData.Contains(point);
+        //return Random.Range(0, 10) * 0.1f;
+
+        if (
+            cs.lavaData.Contains(point)
+
+        ////next to water in chunk
+        //|| cs.waterData.Contains(point + Vector3.right)
+        //|| cs.waterData.Contains(point + Vector3.left)
+        //|| cs.waterData.Contains(point + Vector3.forward)
+        //|| cs.waterData.Contains(point + Vector3.back)
+
+        ////next to water in other chunk
+        //|| cl.chunkDictionary[cs.position + Vector2.right * wgPreset.chunkSize].cs.waterData.Contains(point + Vector3.left * wgPreset.chunkSize + Vector3.right)
+        //|| cl.chunkDictionary[cs.position + Vector2.left * wgPreset.chunkSize].cs.waterData.Contains(point + Vector3.right * wgPreset.chunkSize + Vector3.left)
+        //|| cl.chunkDictionary[cs.position + Vector2.up * wgPreset.chunkSize].cs.waterData.Contains(point + Vector3.back * wgPreset.chunkSize + Vector3.forward)
+        //|| cl.chunkDictionary[cs.position + Vector2.down * wgPreset.chunkSize].cs.waterData.Contains(point + Vector3.forward * wgPreset.chunkSize + Vector3.back)
+
+        )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+    void MarchLavaCube(ChunkScript cs, Vector3 position, out bool needDelay)
+    {
+        if (cs.lavaPointDictionary.ContainsKey(position))
+        {
+            cs.lavaPointDictionary.Remove(position);
+        }
+
+        WaterPointData lpd = new WaterPointData();
+        lpd.vertices = new List<Vector3>();
+        lpd.triangles = new List<int>();
+
+
+        bool[] cube = new bool[8];
+        for (int i = 0; i < 8; i++)
+        {
+            cube[i] = cs.lavaData.Contains(position + CornerTable[i]);
+        }
+
+        int configIndex = GetCubeConfiguration_Lava(cube);
+        if (configIndex == 0 || configIndex == 255)
+        {
+            cs.lavaPointDictionary.Add(position, lpd);
+            cs.lpdList.Add(lpd);
+            needDelay = false;
+            return;
+        }
+        needDelay = true;
+        int edgeIndex = 0;
+        for (int i = 0; i < 5; i++)
+        {
+            for (int n = 0; n < 3; n++)
+            {
+                int indice = TriangleTable[configIndex, edgeIndex];
+
+                if (indice == -1)
+                {
+                    cs.lavaPointDictionary.Add(position, lpd);
+                    cs.lpdList.Add(lpd);
+                    return;
+                }
+
+                Vector3 vert1 = position + CornerTable[EdgeIndexes[indice, 0]];
+                Vector3 vert2 = position + CornerTable[EdgeIndexes[indice, 1]];
+
+
+                Vector3 vertPosition;
+                vertPosition = (vert1 + vert2) / 2f;
+                bool notCrossed;
+                int triangle = VertForIndice_Lava(cs, vertPosition, out notCrossed);
+                cs.triangles_lava.Add(triangle);
+                lpd.triangles.Add(triangle);
+                lpd.vertices.Add(vertPosition);
+                //if (notCrossed)
+                //{
+                //}
+                edgeIndex++;
+            }
+        }
+        cs.lavaPointDictionary.Add(position, lpd);
+        cs.lpdList.Add(lpd);
+    }
+
+    void MarchLavaCubeWithExistingVertices(ChunkScript cs, WaterPointData lpd)
+    {
+        foreach (Vector3 v in lpd.vertices)
+        {
+            Vector3 vertPosition;
+            vertPosition = v;
+            bool notCrossed;
+
+            int triangle = VertForIndice_Lava(cs, vertPosition, out notCrossed);
+            if (notCrossed)
+            {
+                cs.vertices_lava.Add(vertPosition);
+            }
+            cs.triangles_lava.Add(triangle);
+        }
+
+    }
+    int VertForIndice_Lava(ChunkScript cs, Vector3 vert, out bool notCrossed)
+    {
+
+        if (cs.verticesRangeDictionary_lava.ContainsKey(vert))
+        {
+            notCrossed = false;
+            return cs.verticesRangeDictionary_lava[vert];
+        }
+
+        cs.vertices_lava.Add(vert);
+        AddLavaVerticesToDictionary(cs, vert);
+        notCrossed = true;
+        return cs.vertices_lava.Count - 1;
+    }
+
+    void AddLavaVerticesToDictionary(ChunkScript cs, Vector3 pos)
+    {
+        cs.verticesRangeDictionary_lava.Add(pos, cs.vertices_lava.Count - 1);
+    }
+
+
+
+
+    public void BuildLavaMesh(ChunkScript cs)
+    {
+        Mesh mesh = new Mesh();
+        mesh.vertices = cs.vertices_lava.ToArray();
+        mesh.triangles = cs.triangles_lava.ToArray();
+        mesh.RecalculateNormals();
+        cs.lavaMF.mesh = mesh;
+        cs.lavaMC.sharedMesh = mesh;
+    }
+
+
+
+
+
+    #endregion
+
+
+
+
+
+    #region weird stuff
 
     Vector3Int[] CornerTable = new Vector3Int[8] {
 
@@ -881,4 +1182,6 @@ public class MeshGenerator : MonoBehaviour
         {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
 
     };
+
+    #endregion
 }

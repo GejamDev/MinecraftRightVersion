@@ -136,4 +136,33 @@ public class AI_Pig : MonoBehaviour
             }
         }
     }
+
+
+    public void GetHit_Arrow()
+    {
+        Item usingItem = usm.arrow;
+
+
+
+        int damage = usingItem.damage;
+        hp -= damage;
+
+
+        cm.ShakeCamera(camShakeTime, camShakePower * damage, camShakeFade, 0);
+
+        if (hp <= 0)
+        {
+            Die();
+        }
+        else
+        {
+            //knock back
+            KnockBack(usingItem);
+        }
+        if (hitParticle != null)
+        {
+            GameObject p = Instantiate(hitParticle);
+            p.transform.position = transform.position + Vector3.up;
+        }
+    }
 }

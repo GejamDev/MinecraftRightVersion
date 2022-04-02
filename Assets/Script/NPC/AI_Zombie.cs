@@ -17,7 +17,6 @@ public class AI_Zombie : MonoBehaviour
     public Animator an;
 
 
-
     Vector3 direction;
 
     [Header("Settings")]
@@ -242,6 +241,37 @@ public class AI_Zombie : MonoBehaviour
         else if(collision.gameObject == player)
         {
             hm.TakeDamage(damage);
+        }
+    }
+
+    public void GetHit_Arrow()
+    {
+        Item usingItem = usm.arrow;
+        int damage = usingItem.damage;
+        hp -= damage;
+
+
+        cm.ShakeCamera(hitCamShakeTime, hitCamShakePower * damage, true, 0);
+
+        if (hp <= 0)
+        {
+            if (deathParticle != null)
+            {
+                GameObject p = Instantiate(deathParticle);
+                p.transform.position = transform.position + Vector3.up;
+            }
+
+            Destroy(gameObject);
+        }
+        else
+        {
+            //knock back
+            KnockBack(usingItem);
+        }
+        if (hitParticle != null)
+        {
+            GameObject p = Instantiate(hitParticle);
+            p.transform.position = transform.position + Vector3.up;
         }
     }
 }

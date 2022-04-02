@@ -12,4 +12,5 @@ public class WorldGenerationPreset : ScriptableObject
     public NoisePreset caveNPreset;
     public NoisePreset waterGroundDecreaseNoisePreset;
     public NoisePreset biomeNPreset;
+    public NoisePreset lavaNoisePreset;
 }

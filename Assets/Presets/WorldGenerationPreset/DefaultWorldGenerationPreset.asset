@@ -21,3 +21,4 @@ MonoBehaviour:
   waterGroundDecreaseNoisePreset: {fileID: 11400000, guid: cc17b85a15c55274b8aaebe0989208ad,
     type: 2}
   biomeNPreset: {fileID: 11400000, guid: 75614b996e33e3f4caacf05a4d598db9, type: 2}
+  lavaNoisePreset: {fileID: 11400000, guid: 3329aca02752d1841b93297f915118f0, type: 2}
