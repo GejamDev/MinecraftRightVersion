@@ -124,7 +124,7 @@ public class MeshGenerator : MonoBehaviour
                     else//below the surface
                     {
                         float caveNoise = caveNoiseMap[x, y, z];
-                        if (caveNoise >= caveSurface)
+                        if (caveNoise >= caveSurface + groundNoise * 0.06f)
                         {
                             cs.terrainMap[x, y, z] = 0;
                         }
@@ -238,7 +238,7 @@ public class MeshGenerator : MonoBehaviour
         for (int i = 0; i < 8; i++)
         {
             //Vector3Int pos = position + CornerTable[i];
-            cube[i] = cs.terrainMap[position.x + CornerTable[i].x, position.y + CornerTable[i].y, position.z + CornerTable[i].z];
+            cube[i] = cs.terrainMap[position.x + CornerTableX[i], position.y + CornerTableY[i], position.z + CornerTableZ[i]];
         }
 
 
@@ -581,9 +581,6 @@ public class MeshGenerator : MonoBehaviour
                 cs.triangles_water.Add(triangle);
                 wpd.triangles.Add(triangle);
                 wpd.vertices.Add(vertPosition);
-                //if (notCrossed)
-                //{
-                //}
                 edgeIndex++;
             }
         }
@@ -726,8 +723,11 @@ public class MeshGenerator : MonoBehaviour
                     {
                         yield return new WaitForEndOfFrame();
                     }
+                    yield return new WaitForEndOfFrame();
                 }
+                yield return new WaitForEndOfFrame();
             }
+            yield return new WaitForEndOfFrame();
         }
         BuildLavaMesh(cs);
     }
@@ -913,6 +913,22 @@ public class MeshGenerator : MonoBehaviour
         new Vector3Int(1, 0, 1),
         new Vector3Int(1, 1, 1),
         new Vector3Int(0, 1, 1)
+
+    };
+
+    int[] CornerTableX = new int[8] {
+
+        0,1,1,0,0,1,1,0
+
+    };
+
+    int[] CornerTableY = new int[8] {
+
+       0,0,1,1,0,0,1,1
+
+    };
+    int[] CornerTableZ = new int[8] {
+        0,0,0,0,1,1,1,1
 
     };
 

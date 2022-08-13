@@ -14018,7 +14018,7 @@ MonoBehaviour:
   loadingTime: 0
   firstTimeLoadingFrequency: 3
   loadingFrequency: 1
-  viewDistance: 2
+  viewDistance: 15
   enabledChunkPositionList: []
   activatedChunkList: []
 --- !u!1 &959693980
@@ -14037,7 +14037,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &959693981
 Transform:
   m_ObjectHideFlags: 0
@@ -17385,7 +17385,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2100932669
 Transform:
   m_ObjectHideFlags: 0

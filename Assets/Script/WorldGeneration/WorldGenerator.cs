@@ -125,6 +125,8 @@ public class WorldGenerator : MonoBehaviour
     }
     public IEnumerator GenerateGrass_Cor(ChunkScript cs)
     {
+        Transform grassParent = cs.objectBundle.transform;
+        GameObject grassPrefab = cs.biomeProperty.grassObject;
 
         NoisePreset np = cs.biomeProperty.grassNoisePreset;
         for(int x = 0; x< wgPreset.chunkSize; x++)
@@ -143,8 +145,8 @@ public class WorldGenerator : MonoBehaviour
                         if (height >= 0)
                         {
                             //instantiate
-                            GameObject g = Instantiate(cs.biomeProperty.grassObject);
-                            g.transform.SetParent(cs.objectBundle.transform);
+                            GameObject g = Instantiate(grassPrefab);
+                            g.transform.SetParent(grassParent);
                             g.transform.localPosition = new Vector3(x, 0, y) + Vector3.up * height;
                             GrassScript gs = g.GetComponent<GrassScript>();
                             cs.grassList.Add(gs);

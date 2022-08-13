@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff739c309258ca941b8a498b2b3c7e3b, type: 3}
   m_Name: Cave
   m_EditorClassIdentifier: 
-  noiseSpeed: 0.03
+  noiseSpeed: 0.05
   noiseWeight: 1
   groundLevel: 0
-  octaves: 3
+  octaves: 2
   persistance: 0.5
   lacunarity: 2
   heightMultiplier:
