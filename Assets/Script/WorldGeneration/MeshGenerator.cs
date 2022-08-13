@@ -138,6 +138,7 @@ public class MeshGenerator : MonoBehaviour
 
         }
 
+
         //generate lava
         for(int x = 0; x < lavaNoiseMap.GetLength(0); x++)
         {
@@ -705,7 +706,6 @@ public class MeshGenerator : MonoBehaviour
 
 
         );
-
         cs.rightChunk = cl.chunkDictionary[cs.position + Vector2.right * wgPreset.chunkSize].cs;
         cs.leftChunk = cl.chunkDictionary[cs.position + Vector2.left * wgPreset.chunkSize].cs;
         cs.frontChunk = cl.chunkDictionary[cs.position + Vector2.up * wgPreset.chunkSize].cs;
@@ -723,11 +723,11 @@ public class MeshGenerator : MonoBehaviour
                     {
                         yield return new WaitForEndOfFrame();
                     }
-                    yield return new WaitForEndOfFrame();
+                    //yield return new WaitForEndOfFrame();
                 }
-                yield return new WaitForEndOfFrame();
+                //yield return new WaitForEndOfFrame();
             }
-            yield return new WaitForEndOfFrame();
+            //yield return new WaitForEndOfFrame();
         }
         BuildLavaMesh(cs);
     }

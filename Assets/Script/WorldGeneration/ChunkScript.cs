@@ -86,7 +86,6 @@ public class ChunkScript : MonoBehaviour
         objectPool = usm.objectPool;
         bedrock.transform.localScale = new Vector3(usm.worldGenerationPreset.chunkSize, 1, usm.worldGenerationPreset.chunkSize);
         bedrock.transform.localPosition = new Vector3(usm.worldGenerationPreset.chunkSize * 0.5f, bedrock.transform.localPosition.y, usm.worldGenerationPreset.chunkSize);
-
     }
     public void Activate()
     {
