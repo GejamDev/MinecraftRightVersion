@@ -49,7 +49,8 @@ public class Item : ScriptableObject
     [Header("Food")]
     public int hungerFillAmount;
 
-    
+    [Header("CustomUse Variables")]
+    public bool continuousCustomUse;
 }
 
 

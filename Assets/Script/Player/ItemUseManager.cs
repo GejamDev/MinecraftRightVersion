@@ -67,8 +67,9 @@ public class ItemUseManager : MonoBehaviour
             usingItem = im.currentlyUsingInventorySlot.item;
         }
 
-        
-        if (Input.GetMouseButton(0))//use item
+        bool leftInput = usingItem.continuousCustomUse ? Input.GetMouseButton(0) : Input.GetMouseButtonDown(0);
+        bool rightInput = usingItem.continuousCustomUse ? Input.GetMouseButton(1) : Input.GetMouseButtonDown(1);
+        if (leftInput)//use item
         {
 
             //custom
@@ -117,7 +118,7 @@ public class ItemUseManager : MonoBehaviour
             tm.Invoke(nameof(tm.DestroyInChunk), usingItem.modifyDelay);
 
         }
-        else if (Input.GetMouseButton(1))
+        else if (rightInput)
         {
             //custom
             if (customItemUseDictionary_R.ContainsKey(usingItem))

@@ -5847,7 +5847,7 @@ MonoBehaviour:
   caveSurface: 0.7
   width: 32
   height: 150
-  waterSurfaceLevel: 0.5
+  waterSurfaceLevel: 0.6
   maxWaterLevel: 80
   waterDefaultLevel: 75
   minWaterDepth: 1
@@ -12899,7 +12899,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.75
@@ -14768,6 +14768,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 576519951}
+  - {fileID: 2122501836}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -16149,6 +16150,11 @@ PrefabInstance:
       propertyPath: field of view
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 4459864851310106426, guid: 6bacecc4f3df9584198879c73a6b6c36,
+        type: 3}
+      propertyPath: far clip plane
+      value: 80
+      objectReference: {fileID: 0}
     - target: {fileID: 4459864851551516593, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
       propertyPath: m_SortingOrder
@@ -16659,6 +16665,8 @@ MonoBehaviour:
   customItemUseArray_R:
   - item: {fileID: 11400000, guid: 54445928ac7e4154db64515b3332fb43, type: 2}
     behaviour: {fileID: 576519952}
+  - item: {fileID: 11400000, guid: c208128b3178f7647a13f0f0bc0ca292, type: 2}
+    behaviour: {fileID: 2122501837}
 --- !u!1 &1918885125
 GameObject:
   m_ObjectHideFlags: 0
@@ -17416,6 +17424,49 @@ MonoBehaviour:
   updateTick: 0.2
   addedModifiedChunkCount: 0
   modifiedChunkDataKeys: []
+--- !u!1 &2122501835
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2122501836}
+  - component: {fileID: 2122501837}
+  m_Layer: 0
+  m_Name: R_Bucket
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2122501836
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2122501835}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1207744461}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2122501837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2122501835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35199081540ee7e428df4c34ba6e8db6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2127976625
 GameObject:
   m_ObjectHideFlags: 0

@@ -38,3 +38,4 @@ MonoBehaviour:
   knockBackTime: 0.2
   knockBackPower: 1
   hungerFillAmount: 0
+  continuousCustomUse: 1

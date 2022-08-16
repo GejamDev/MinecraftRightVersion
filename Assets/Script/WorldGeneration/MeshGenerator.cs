@@ -126,11 +126,12 @@ public class MeshGenerator : MonoBehaviour
                         float caveNoise = caveNoiseMap[x, y, z];
                         if (caveNoise >= caveSurface + groundNoise * 0.06f)
                         {
-                            cs.terrainMap[x, y, z] = 0;
+                            //cs.terrainMap[x, y, z] = 0;
                         }
                         else
                         {
-                            cs.terrainMap[x, y, z] = 1;
+                            //make hole
+                            cs.terrainMap[x, y, z] = terrainSuface + Mathf.Clamp(noiseMap2D[x, (z + Mathf.Abs(y)) % 5 ]*1, 0.1f, 1);
                         }
                     }
                 }
@@ -378,6 +379,8 @@ public class MeshGenerator : MonoBehaviour
         cs.vertices_water.Clear();
         cs.triangles_water.Clear();
         cs.verticesRangeDictionary_water.Clear();
+
+        List<Vector3> checkedPosList = new List<Vector3>();
         for (int x = 0; x < width; x++)
         {
             for (int z = 0; z < width; z++)
@@ -386,12 +389,22 @@ public class MeshGenerator : MonoBehaviour
                 {
                     if (!modifiedPos.Contains(new Vector3(x, y, z)))
                     {
-                        WaterPointData wpd = cs.waterPointDictionary[new Vector3(x, y, z)];
+                        WaterPointData wpd;
+                        if (cs.waterPointDictionary.ContainsKey(new Vector3(x, y, z)))
+                        {
+                             wpd= cs.waterPointDictionary[new Vector3(x, y, z)];
+                        }
+                        else
+                        {
+                            wpd = new WaterPointData();
+                            cs.waterPointDictionary.Add(new Vector3(x, y, z), wpd);
+                            cs.wpdList.Add(wpd);
+                        }
                         MarchWaterCubeWithExistingVertices(cs, wpd);
                     }
                     else
                     {
-                        MarchWaterCube(cs, new Vector3(x,y,z));
+                        MarchWaterCube(cs, new Vector3(x,y,z), out bool need, checkedPosList, out checkedPosList);
                     }
                 }
             }
@@ -432,56 +445,58 @@ public class MeshGenerator : MonoBehaviour
         cs.frontChunk = cl.chunkDictionary[cs.position + Vector2.up * wgPreset.chunkSize].cs;
         cs.backChunk = cl.chunkDictionary[cs.position + Vector2.down * wgPreset.chunkSize].cs;
 
-        //int minX = 100;
-        //int maxX = -100;
-        //int minY = 500;
-        //int maxY = -500;
-        //int minZ = 100;
-        //int maxZ = -100;
 
 
-
-        //foreach(Vector3 v in cs.waterData)
-        //{
-        //    if (v.x < minX)
-        //        minX = (int)v.x;
-        //    if (v.x > maxX)
-        //        maxX = (int)v.x;
-
-
-        //    if (v.y < minY)
-        //        minY = (int)v.y;
-        //    if (v.y > maxY)
-        //        maxY = (int)v.y;
-
-
-        //    if (v.z < minZ)
-        //        minZ = (int)v.z;
-        //    if (v.z > maxZ)
-        //        maxZ = (int)v.z;
-
-        //}
-        //minX = Mathf.Clamp(minX - 2, 0, width);
-        //maxX = Mathf.Clamp(maxX + 2, 0, width);
-        //minY = Mathf.Clamp(minY - 2, 0, height);
-        //maxY = Mathf.Clamp(maxY + 2, 0, height);
-        //minZ = Mathf.Clamp(minZ - 2, 0, width);
-        //maxZ = Mathf.Clamp(maxZ + 2, 0, width);
-        for (int x = 0; x < width; x++)
+        List<Vector3> checkingPosList = new List<Vector3>();
+        foreach (Vector3 v in cs.waterData)
         {
-            for (int z = 0; z < width; z++)
+            for (int x = -1; x < 2; x++)
             {
-                for (int y = 0; y < height; y++)
+                for (int y = -1; y < 2; y++)
                 {
-
-                    MarchWaterCube(cs, new Vector3Int(x, y, z));
-                }
-                if (delay)
-                {
-                    yield return new WaitForEndOfFrame();
+                    for (int z = -1; z < 2; z++)
+                    {
+                        if (!checkingPosList.Contains(v + new Vector3(x, y, z)) && 0 <= v.x + x && v.x + x < 8 && 0 <= v.z + z && v.z + z < 8)
+                        {
+                            checkingPosList.Add(v + new Vector3(x, y, z));
+                        }
+                    }
                 }
             }
         }
+
+        List<Vector3> checkedPosList = new List<Vector3>();
+
+        foreach (Vector3 v in checkingPosList)
+        {
+            bool needDelay;
+            MarchWaterCube(cs, v, out needDelay,  checkedPosList, out checkedPosList);
+            yield return new WaitForSeconds(0.01f);
+            if (delay && needDelay)
+            {
+            }
+        }
+
+        //for (int x = 0; x < width; x++)
+        //{
+        //    for (int z = 0; z < width; z++)
+        //    {
+        //        for (int y = 0; y < height; y++)
+        //        {
+        //            if (!checkingPosList.Contains(new Vector3(x, y, z)))
+        //            {
+        //                WaterPointData wpd = new WaterPointData();
+        //                wpd.vertices = new List<Vector3>();
+        //                wpd.triangles = new List<int>();
+
+        //                cs.waterPointDictionary.Add(new Vector3(x, y, z), wpd);
+        //                cs.wpdList.Add(wpd);
+        //            }
+        //        }
+        //    }
+        //}
+
+
         BuildWaterMesh(cs);
     }
 
@@ -532,8 +547,9 @@ public class MeshGenerator : MonoBehaviour
     }
 
 
-    void MarchWaterCube(ChunkScript cs, Vector3 position)
+    void MarchWaterCube(ChunkScript cs, Vector3 position, out bool needDelay, List<Vector3> checkedPos, out List<Vector3> checkedPosNew)
     {
+        checkedPosNew = checkedPos;
         if (cs.waterPointDictionary.ContainsKey(position))
         {
             cs.waterPointDictionary.Remove(position);
@@ -547,7 +563,23 @@ public class MeshGenerator : MonoBehaviour
         bool[] cube = new bool[8];
         for (int i = 0; i < 8; i++)
         {
-            cube[i] = cs.waterData.Contains(position + CornerTable[i]);
+            Vector3 v = position + CornerTable[i];
+            if (checkedPos.Contains(v))
+            {
+                cube[i] = true;
+            }
+            else
+            {
+                if (cs.waterData.Contains(v))
+                {
+                    cube[i] = true;
+                    checkedPosNew.Add(v);
+                }
+                else
+                {
+                    cube[i] = false;
+                }
+            }
         }
 
         int configIndex = GetCubeConfiguration_Water(cube);
@@ -555,8 +587,10 @@ public class MeshGenerator : MonoBehaviour
         {
             cs.waterPointDictionary.Add(position, wpd);
             cs.wpdList.Add(wpd);
+            needDelay = false;
             return;
         }
+        needDelay = true;
         int edgeIndex = 0;
         for (int i = 0; i < 5; i++)
         {
@@ -657,6 +691,8 @@ public class MeshGenerator : MonoBehaviour
         cs.vertices_lava.Clear();
         cs.triangles_lava.Clear();
         cs.verticesRangeDictionary_lava.Clear();
+
+        List<Vector3> checkedPosList = new List<Vector3>();
         for (int x = 0; x < width; x++)
         {
             for (int z = 0; z < width; z++)
@@ -665,13 +701,22 @@ public class MeshGenerator : MonoBehaviour
                 {
                     if (!modifiedPos.Contains(new Vector3(x, y, z)))
                     {
-                        WaterPointData lpd = cs.lavaPointDictionary[new Vector3(x, y, z)];
+                        WaterPointData lpd;
+                        if (cs.lavaPointDictionary.ContainsKey(new Vector3(x, y, z)))
+                        {
+                            lpd = cs.lavaPointDictionary[new Vector3(x, y, z)];
+                        }
+                        else
+                        {
+                            lpd = new WaterPointData();
+                            cs.lavaPointDictionary.Add(new Vector3(x, y, z), lpd);
+                            cs.lpdList.Add(lpd);
+                        }
                         MarchLavaCubeWithExistingVertices(cs, lpd);
                     }
                     else
                     {
-                        bool needDelay;
-                        MarchLavaCube(cs, new Vector3(x, y, z), out needDelay);
+                        MarchLavaCube(cs, new Vector3(x, y, z), out bool needDelay, checkedPosList, out checkedPosList);
                     }
                 }
             }
@@ -697,6 +742,7 @@ public class MeshGenerator : MonoBehaviour
 
     IEnumerator GenerateLavaMesh_WaitForFinishedChunk(ChunkScript cs, bool delay)
     {
+        #region wait
         yield return new WaitUntil(() =>
 
         cl.chunkDictionary.ContainsKey(cs.position + Vector2.right * wgPreset.chunkSize) &&
@@ -710,24 +756,52 @@ public class MeshGenerator : MonoBehaviour
         cs.leftChunk = cl.chunkDictionary[cs.position + Vector2.left * wgPreset.chunkSize].cs;
         cs.frontChunk = cl.chunkDictionary[cs.position + Vector2.up * wgPreset.chunkSize].cs;
         cs.backChunk = cl.chunkDictionary[cs.position + Vector2.down * wgPreset.chunkSize].cs;
-        
-        for (int x = 0; x < width; x++)
+        #endregion
+        List<Vector3> checkingPosList = new List<Vector3>();
+        foreach(Vector3 v in cs.lavaData)
         {
-            for (int z = 0; z < width; z++)
+            for(int x = -1; x < 2; x++)
             {
-                for (int y = 0; y < height; y++)
+                for (int y = -1; y < 2; y++)
                 {
-                    bool needDelay;
-                    MarchLavaCube(cs, new Vector3Int(x, y, z), out needDelay);
-                    if (delay && needDelay)
+                    for (int z = -1; z < 2; z++)
                     {
-                        yield return new WaitForEndOfFrame();
+                        if (!checkingPosList.Contains(v + new Vector3(x,y,z)) && 0 <= v.x + x && v.x+x<8 && 0 <= v.z + z && v.z + z < 8)
+                        {
+                            checkingPosList.Add(v + new Vector3(x,y,z));
+                        }
                     }
-                    //yield return new WaitForEndOfFrame();
                 }
-                //yield return new WaitForEndOfFrame();
             }
-            //yield return new WaitForEndOfFrame();
+        }
+
+        //for (int x = 0; x < width; x++)
+        //{
+        //    for (int z = 0; z < width; z++)
+        //    {
+        //        for (int y = 0; y < height; y++)
+        //        {
+        //            if (!checkingPosList.Contains(new Vector3(x, y, z)))
+        //            {
+
+        //                cs.lavaPointDictionary.Add(new Vector3(x, y, z), new WaterPointData());
+        //                cs.lpdList.Add(new WaterPointData());
+        //                yield return new WaitForSeconds(0.3f);
+        //            }
+        //        }
+        //    }
+        //}
+
+        List<Vector3> checkedPosList = new List<Vector3>();
+
+        foreach (Vector3 v in checkingPosList)
+        {
+            bool needDelay;
+            MarchLavaCube(cs, v, out needDelay, checkedPosList, out checkedPosList);
+            yield return new WaitForSeconds(0.01f);
+            if (delay && needDelay)
+            {
+            }
         }
         BuildLavaMesh(cs);
     }
@@ -779,12 +853,14 @@ public class MeshGenerator : MonoBehaviour
     }
 
 
-    void MarchLavaCube(ChunkScript cs, Vector3 position, out bool needDelay)
+    void MarchLavaCube(ChunkScript cs, Vector3 position, out bool needDelay, List<Vector3> checkedPos, out List<Vector3> checkedPosNew)
     {
+        checkedPosNew = checkedPos;
         if (cs.lavaPointDictionary.ContainsKey(position))
         {
             cs.lavaPointDictionary.Remove(position);
         }
+
 
         WaterPointData lpd = new WaterPointData();
         lpd.vertices = new List<Vector3>();
@@ -794,7 +870,23 @@ public class MeshGenerator : MonoBehaviour
         bool[] cube = new bool[8];
         for (int i = 0; i < 8; i++)
         {
-            cube[i] = cs.lavaData.Contains(position + CornerTable[i]);
+            Vector3 v = position + CornerTable[i];
+            if (checkedPos.Contains(v))
+            {
+                cube[i] = true;
+            }
+            else
+            {
+                if (cs.lavaData.Contains(v))
+                {
+                    cube[i] = true;
+                    checkedPosNew.Add(v);
+                }
+                else
+                {
+                    cube[i] = false;
+                }
+            }
         }
 
         int configIndex = GetCubeConfiguration_Lava(cube);
@@ -839,6 +931,7 @@ public class MeshGenerator : MonoBehaviour
         }
         cs.lavaPointDictionary.Add(position, lpd);
         cs.lpdList.Add(lpd);
+
     }
 
     void MarchLavaCubeWithExistingVertices(ChunkScript cs, WaterPointData lpd)
@@ -937,6 +1030,7 @@ public class MeshGenerator : MonoBehaviour
         {0, 1}, {1, 2}, {3, 2}, {0, 3}, {4, 5}, {5, 6}, {7, 6}, {4, 7}, {0, 4}, {1, 5}, {2, 6}, {3, 7}
 
     };
+
 
     private int[,] TriangleTable = new int[,] {
 

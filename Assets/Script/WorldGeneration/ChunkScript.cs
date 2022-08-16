@@ -63,7 +63,7 @@ public class ChunkScript : MonoBehaviour
     [HideInInspector] public List<GameObject> ores = new List<GameObject>();
 
 
-    [HideInInspector] public List<Vector3> lavaData = new List<Vector3>();
+   /* [HideInInspector] */public List<Vector3> lavaData = new List<Vector3>();
 
     [HideInInspector] public List<Vector3> vertices_lava = new List<Vector3>();
     [HideInInspector] public List<int> triangles_lava = new List<int>();
@@ -90,7 +90,7 @@ public class ChunkScript : MonoBehaviour
     public void Activate()
     {
         objectBundle.SetActive(true);
-        wg.GenerateOres(this);
+        wg.StartCoroutine(wg.GenerateOres(this));
         activated = true;
     }
     public void Deactivate()

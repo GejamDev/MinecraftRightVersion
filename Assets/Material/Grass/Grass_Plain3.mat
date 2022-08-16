@@ -72,9 +72,9 @@ Material:
     - _GlossyReflections: 1
     - _GrassHeight: 3.4
     - _GrassWidth: 0.6
-    - _MaxDist: 25
+    - _MaxDist: 15
     - _Metallic: 0
-    - _MinDist: 20
+    - _MinDist: 5
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02

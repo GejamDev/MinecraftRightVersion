@@ -195,7 +195,7 @@ public class WorldGenerator : MonoBehaviour
             }
         }
     }
-    public void GenerateOres(ChunkScript cs)
+    public IEnumerator GenerateOres(ChunkScript cs)
     {
         foreach(OreProperty op in oreList)
         {
@@ -226,12 +226,16 @@ public class WorldGenerator : MonoBehaviour
                 ore.transform.localScale = new Vector3(Random.Range(op.minSize.x, op.maxSize.x), Random.Range(op.minSize.y, op.maxSize.y), Random.Range(op.minSize.z, op.maxSize.z));
 
 
-
+                DisableIfTooFar dis = ore.GetComponent<DisableIfTooFar>();
+                dis.player = player;
 
 
                 ore.transform.eulerAngles = new Vector3(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360));
+
+                yield return new WaitForSeconds(0.1f);
             }
         }
+        yield return null;
     }
     
 }
