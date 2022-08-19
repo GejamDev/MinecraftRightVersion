@@ -22,6 +22,8 @@ public class InventoryManager : MonoBehaviour
     ItemSpawner itemSpawner;
     SoundManager sm;
 
+    GameObject player;
+
     public Transform itemThrowTransform;
     public float itemThrowForce;
     public Vector3 additionalThrowForce;
@@ -79,6 +81,8 @@ public class InventoryManager : MonoBehaviour
         pm = usm.pauseManager;
         sm = usm.soundManager;
         itemSpawner = usm.itemSpawner;
+
+        player = usm.player;
         for (int i = 1; i <= 54; i++)
         {
             InventoryCell ic = Instantiate(inventoryCellPrefab).GetComponent<InventoryCell>();
@@ -716,6 +720,11 @@ public class InventoryManager : MonoBehaviour
                 return;
             }
         }
+        itemSpawner.SpawnItem(inputSlot, player.transform.position, Quaternion.identity);
+    }
+    public void ObtainItem(InventorySlot inputSlot)
+    {
+        ObtainItem(inputSlot, 0, 36);
     }
 
     public bool HasItem(Item item, out InventoryCell havingCell)

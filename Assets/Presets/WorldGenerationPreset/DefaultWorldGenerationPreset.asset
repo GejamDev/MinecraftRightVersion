@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DefaultWorldGenerationPreset
   m_EditorClassIdentifier: 
   chunkSize: 8
-  maxHeight: 256
+  maxHeight: 150
   minHeight: 0
   surfaceLevel: 0.5
   nPreset: {fileID: 11400000, guid: 8f04f41eb0ba8b54e8c1c9fc4f44a268, type: 2}

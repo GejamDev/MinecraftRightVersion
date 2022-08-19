@@ -7,6 +7,8 @@ public class ChunkScript : MonoBehaviour
     public GameObject objectBundle;
     public GameObject meshObject;
     public GameObject bedrock;
+    public GameObject waterObj;
+    public GameObject lavaObj;
     public MeshFilter waterMF;
     public MeshFilter lavaMF;
     public MeshCollider waterMC;
@@ -41,8 +43,15 @@ public class ChunkScript : MonoBehaviour
     [HideInInspector] public Dictionary<Vector3, int> verticesRangeDictionary = new Dictionary<Vector3, int>();
 
 
+    [HideInInspector] public ChunkScript rightChunk;
+    [HideInInspector] public ChunkScript leftChunk;
+    [HideInInspector] public ChunkScript frontChunk;
+    [HideInInspector] public ChunkScript backChunk;
+
+
+
     [HideInInspector] public List<Vector2> waterSurfaceData = new List<Vector2>();
-    [HideInInspector] public List<Vector3> waterData = new List<Vector3>();
+    /*[HideInInspector]*/ public List<Vector3> waterData = new List<Vector3>();
 
     [HideInInspector] public List<Vector3> vertices_water = new List<Vector3>();
     [HideInInspector] public List<int> triangles_water = new List<int>();
@@ -53,14 +62,8 @@ public class ChunkScript : MonoBehaviour
 
     [HideInInspector] public bool waterBeingModified;
 
-    [HideInInspector] public ChunkScript rightChunk;
-    [HideInInspector] public ChunkScript leftChunk;
-    [HideInInspector] public ChunkScript frontChunk;
-    [HideInInspector] public ChunkScript backChunk;
-
     [HideInInspector] public bool generatingMesh;
 
-    [HideInInspector] public List<GameObject> ores = new List<GameObject>();
 
 
    /* [HideInInspector] */public List<Vector3> lavaData = new List<Vector3>();
@@ -73,6 +76,10 @@ public class ChunkScript : MonoBehaviour
     [HideInInspector] public List<WaterPointData> lpdList = new List<WaterPointData>();
 
     [HideInInspector] public bool lavaBeingModified;
+
+
+
+    [HideInInspector] public List<GameObject> ores = new List<GameObject>();
 
 
 
@@ -119,6 +126,7 @@ public class ChunkScript : MonoBehaviour
             lm.modifiedChunksDataDictionary.Add(this, new UpdatedChunkData { cs = this, modifiedPoses = new List<Vector3>() });
         }
     }
+
 
     
 }

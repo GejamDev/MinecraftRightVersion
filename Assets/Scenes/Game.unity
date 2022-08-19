@@ -5723,6 +5723,59 @@ Transform:
   m_Father: {fileID: 164470937}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &309323563
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 309323564}
+  - component: {fileID: 309323565}
+  m_Layer: 0
+  m_Name: R_WaterBucket
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &309323564
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 309323563}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1207744461}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &309323565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 309323563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e3cc0de54989ee4cb6baa38061ee0a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  usm: {fileID: 1992538525}
+  item: {fileID: 11400000, guid: ac45f2c66f2539f4ca14da5b5d798da0, type: 2}
+  handAnim: {fileID: 2084923680}
+  maxDistance: 8
+  pourRadius: 2
+  delay: 0.1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  bucket: {fileID: 11400000, guid: c208128b3178f7647a13f0f0bc0ca292, type: 2}
 --- !u!1 &320218906
 GameObject:
   m_ObjectHideFlags: 0
@@ -5845,8 +5898,6 @@ MonoBehaviour:
   terrainSuface: 0.5
   caveStartLevel: -1
   caveSurface: 0.7
-  width: 32
-  height: 150
   waterSurfaceLevel: 0.6
   maxWaterLevel: 80
   waterDefaultLevel: 75
@@ -14066,7 +14117,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usm: {fileID: 1992538525}
   updateTick: 0.1
-  addedModifiedChunkCount: 0
   modifiedChunkDataKeys: []
 --- !u!1 &972938938
 GameObject:
@@ -14769,6 +14819,7 @@ Transform:
   m_Children:
   - {fileID: 576519951}
   - {fileID: 2122501836}
+  - {fileID: 309323564}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -16667,6 +16718,8 @@ MonoBehaviour:
     behaviour: {fileID: 576519952}
   - item: {fileID: 11400000, guid: c208128b3178f7647a13f0f0bc0ca292, type: 2}
     behaviour: {fileID: 2122501837}
+  - item: {fileID: 11400000, guid: ac45f2c66f2539f4ca14da5b5d798da0, type: 2}
+    behaviour: {fileID: 309323565}
 --- !u!1 &1918885125
 GameObject:
   m_ObjectHideFlags: 0
@@ -16733,8 +16786,8 @@ MonoBehaviour:
     amount: 1
   - item: {fileID: 11400000, guid: 2633f9b17d5ccbf4886d34eadb683705, type: 2}
     amount: 30
-  - item: {fileID: 11400000, guid: c208128b3178f7647a13f0f0bc0ca292, type: 2}
-    amount: 1
+  - item: {fileID: 11400000, guid: ac45f2c66f2539f4ca14da5b5d798da0, type: 2}
+    amount: 999
   inventoryCellList: []
   parent_main: {fileID: 231893010}
   parent_inside: {fileID: 1062496797}
@@ -17467,6 +17520,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35199081540ee7e428df4c34ba6e8db6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  usm: {fileID: 1992538525}
+  item: {fileID: 11400000, guid: c208128b3178f7647a13f0f0bc0ca292, type: 2}
+  handAnim: {fileID: 2084923680}
+  maxDistance: 8
+  drainRadius: 3
+  delay: 1
+  waterLayer:
+    serializedVersion: 2
+    m_Bits: 16
+  waterBucket: {fileID: 11400000, guid: ac45f2c66f2539f4ca14da5b5d798da0, type: 2}
 --- !u!1 &2127976625
 GameObject:
   m_ObjectHideFlags: 0

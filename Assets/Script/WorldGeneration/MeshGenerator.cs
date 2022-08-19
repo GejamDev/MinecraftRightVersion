@@ -13,8 +13,8 @@ public class MeshGenerator : MonoBehaviour
     public float terrainSuface;
     public float caveStartLevel;
     public float caveSurface;
-    public int width = 32;
-    public int height = 8;
+     int width = 32;
+     int height = 8;
     NoisePreset nPreset;
     NoisePreset caveNPreset;
     NoisePreset waterGroundDecreaseNoise;
@@ -40,6 +40,7 @@ public class MeshGenerator : MonoBehaviour
         wm = usm.waterManager;
 
         width = wgPreset.chunkSize;
+        height = wgPreset.maxHeight;
         nPreset = wgPreset.nPreset;
         caveNPreset = wgPreset.caveNPreset;
         lavaNoisePreset = wgPreset.lavaNoisePreset;
@@ -423,7 +424,7 @@ public class MeshGenerator : MonoBehaviour
             return;
         }
 
-        
+
         StartCoroutine(GenerateWaterMesh_WaitForFinishedChunk(cs, delay));
 
     }
@@ -730,11 +731,6 @@ public class MeshGenerator : MonoBehaviour
 
     public void GenerateLavaMesh(ChunkScript cs, bool delay)
     {
-        if (cs.lavaData.Count == 0)
-        {
-            return;
-        }
-
 
         StartCoroutine(GenerateLavaMesh_WaitForFinishedChunk(cs, delay));
 
@@ -756,6 +752,13 @@ public class MeshGenerator : MonoBehaviour
         cs.leftChunk = cl.chunkDictionary[cs.position + Vector2.left * wgPreset.chunkSize].cs;
         cs.frontChunk = cl.chunkDictionary[cs.position + Vector2.up * wgPreset.chunkSize].cs;
         cs.backChunk = cl.chunkDictionary[cs.position + Vector2.down * wgPreset.chunkSize].cs;
+
+
+        if (cs.lavaData.Count == 0)
+        {
+            yield break;
+        }
+
         #endregion
         List<Vector3> checkingPosList = new List<Vector3>();
         foreach(Vector3 v in cs.lavaData)

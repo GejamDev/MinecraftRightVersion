@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7392497320529089071}
   - component: {fileID: 8777723719327918404}
   - component: {fileID: 5726400787828157157}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Water
   m_TagString: Water
   m_Icon: {fileID: 0}
@@ -141,6 +141,8 @@ MonoBehaviour:
   objectBundle: {fileID: 6591190683857870603}
   meshObject: {fileID: 6395136882227605321}
   bedrock: {fileID: 8280631244884071757}
+  waterObj: {fileID: 2454298735291405263}
+  lavaObj: {fileID: 8736962981893478991}
   waterMF: {fileID: 8777723719327918404}
   lavaMF: {fileID: 4777834434962450633}
   waterMC: {fileID: 5726400787828157157}
