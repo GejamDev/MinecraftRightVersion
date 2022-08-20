@@ -17,7 +17,7 @@ RenderSettings:
   m_Fog: 1
   m_FogColor: {r: 1, g: 1, b: 1, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.015
+  m_FogDensity: 0.008
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -5774,8 +5774,10 @@ MonoBehaviour:
   delay: 0.1
   groundLayer:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 768
   bucket: {fileID: 11400000, guid: c208128b3178f7647a13f0f0bc0ca292, type: 2}
+  reloaded: 0
+  reloadTime: 0.3
 --- !u!1 &320218906
 GameObject:
   m_ObjectHideFlags: 0
@@ -16204,7 +16206,7 @@ PrefabInstance:
     - target: {fileID: 4459864851310106426, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
       propertyPath: far clip plane
-      value: 80
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 4459864851551516593, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
@@ -16776,7 +16778,7 @@ MonoBehaviour:
     amount: 100
   - item: {fileID: 11400000, guid: fe40d32e569b6ab43b9d4de1e7613850, type: 2}
     amount: 100
-  - item: {fileID: 11400000, guid: 39b9585b3ca50fb40b66e77169a3343e, type: 2}
+  - item: {fileID: 11400000, guid: c208128b3178f7647a13f0f0bc0ca292, type: 2}
     amount: 100
   - item: {fileID: 11400000, guid: d7d5e611b887f8a47a942fb791921adf, type: 2}
     amount: 100
@@ -16787,7 +16789,7 @@ MonoBehaviour:
   - item: {fileID: 11400000, guid: 2633f9b17d5ccbf4886d34eadb683705, type: 2}
     amount: 30
   - item: {fileID: 11400000, guid: ac45f2c66f2539f4ca14da5b5d798da0, type: 2}
-    amount: 999
+    amount: 2
   inventoryCellList: []
   parent_main: {fileID: 231893010}
   parent_inside: {fileID: 1062496797}
@@ -17525,7 +17527,7 @@ MonoBehaviour:
   handAnim: {fileID: 2084923680}
   maxDistance: 8
   drainRadius: 3
-  delay: 1
+  delay: 0.1
   waterLayer:
     serializedVersion: 2
     m_Bits: 16

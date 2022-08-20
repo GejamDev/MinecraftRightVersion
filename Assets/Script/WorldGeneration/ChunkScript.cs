@@ -51,7 +51,7 @@ public class ChunkScript : MonoBehaviour
 
 
     [HideInInspector] public List<Vector2> waterSurfaceData = new List<Vector2>();
-    /*[HideInInspector]*/ public List<Vector3> waterData = new List<Vector3>();
+    [HideInInspector] public List<Vector3> waterData = new List<Vector3>();
 
     [HideInInspector] public List<Vector3> vertices_water = new List<Vector3>();
     [HideInInspector] public List<int> triangles_water = new List<int>();
@@ -66,7 +66,7 @@ public class ChunkScript : MonoBehaviour
 
 
 
-   /* [HideInInspector] */public List<Vector3> lavaData = new List<Vector3>();
+    [HideInInspector] public List<Vector3> lavaData = new List<Vector3>();
 
     [HideInInspector] public List<Vector3> vertices_lava = new List<Vector3>();
     [HideInInspector] public List<int> triangles_lava = new List<int>();
@@ -80,6 +80,7 @@ public class ChunkScript : MonoBehaviour
 
 
     [HideInInspector] public List<GameObject> ores = new List<GameObject>();
+    [HideInInspector] public List<Vector3Int> blockPositionData = new List<Vector3Int>();
 
 
 
@@ -126,9 +127,28 @@ public class ChunkScript : MonoBehaviour
             lm.modifiedChunksDataDictionary.Add(this, new UpdatedChunkData { cs = this, modifiedPoses = new List<Vector3>() });
         }
     }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            if (!wm.modifiedChunkDataKeys.Contains(this))
+            {
+                wm.modifiedChunkDataKeys.Add(this);
+                wm.modifiedChunksDataDictionary.Add(this, new UpdatedChunkData { cs = this, modifiedPoses = new List<Vector3>() });
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.R))
+        {
+            vertices_water.Clear();
+            triangles_water.Clear();
+            verticesRangeDictionary_water.Clear();
+            waterPointDictionary.Clear();
+            wpdList.Clear();
+            wm.GenerateWater(this, true);
+        }
+    }
 
 
-    
 }
 [System.Serializable]
 public class WaterPointData

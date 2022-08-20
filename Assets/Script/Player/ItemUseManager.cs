@@ -14,6 +14,7 @@ public class ItemUseManager : MonoBehaviour
     PauseManager pm;
     HungerManager hungerM;
     SoundManager sm;
+    ChunkLoader cl;
     public bool reloaded;
     GameObject player;
     public float placeCoolTime;
@@ -32,6 +33,7 @@ public class ItemUseManager : MonoBehaviour
         pm = usm.pauseManager;
         hungerM = usm.hungerManager;
         sm = usm.soundManager;
+        cl = usm.chunkLoader;
 
         player = usm.player;
 
@@ -205,15 +207,7 @@ public class ItemUseManager : MonoBehaviour
 
         GameObject block = Instantiate(usingItem.blockInstance);
         block.transform.position = tm.touchingPosition;
-        if (tm.currentlyTouchingChunk != null)
-        {
-            block.transform.SetParent(tm.currentlyTouchingChunk.objectBundle.transform);
-        }
-        else
-        {
-            block.transform.SetParent(tm.currentlyTouchingObject.transform.parent);
-        }
-
+        Vector3 blockPos = block.transform.position;
         if (usingItem.snapPosition)
         {
             float gridSize = usingItem.snapGridSize;
@@ -232,21 +226,36 @@ public class ItemUseManager : MonoBehaviour
             }
 
             //check if collides with player
-            Vector3 blockPos = block.transform.position;
+            blockPos = block.transform.position;
             if (Mathf.Abs(playerPosition.x - blockPos.x) <= 0.5f + gridSize * 0.5f && Mathf.Abs(playerPosition.z - blockPos.z) <= 0.5f + gridSize * 0.5f && Mathf.Abs(playerPosition.y - blockPos.y) <= 0.5f + gridSize * 0.5f)
             {
                 Destroy(block);
                 return;
             }
 
+            ChunkScript parentCs = cl.chunkDictionary[new Vector2(Mathf.Floor(blockPos.x / 8) * 8, Mathf.Floor(blockPos.z / 8) * 8)].cs;
+            if (parentCs.blockPositionData.Contains(new Vector3Int((int)blockPos.x, (int)blockPos.y, (int)blockPos.z)))
+            {
+                Destroy(block);
+                return;
+            }
+            parentCs.blockPositionData.Add(new Vector3Int((int)blockPos.x, (int)blockPos.y, (int)blockPos.z) - new Vector3Int((int)parentCs.position.x, 0, (int)parentCs.position.y));
+            block.transform.SetParent(parentCs.objectBundle.transform);
+
+
+        }
+        else
+        {
+            ChunkScript parentCs = cl.chunkDictionary[new Vector2(Mathf.Floor(blockPos.x / 8) * 8, Mathf.Floor(blockPos.z / 8) * 8)].cs;
+            block.transform.SetParent(parentCs.objectBundle.transform);
         }
         if (usingItem.lookAtPlayer)
         {
             if (usingItem.snapPosition)
             {
-                Vector2 blockPos = new Vector2(block.transform.position.x, block.transform.position.z);
+                Vector2 blockPos_2D = new Vector2(block.transform.position.x, block.transform.position.z);
                 Vector2 playerPos = new Vector2(player.transform.position.x, player.transform.position.z);
-                Vector2 dir = playerPos - blockPos;
+                Vector2 dir = playerPos - blockPos_2D;
 
                 float rot = 0;
                 if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
@@ -277,9 +286,9 @@ public class ItemUseManager : MonoBehaviour
             }
             else
             {
-                Vector2 blockPos = new Vector2(block.transform.position.x, block.transform.position.z);
+                Vector2 blockPos_2D = new Vector2(block.transform.position.x, block.transform.position.z);
                 Vector2 playerPos = new Vector2(player.transform.position.x, player.transform.position.z);
-                Vector2 offset = playerPos - blockPos;
+                Vector2 offset = playerPos - blockPos_2D;
                 float rot = Mathf.Atan2(offset.x, offset.y) * Mathf.Rad2Deg;
 
 

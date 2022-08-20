@@ -431,15 +431,20 @@ public class MeshGenerator : MonoBehaviour
 
     IEnumerator GenerateWaterMesh_WaitForFinishedChunk(ChunkScript cs, bool delay)
     {
-        yield return new WaitUntil(() =>
-        
-        cl.chunkDictionary.ContainsKey(cs.position + Vector2.right * wgPreset.chunkSize) &&
-        cl.chunkDictionary.ContainsKey(cs.position + Vector2.left * wgPreset.chunkSize) &&
-        cl.chunkDictionary.ContainsKey(cs.position + Vector2.up * wgPreset.chunkSize) &&
-        cl.chunkDictionary.ContainsKey(cs.position + Vector2.down * wgPreset.chunkSize)
+        if(!cl.chunkDictionary.ContainsKey(cs.position + Vector2.right * wgPreset.chunkSize) || !cl.chunkDictionary.ContainsKey(cs.position + Vector2.right * wgPreset.chunkSize) ||!cl.chunkDictionary.ContainsKey(cs.position + Vector2.up * wgPreset.chunkSize) ||
+        cl.chunkDictionary.ContainsKey(cs.position + Vector2.down * wgPreset.chunkSize))
+        {
+
+            yield return new WaitUntil(() =>
+
+            cl.chunkDictionary.ContainsKey(cs.position + Vector2.right * wgPreset.chunkSize) &&
+            cl.chunkDictionary.ContainsKey(cs.position + Vector2.left * wgPreset.chunkSize) &&
+            cl.chunkDictionary.ContainsKey(cs.position + Vector2.up * wgPreset.chunkSize) &&
+            cl.chunkDictionary.ContainsKey(cs.position + Vector2.down * wgPreset.chunkSize)
 
 
-        );
+            );
+        }
 
         cs.rightChunk = cl.chunkDictionary[cs.position + Vector2.right * wgPreset.chunkSize].cs;
         cs.leftChunk = cl.chunkDictionary[cs.position + Vector2.left * wgPreset.chunkSize].cs;
@@ -472,9 +477,9 @@ public class MeshGenerator : MonoBehaviour
         {
             bool needDelay;
             MarchWaterCube(cs, v, out needDelay,  checkedPosList, out checkedPosList);
-            yield return new WaitForSeconds(0.01f);
-            if (delay && needDelay)
+            if (delay)
             {
+                yield return new WaitForSeconds(0.01f);
             }
         }
 

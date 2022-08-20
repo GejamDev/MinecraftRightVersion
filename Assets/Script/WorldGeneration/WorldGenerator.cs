@@ -56,7 +56,7 @@ public class WorldGenerator : MonoBehaviour
         mg.GenerateMesh(cs, loadingTimeExists);
 
 
-        wm.GenerateWater(cs);
+        wm.GenerateWater(cs, false);
         lm.GenerateLava(cs, 1);
 
 
@@ -237,5 +237,6 @@ public class WorldGenerator : MonoBehaviour
         }
         yield return null;
     }
+
     
 }

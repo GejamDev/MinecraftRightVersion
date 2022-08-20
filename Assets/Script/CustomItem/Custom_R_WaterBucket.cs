@@ -15,6 +15,8 @@ public class Custom_R_WaterBucket : MonoBehaviour
     public float delay;
     public LayerMask groundLayer;
     public Item bucket;
+    public bool reloaded;
+    public float reloadTime;
 
     private void Awake()
     {
@@ -22,16 +24,23 @@ public class Custom_R_WaterBucket : MonoBehaviour
 
         wm = usm.waterManager;
         im = usm.inventoryManager;
+
+        reloaded = true;
     }
     public void Use()
     {
+        if (!reloaded)
+            return;
+
+
+        reloaded = false;
         InventoryCell usedCell = im.inventoryCellList[im.curInventorySlot];
         handAnim.SetTrigger(item.usingAnimationName);
 
         RaycastHit hit_ground;
         if (Physics.Raycast(cam.position, cam.forward, out hit_ground, maxDistance, groundLayer))
         {
-            Vector3 pouringPos = hit_ground.point;// + Vector3.down;
+            Vector3 pouringPos = hit_ground.point + Vector3.up*1;// + Vector3.down;
 
             ChunkScript chunk = hit_ground.collider.transform.parent.parent.GetComponent<ChunkScript>();
 
@@ -53,6 +62,19 @@ public class Custom_R_WaterBucket : MonoBehaviour
             }
             usedCell.UpdateCell();
             im.UpdateSeletedSlot();
+
+
+            Invoke(nameof(Reload), reloadTime);
         }
+        else
+        {
+            reloaded = true;
+        }
+
+    }
+
+    public void Reload()
+    {
+        reloaded = true;
     }
 }

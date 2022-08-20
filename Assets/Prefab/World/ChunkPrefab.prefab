@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2454298735291405263}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3645634853236961220}
@@ -169,23 +169,23 @@ MonoBehaviour:
   vertices: []
   triangles: 
   uvs: []
+  rightChunk: {fileID: 0}
+  leftChunk: {fileID: 0}
+  frontChunk: {fileID: 0}
+  backChunk: {fileID: 0}
   waterSurfaceData: []
   waterData: []
   vertices_water: []
   triangles_water: 
   wpdList: []
   waterBeingModified: 0
-  rightChunk: {fileID: 0}
-  leftChunk: {fileID: 0}
-  frontChunk: {fileID: 0}
-  backChunk: {fileID: 0}
   generatingMesh: 0
-  ores: []
   lavaData: []
   vertices_lava: []
   triangles_lava: 
   lpdList: []
   lavaBeingModified: 0
+  ores: []
 --- !u!1 &6395136882227605321
 GameObject:
   m_ObjectHideFlags: 0

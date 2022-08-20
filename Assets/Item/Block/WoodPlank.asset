@@ -19,7 +19,7 @@ MonoBehaviour:
     type: 3}
   placeDelay: 0.19
   snapPosition: 1
-  snapGridSize: 1.2
+  snapGridSize: 1
   lookAtPlayer: 0
   placeSound: WoodPlace
   isToolForModifyingTerrain: 0
@@ -39,3 +39,4 @@ MonoBehaviour:
   knockBackTime: 0.2
   knockBackPower: 1
   hungerFillAmount: 0
+  continuousCustomUse: 0

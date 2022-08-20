@@ -24,9 +24,9 @@ public class WaterManager : MonoBehaviour
         UpdateWater_Tick();
     }
 
-    public void GenerateWater(ChunkScript cs)
+    public void GenerateWater(ChunkScript cs, bool delay)
     {
-        mg.GenerateWaterMesh(cs, true);
+        mg.GenerateWaterMesh(cs, delay);
     }
     public void GenerateWater(ChunkScript cs, float delay)
     {
@@ -35,7 +35,7 @@ public class WaterManager : MonoBehaviour
     IEnumerator GenerateWater_Delay(ChunkScript cs, float delay)
     {
         yield return new WaitForSeconds(delay);
-        GenerateWater(cs);
+        GenerateWater(cs, true);
 
     }
 
@@ -53,7 +53,7 @@ public class WaterManager : MonoBehaviour
             i--;
 
 
-            UpdateWater(ucd.cs, new List<Vector3>());
+            UpdateWater(ucd.cs, new List<Vector3>(), i);
             mg.ReGenerateWaterMesh(ucd.cs, ucd.modifiedPoses);
         }
         addedModifiedChunkCount = 0;
@@ -61,7 +61,7 @@ public class WaterManager : MonoBehaviour
         Invoke(nameof(UpdateWater_Tick), updateTick);
     }
 
-    public void UpdateWater(ChunkScript cs, List<Vector3> previouslyModifiedPosition)
+    public void UpdateWater(ChunkScript cs, List<Vector3> previouslyModifiedPosition, int chunkIndex)
     {
         //disabled or not ready
         if (!cs.activated || cs.rightChunk == null)
@@ -83,7 +83,65 @@ public class WaterManager : MonoBehaviour
 
         int count = modifiedWaterData.Count;
 
-        Dictionary<ChunkScript, UpdatedChunkData> effectedChunkDataDictionary = new Dictionary<ChunkScript, UpdatedChunkData>();
+
+        List<ChunkScript> effectedChunks = new List<ChunkScript>();
+
+        void CheckEffectingOtherChunks(Vector3 v)
+        {
+            bool crossedRight = false;
+            bool crossedLeft = false;
+            bool crossedFront = false;
+            bool crossedBack = false;
+
+            if (v.x >= 8)
+            {
+                crossedRight = true;
+            }
+            else if (v.x <= 0)
+            {
+                crossedLeft = true;
+            }
+            if (v.z >= 8)
+            {
+                crossedFront = true;
+            }
+            else if (v.z <= 0)
+            {
+                crossedBack = true;
+            }
+            if (crossedRight && crossedFront && !effectedChunks.Contains(cs.rightChunk.frontChunk))
+            {
+                effectedChunks.Add(cs.rightChunk.frontChunk);
+            }
+            else if (crossedRight && crossedBack && !effectedChunks.Contains(cs.rightChunk.backChunk))
+            {
+                effectedChunks.Add(cs.rightChunk.backChunk);
+            }
+            else if (crossedLeft && crossedFront && !effectedChunks.Contains(cs.leftChunk.frontChunk))
+            {
+                effectedChunks.Add(cs.leftChunk.frontChunk);
+            }
+            else if (crossedLeft && crossedBack && !effectedChunks.Contains(cs.leftChunk.backChunk))
+            {
+                effectedChunks.Add(cs.leftChunk.backChunk);
+            }
+            if(crossedRight && !effectedChunks.Contains(cs.rightChunk))
+            {
+                effectedChunks.Add(cs.rightChunk);
+            }
+            else if (crossedLeft && !effectedChunks.Contains(cs.leftChunk))
+            {
+                effectedChunks.Add(cs.leftChunk);
+            }
+            if (crossedFront && !effectedChunks.Contains(cs.frontChunk))
+            {
+                effectedChunks.Add(cs.frontChunk);
+            }
+            else if (crossedBack && !effectedChunks.Contains(cs.backChunk))
+            {
+                effectedChunks.Add(cs.backChunk);
+            }
+        }
         
         for(int i = 0; i <count; i++)
         {
@@ -106,12 +164,58 @@ public class WaterManager : MonoBehaviour
             bool hasWaterBottom_B = false;
             bool hasGround_B = false;
             bool hasGroundBottom_B = false;
-            bool hasGroundDown = modifiedWaterData.Contains(pos + Vector3.down);
+            bool hasWaterDown = modifiedWaterData.Contains(pos + Vector3.down);
             bool separated = false;
 
+            bool onGround(Vector3 checkPos)
+            {
+                if(cs.terrainMap[(int)checkPos.x, (int)checkPos.y, (int)checkPos.z] <= mg.terrainSuface)
+                {
+                    return true;
+                }
+                if(cs.blockPositionData.Contains(new Vector3Int((int)checkPos.x, (int)checkPos.y, (int)checkPos.z)))
+                {
+                    return true;
+                }
 
 
-            if (hasGroundDown)
+
+                if (cs.rightChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x - 8, (int)checkPos.y, (int)checkPos.z))))
+                {
+                    return true;
+                }
+                if (cs.leftChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x + 8, (int)checkPos.y, (int)checkPos.z))))
+                {
+                    return true;
+                }
+                if (cs.frontChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x, (int)checkPos.y, (int)checkPos.z - 8))))
+                {
+                    return true;
+                }
+                if (cs.backChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x, (int)checkPos.y, (int)checkPos.z + 8))))
+                {
+                    return true;
+                }
+                if (cs.rightChunk.frontChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x - 8, (int)checkPos.y, (int)checkPos.z - 8))))
+                {
+                    return true;
+                }
+                if (cs.rightChunk.backChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x - 8, (int)checkPos.y, (int)checkPos.z + 8))))
+                {
+                    return true;
+                }
+                if (cs.leftChunk.frontChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x + 8, (int)checkPos.y, (int)checkPos.z - 8))))
+                {
+                    return true;
+                }
+                if (cs.leftChunk.backChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x + 8, (int)checkPos.y, (int)checkPos.z + 8))))
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            if (hasWaterDown)
             {
                 //onWater = true;
             }
@@ -119,7 +223,7 @@ public class WaterManager : MonoBehaviour
             {
                 if (pos.y > 1)
                 {
-                    if (cs.terrainMap[(int)pos.x, (int)pos.y-1, (int)pos.z] > mg.terrainSuface)
+                    if (!onGround(pos))
                     {
                         goDown = true;
                     }
@@ -229,7 +333,7 @@ public class WaterManager : MonoBehaviour
             }
 
 
-            if(hasGroundDown && !hasWater_R && !hasWater_L && !hasWater_F && !hasWater_B)
+            if(hasWaterDown && !hasWater_R && !hasWater_L && !hasWater_F && !hasWater_B)
             {
                 separated = true;
             }
@@ -237,7 +341,6 @@ public class WaterManager : MonoBehaviour
             //go down
             if (goDown)
             {
-
 
                 modifiedWaterData.Add(pos + Vector3.down);
                 modifiedWaterData.RemoveAt(i);
@@ -247,7 +350,18 @@ public class WaterManager : MonoBehaviour
 
                 modifiedPos.Add(pos + Vector3.down);
                 modifiedPos.Add(pos);
+
+
+                CheckEffectingOtherChunks(pos);
             }
+            //else if (hasWaterDown)
+            //{
+            //    modifiedWaterData.RemoveAt(i);
+            //    i--;
+            //    count--;
+            //    modifiedPos.Add(pos);
+            //    CheckEffectingOtherChunks(pos);
+            //}
             //else if (separated)
             //{
             //    modifiedWaterData.RemoveAt(i);
@@ -328,6 +442,18 @@ public class WaterManager : MonoBehaviour
             modifiedChunksDataDictionary.Add(cs, new UpdatedChunkData { cs = cs, modifiedPoses= modifiedPos });
             modifiedChunkDataKeys.Add(cs);
             addedModifiedChunkCount++;
+            foreach (ChunkScript other in effectedChunks)
+            {
+                if (!modifiedChunksDataDictionary.ContainsKey(other))
+                {
+                    modifiedChunksDataDictionary.Add(other, new UpdatedChunkData { cs = other, modifiedPoses = new List<Vector3>() });
+                    modifiedChunkDataKeys.Add(other);
+                    addedModifiedChunkCount++;
+                }
+                else
+                {
+                }
+            }
         }
         else
         {
@@ -461,198 +587,219 @@ public class WaterManager : MonoBehaviour
 
     }
 
-    public IEnumerator Pourwater(ChunkScript cs, Vector3 pourPos, float pourDistance_float, float delay, List<Vector2> alreadyDoneChunkPoses_old)
+    
+    public IEnumerator Pourwater(ChunkScript cs, Vector3 pourPos, float pourDistance_float, float delay)
     {
-        if (alreadyDoneChunkPoses_old.Contains(cs.position))
+        #region set settings
+        pourPos = new Vector3(Mathf.Round(pourPos.x), Mathf.Round(pourPos.y), Mathf.Round(pourPos.z));
+        pourPos -= new Vector3(cs.position.x, 0, cs.position.y);
+        int pourDist = (int)pourDistance_float;
+        #endregion
+
+
+
+        List<Vector3> addedPoses_org = new List<Vector3>();
+
+
+
+
+        List<Vector3> addedPoses_right = new List<Vector3>();
+        List<Vector3> addedPoses_left = new List<Vector3>();
+        List<Vector3> addedPoses_front = new List<Vector3>();
+        List<Vector3> addedPoses_back = new List<Vector3>();
+        List<Vector3> addedPoses_rightfront = new List<Vector3>();
+        List<Vector3> addedPoses_rightback = new List<Vector3>();
+        List<Vector3> addedPoses_leftfront = new List<Vector3>();
+        List<Vector3> addedPoses_leftback = new List<Vector3>();
+
+        void TryAddWaterData(ChunkScript addingChunk, Vector3 v, List<Vector3> orgData, out List<Vector3> newData)
         {
-            Debug.Log(0);
-            yield break;
+            newData = new List<Vector3>(orgData);
+            if (v.x>8 || v.x<0 || v.z < 0 || v.z > 8)
+            {
+                Debug.Log("out");
+                return;
+            }
+            if (!addingChunk.waterData.Contains(v))
+            {
+                if (addingChunk.terrainMap[(int)v.x, (int)v.y, (int)v.z] > mg.terrainSuface)
+                {
+                    addingChunk.waterData.Add(v);
+                    newData.Add(v);
+                }
+                //else if (!addingChunk.waterData.Contains(v + Vector3.up))
+                //{
+                //    if (addingChunk.terrainMap[(int)v.x, (int)v.y + 1, (int)v.z] > mg.terrainSuface)
+                //    {
+                //        addingChunk.waterData.Add(v + Vector3.up);
+                //        newData.Add(v + Vector3.up);
+                //    }
+                //    else if (!addingChunk.waterData.Contains(v + Vector3.up * 2))
+                //    {
+                //        if (addingChunk.terrainMap[(int)v.x, (int)v.y + 2, (int)v.z] > mg.terrainSuface)
+                //        {
+                //            addingChunk.waterData.Add(v + Vector3.up * 2);
+                //            newData.Add(v + Vector3.up * 2);
+                //        }
+                //    }
+                //}
+                //else if (!addingChunk.waterData.Contains(v + Vector3.up * 2))
+                //{
+                //    if (addingChunk.terrainMap[(int)v.x, (int)v.y + 2, (int)v.z] > mg.terrainSuface)
+                //    {
+                //        addingChunk.waterData.Add(v + Vector3.up * 2);
+                //        addedPoses_org.Add(v + Vector3.up * 2);
+                //    }
+                //}
+            }
         }
 
-        pourPos = new Vector3(Mathf.Round(pourPos.x), Mathf.Round(pourPos.y), Mathf.Round(pourPos.z));
+        void AddWaterData(Vector3 v)
+        {
+            if (!(v.y >= 0 && v.y <= 256))
+            {
+                Debug.Log("low");
+                return;
+            }
+
+            if (v.x <= 8 && v.x >= 0 && v.z <= 8 && v.z >= 0)
+            {
+                TryAddWaterData(cs, v, addedPoses_org, out addedPoses_org);
+            }
 
 
-        int addedCount = 0;
-        List<Vector3> addedPoses = new List<Vector3>();
-        List<Vector2> alreadyDoneChunkList = new List<Vector2>(alreadyDoneChunkPoses_old);
-        alreadyDoneChunkList.Add(cs.position);
-        
-        pourPos -= new Vector3(cs.position.x, 0, cs.position.y);
+            bool crossRight = false;
+            bool crossLeft = false;
+            bool crossFront = false;
+            bool crossBack = false;
+            if (v.x >= 8)
+            {
+                crossRight = true;
+            }
+            else if (v.x <= 0)
+            {
+                crossLeft = true;
+            }
+            if (v.z >= 8)
+            {
+                crossFront = true;
+            }
+            else if (v.z <= 0)
+            {
+                crossBack = true;
+            }
+            if (crossRight && crossFront)
+            {
+                TryAddWaterData(cs.rightChunk.frontChunk, v - new Vector3(1, 0, 1) * 8, addedPoses_rightfront, out addedPoses_rightfront);
+            }
+            if (crossRight && crossBack)
+            {
+                TryAddWaterData(cs.rightChunk.backChunk, v - new Vector3(1, 0, -1) * 8, addedPoses_rightback, out addedPoses_rightback);
+            }
+            if (crossLeft && crossFront)
+            {
+                TryAddWaterData(cs.leftChunk.frontChunk, v - new Vector3(-1, 0, 1) * 8, addedPoses_leftfront, out addedPoses_leftfront);
+            }
+            if (crossLeft && crossBack)
+            {
+                TryAddWaterData(cs.leftChunk.backChunk, v - new Vector3(-1, 0, -1) * 8, addedPoses_leftback, out addedPoses_leftback);
+            }
 
-        int pourDist = (int)pourDistance_float;
+            if (crossRight)
+            {
+                TryAddWaterData(cs.rightChunk, v - new Vector3(1, 0, 0) * 8, addedPoses_right, out addedPoses_right);
+            }
+            if (crossLeft)
+            {
+                TryAddWaterData(cs.leftChunk, v - new Vector3(-1, 0, 0) * 8, addedPoses_left, out addedPoses_left);
+            }
 
-        for(int x = -pourDist; x<=pourDist; x++)
+            if (crossFront)
+            {
+                TryAddWaterData(cs.frontChunk, v - new Vector3(0, 0, 1) * 8, addedPoses_front, out addedPoses_front);
+            }
+            if (crossBack)
+            {
+                TryAddWaterData(cs.backChunk, v - new Vector3(0, 0, -1) * 8, addedPoses_back, out addedPoses_back);
+            }
+        }
+
+
+        for (int x = -pourDist; x <= pourDist; x++)
         {
             int width = pourDist - Mathf.Abs(x);
-            Debug.Log(width);
             for (int y = -0; y <= 0; y++)
             {
                 for (int z = -width; z <= width; z++)
                 {
                     Vector3 v = pourPos + new Vector3(x, y, z);
-                    if (v.x <= 8 && v.x >= 0 && v.z <= 8 && v.z >= 0 && v.y >= 0 && v.y <= 256)
-                    {
-                        if (!cs.waterData.Contains(v))
-                        {
-                            if (cs.terrainMap[(int)v.x, (int)v.y - 1, (int)v.z] > mg.terrainSuface)
-                            {
-                                cs.waterData.Add(v);
-                                addedCount++;
-                                addedPoses.Add(v);
-                            }
-                            else if (!cs.waterData.Contains(v + Vector3.up))
-                            {
-                                if (cs.terrainMap[(int)v.x, (int)v.y, (int)v.z] > mg.terrainSuface)
-                                {
-                                    cs.waterData.Add(v + Vector3.up);
-                                    addedCount++;
-                                    addedPoses.Add(v + Vector3.up);
-                                }
-                                else if (!cs.waterData.Contains(v + Vector3.up * 2))
-                                {
-                                    if (cs.terrainMap[(int)v.x, (int)v.y + 1, (int)v.z] > mg.terrainSuface)
-                                    {
-                                        cs.waterData.Add(v + Vector3.up * 2);
-                                        addedCount++;
-                                        addedPoses.Add(v + Vector3.up * 2);
-                                    }
-                                }
-                            }
-                            else if (!cs.waterData.Contains(v + Vector3.up * 2))
-                            {
-                                if (cs.terrainMap[(int)v.x, (int)v.y + 1, (int)v.z] > mg.terrainSuface)
-                                {
-                                    cs.waterData.Add(v + Vector3.up * 2);
-                                    addedCount++;
-                                    addedPoses.Add(v + Vector3.up * 2);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-
-                    }
+                    AddWaterData(v);
                 }
             }
         }
-        pourPos += new Vector3(cs.position.x, 0, cs.position.y);
+        StartCoroutine(PourWater_ApplyData(cs, addedPoses_org, delay));
+
+        StartCoroutine(PourWater_ApplyData(cs.rightChunk, addedPoses_right, delay));
+        StartCoroutine(PourWater_ApplyData(cs.leftChunk, addedPoses_left, delay));
+        StartCoroutine(PourWater_ApplyData(cs.frontChunk, addedPoses_front, delay));
+        StartCoroutine(PourWater_ApplyData(cs.backChunk, addedPoses_back, delay));
+        StartCoroutine(PourWater_ApplyData(cs.rightChunk.frontChunk, addedPoses_rightfront, delay));
+        StartCoroutine(PourWater_ApplyData(cs.rightChunk.backChunk, addedPoses_rightback, delay));
+        StartCoroutine(PourWater_ApplyData(cs.leftChunk.frontChunk, addedPoses_leftfront, delay));
+        StartCoroutine(PourWater_ApplyData(cs.leftChunk.backChunk, addedPoses_leftback, delay));
 
 
 
-        if (addedCount != 0)
+        yield return null;
+    }
+    IEnumerator PourWater_ApplyData(ChunkScript cs, List<Vector3> addedPoses, float delay)
+    {
+        if (addedPoses.Count == 0)
+            yield break;
+        List<Vector3> modifiedPoses = new List<Vector3>(addedPoses); //; SpecialFeatures.CoverListWithWalls(addedPoses);
+        
+        foreach (Vector3 v in modifiedPoses)
         {
-
-            //get modified poses
-            List<Vector3> modifiedPoses = SpecialFeatures.CoverListWithWalls(addedPoses);
-
-            foreach(Vector3 v in modifiedPoses)
+            if (!cs.waterPointDictionary.ContainsKey(v))
             {
-                if (!cs.waterPointDictionary.ContainsKey(v))
-                {
-                    WaterPointData wpd = new WaterPointData();
-                    wpd.vertices = new List<Vector3>();
-                    wpd.triangles = new List<int>();
+                WaterPointData wpd = new WaterPointData();
+                wpd.vertices = new List<Vector3>();
+                wpd.triangles = new List<int>();
 
-                    cs.waterPointDictionary.Add(v, wpd);
-                    cs.wpdList.Add(wpd);
+                cs.waterPointDictionary.Add(v, wpd);
+                cs.wpdList.Add(wpd);
+            }
+        }
+
+        if (delay != 0)
+            yield return new WaitForSeconds(delay);
+
+        cs.vertices_water.Clear();
+        cs.triangles_water.Clear();
+        cs.verticesRangeDictionary_water.Clear();
+        cs.waterPointDictionary.Clear();
+        cs.wpdList.Clear();
+        GenerateWater(cs, false);
+
+        //apply
+        if (modifiedChunksDataDictionary.ContainsKey(cs))
+        {
+            foreach (Vector3 m in addedPoses)
+            {
+                if (!modifiedChunksDataDictionary[cs].modifiedPoses.Contains(m))
+                {
+                    modifiedChunksDataDictionary[cs].modifiedPoses.Add(m);
                 }
             }
-
-
-            //check crossing parts
-            bool crossRight = false;
-            bool crossLeft = false;
-            bool crossFront = false;
-            bool crossBack = false;
-
-            foreach (Vector3 v in addedPoses)
-            {
-                if (v.x >= 8)
-                {
-                    crossRight = true;
-                }
-                else if (v.x <= 0)
-                {
-                    crossLeft = true;
-                }
-                if (v.z >= 8)
-                {
-                    crossFront = true;
-                }
-                else if (v.z <= 0)
-                {
-                    crossBack = true;
-                }
-            }
-
-
-
-
-
-            #region effect neighborhood chunks
-            if (crossRight && crossFront)
-            {
-                StartCoroutine(Pourwater(cs.rightChunk.frontChunk, pourPos, pourDist, delay, alreadyDoneChunkList));
-            }
-            if (crossRight && crossBack)
-            {
-                StartCoroutine(Pourwater(cs.rightChunk.backChunk, pourPos, pourDist, delay, alreadyDoneChunkList));
-            }
-            if (crossLeft && crossFront)
-            {
-                StartCoroutine(Pourwater(cs.leftChunk.frontChunk, pourPos, pourDist, delay, alreadyDoneChunkList));
-            }
-            if (crossLeft && crossBack)
-            {
-                StartCoroutine(Pourwater(cs.leftChunk.backChunk, pourPos, pourDist, delay, alreadyDoneChunkList));
-            }
-
-            if (crossRight)
-            {
-                StartCoroutine(Pourwater(cs.rightChunk, pourPos, pourDist, delay, alreadyDoneChunkList));
-            }
-            if (crossLeft)
-            {
-                StartCoroutine(Pourwater(cs.leftChunk, pourPos, pourDist, delay, alreadyDoneChunkList));
-            }
-
-            if (crossFront)
-            {
-                StartCoroutine(Pourwater(cs.frontChunk, pourPos, pourDist, delay, alreadyDoneChunkList));
-            }
-            if (crossBack)
-            {
-                StartCoroutine(Pourwater(cs.backChunk, pourPos, pourDist, delay, alreadyDoneChunkList));
-            }
-            #endregion
-
-
-            if(delay!=0)
-                yield return new WaitForSeconds(delay);
-
-
-
-            //apply
-            if (modifiedChunksDataDictionary.ContainsKey(cs))
-            {
-                foreach (Vector3 m in modifiedPoses)
-                {
-                    if (!modifiedChunksDataDictionary[cs].modifiedPoses.Contains(m))
-                    {
-                        modifiedChunksDataDictionary[cs].modifiedPoses.Add(m);
-                    }
-                }
-            }
-            else
-            {
-                modifiedChunkDataKeys.Add(cs);
-                modifiedChunksDataDictionary.Add(cs, new UpdatedChunkData { cs = cs, modifiedPoses = modifiedPoses });
-            }
+        }
+        else
+        {
+            modifiedChunkDataKeys.Add(cs);
+            modifiedChunksDataDictionary.Add(cs, new UpdatedChunkData { cs = cs, modifiedPoses = addedPoses });
         }
     }
 
-    
+
 
 
     #region wierd stuff
