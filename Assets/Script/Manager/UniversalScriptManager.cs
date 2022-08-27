@@ -34,6 +34,7 @@ public class UniversalScriptManager : MonoBehaviour
     public WeatherManager weatherManager;
     public ExplosionManager explosionManager;
     public LavaManager lavaManager;
+    public BlockPlacementManager blockPlacementManager;
 
     [Header("Layer")]
     public LayerMask groundLayer;

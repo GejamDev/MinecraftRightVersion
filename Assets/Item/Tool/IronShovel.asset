@@ -20,6 +20,7 @@ MonoBehaviour:
   snapPosition: 0
   snapGridSize: 0
   lookAtPlayer: 0
+  placeSound: 
   isToolForModifyingTerrain: 1
   maxDiggableYLevel: 256
   minDiggableYLevel: 67
@@ -30,6 +31,7 @@ MonoBehaviour:
   camShakeTime: 0.1
   camShakePower: 50
   camShakeFade: 1
+  canUseByKeepingMouse: 1
   modifableObjectType: 0
   furnaceResult: {fileID: 0}
   fuel_usable: 0
@@ -37,3 +39,4 @@ MonoBehaviour:
   knockBackTime: 0.2
   knockBackPower: 1
   hungerFillAmount: 0
+  continuousCustomUse: 0

@@ -33,6 +33,7 @@ public class Item : ScriptableObject
     public float camShakeTime;
     public float camShakePower;
     public bool camShakeFade;
+    public bool canUseByKeepingMouse;
 
     [Header("Object Modifying Variables")]
     public ModifiableObjectType modifableObjectType;

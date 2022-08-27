@@ -15,6 +15,7 @@ public class ItemUseManager : MonoBehaviour
     HungerManager hungerM;
     SoundManager sm;
     ChunkLoader cl;
+    BlockPlacementManager bpm;
     public bool reloaded;
     GameObject player;
     public float placeCoolTime;
@@ -34,6 +35,7 @@ public class ItemUseManager : MonoBehaviour
         hungerM = usm.hungerManager;
         sm = usm.soundManager;
         cl = usm.chunkLoader;
+        bpm = usm.blockPlacementManager;
 
         player = usm.player;
 
@@ -69,8 +71,8 @@ public class ItemUseManager : MonoBehaviour
             usingItem = im.currentlyUsingInventorySlot.item;
         }
 
-        bool leftInput = usingItem.continuousCustomUse ? Input.GetMouseButton(0) : Input.GetMouseButtonDown(0);
-        bool rightInput = usingItem.continuousCustomUse ? Input.GetMouseButton(1) : Input.GetMouseButtonDown(1);
+        bool leftInput = usingItem.continuousCustomUse ? Input.GetMouseButton(0) : (usingItem.canUseByKeepingMouse ? (Input.GetMouseButton(0) && reloaded) :Input.GetMouseButtonDown(0));
+        bool rightInput = usingItem.continuousCustomUse ? Input.GetMouseButton(1) : (usingItem.canUseByKeepingMouse ? (Input.GetMouseButton(1) && reloaded) : Input.GetMouseButtonDown(1));
         if (leftInput)//use item
         {
 
@@ -197,114 +199,9 @@ public class ItemUseManager : MonoBehaviour
 
     public void PlaceBlock(Item usingItem, InventoryCell usedCell)
     {
-        //check if colliding with player
-        Vector3 touchingPosition = tm.touchingPosition;
-        Vector3 playerPosition = player.transform.position;
-
-        
+        bpm.PlaceBlock(usingItem, usedCell, true);
 
 
-
-        GameObject block = Instantiate(usingItem.blockInstance);
-        block.transform.position = tm.touchingPosition;
-        Vector3 blockPos = block.transform.position;
-        if (usingItem.snapPosition)
-        {
-            float gridSize = usingItem.snapGridSize;
-            if (tm.currentlyTouchingChunk != null)
-            {
-                block.transform.position = new Vector3(Mathf.RoundToInt(block.transform.position.x / gridSize) * gridSize,
-                    Mathf.RoundToInt(block.transform.position.y / gridSize) * gridSize,
-                    Mathf.RoundToInt(block.transform.position.z / gridSize) * gridSize);
-            }
-            else
-            {
-                block.transform.position = block.transform.position - (block.transform.position - Camera.main.transform.position).normalized * 0.3f;
-                block.transform.position = new Vector3(Mathf.RoundToInt(block.transform.position.x / gridSize) * gridSize,
-                    Mathf.RoundToInt(block.transform.position.y / gridSize) * gridSize,
-                    Mathf.RoundToInt(block.transform.position.z / gridSize) * gridSize);
-            }
-
-            //check if collides with player
-            blockPos = block.transform.position;
-            if (Mathf.Abs(playerPosition.x - blockPos.x) <= 0.5f + gridSize * 0.5f && Mathf.Abs(playerPosition.z - blockPos.z) <= 0.5f + gridSize * 0.5f && Mathf.Abs(playerPosition.y - blockPos.y) <= 0.5f + gridSize * 0.5f)
-            {
-                Destroy(block);
-                return;
-            }
-
-            ChunkScript parentCs = cl.chunkDictionary[new Vector2(Mathf.Floor(blockPos.x / 8) * 8, Mathf.Floor(blockPos.z / 8) * 8)].cs;
-            if (parentCs.blockPositionData.Contains(new Vector3Int((int)blockPos.x, (int)blockPos.y, (int)blockPos.z)))
-            {
-                Destroy(block);
-                return;
-            }
-            parentCs.blockPositionData.Add(new Vector3Int((int)blockPos.x, (int)blockPos.y, (int)blockPos.z) - new Vector3Int((int)parentCs.position.x, 0, (int)parentCs.position.y));
-            block.transform.SetParent(parentCs.objectBundle.transform);
-
-
-        }
-        else
-        {
-            ChunkScript parentCs = cl.chunkDictionary[new Vector2(Mathf.Floor(blockPos.x / 8) * 8, Mathf.Floor(blockPos.z / 8) * 8)].cs;
-            block.transform.SetParent(parentCs.objectBundle.transform);
-        }
-        if (usingItem.lookAtPlayer)
-        {
-            if (usingItem.snapPosition)
-            {
-                Vector2 blockPos_2D = new Vector2(block.transform.position.x, block.transform.position.z);
-                Vector2 playerPos = new Vector2(player.transform.position.x, player.transform.position.z);
-                Vector2 dir = playerPos - blockPos_2D;
-
-                float rot = 0;
-                if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
-                {
-                    if (dir.x > 0)
-                    {
-                        rot = 0;
-                    }
-                    else
-                    {
-                        rot = 180;
-                    }
-                }
-                else
-                {
-                    if (dir.y > 0)
-                    {
-                        rot = 270;
-                    }
-                    else
-                    {
-                        rot = 90;
-                    }
-                }
-
-
-                block.transform.eulerAngles = new Vector3(0, rot + 90, 0);
-            }
-            else
-            {
-                Vector2 blockPos_2D = new Vector2(block.transform.position.x, block.transform.position.z);
-                Vector2 playerPos = new Vector2(player.transform.position.x, player.transform.position.z);
-                Vector2 offset = playerPos - blockPos_2D;
-                float rot = Mathf.Atan2(offset.x, offset.y) * Mathf.Rad2Deg;
-
-
-                block.transform.eulerAngles = new Vector3(0, rot, 0);
-            }
-        }
-
-
-        if (usingItem.placeSound != "")
-        {
-            sm.PlaySound(usingItem.placeSound, 1);
-        }
-
-        im.inventoryDictionary[usedCell].amount--;
-        usedCell.UpdateCell();
-        im.UpdateSeletedSlot();
 
     }
     public void Reload()

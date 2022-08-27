@@ -9,10 +9,11 @@ public class SizeAnimator : MonoBehaviour
     public float maxTime;
     float passedTime;
     Vector3 originScale;
+    public float randomizeScaleAmount = 0;
 
     void Awake()
     {
-        originScale = transform.localScale;
+        originScale = transform.localScale * Random.Range(1-randomizeScaleAmount, 1+randomizeScaleAmount);
     }
 
     void Update()

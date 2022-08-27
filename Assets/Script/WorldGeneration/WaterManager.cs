@@ -7,6 +7,8 @@ public class WaterManager : MonoBehaviour
     public UniversalScriptManager usm;
     MeshGenerator mg;
     ChunkLoader cl;
+    LavaManager lm;
+    BlockPlacementManager bpm;
     WorldGenerationPreset wgPreset;
     public float updateTick;
 
@@ -14,14 +16,18 @@ public class WaterManager : MonoBehaviour
     public List<ChunkScript> modifiedChunkDataKeys = new List<ChunkScript>();
     public Dictionary<ChunkScript, UpdatedChunkData> modifiedChunksDataDictionary = new Dictionary<ChunkScript, UpdatedChunkData>();
 
+    public Item obsidian;
+
 
     void Awake()
     {
         mg = usm.meshGenerator;
         cl = usm.chunkLoader;
+        lm = usm.lavaManager;
+        bpm = usm.blockPlacementManager;
 
         wgPreset = usm.worldGenerationPreset;
-        UpdateWater_Tick();
+        StartCoroutine(UpdateWater_Tick());
     }
 
     public void GenerateWater(ChunkScript cs, bool delay)
@@ -40,25 +46,29 @@ public class WaterManager : MonoBehaviour
     }
 
 
-    public void UpdateWater_Tick()
+    public IEnumerator UpdateWater_Tick()
     {
-        for (int i = 0; i < modifiedChunkDataKeys.Count - addedModifiedChunkCount; i++)
+        yield return new WaitForSeconds(0.05f);
+        while (true)
         {
-            ChunkScript key = modifiedChunkDataKeys[i];
-            UpdatedChunkData ucd = modifiedChunksDataDictionary[key];
+            for (int i = 0; i < modifiedChunkDataKeys.Count - addedModifiedChunkCount; i++)
+            {
+                ChunkScript key = modifiedChunkDataKeys[i];
+                UpdatedChunkData ucd = modifiedChunksDataDictionary[key];
 
 
-            modifiedChunkDataKeys.RemoveAt(i);
-            modifiedChunksDataDictionary.Remove(key);
-            i--;
+                modifiedChunkDataKeys.RemoveAt(i);
+                modifiedChunksDataDictionary.Remove(key);
+                i--;
 
 
-            UpdateWater(ucd.cs, new List<Vector3>(), i);
-            mg.ReGenerateWaterMesh(ucd.cs, ucd.modifiedPoses);
+                UpdateWater(ucd.cs, new List<Vector3>(), i);
+                mg.ReGenerateWaterMesh(ucd.cs, ucd.modifiedPoses);
+            }
+            addedModifiedChunkCount = 0;
+            yield return new WaitForSeconds(updateTick);
+            yield return new WaitUntil(() => modifiedChunkDataKeys.Count > 0);
         }
-        addedModifiedChunkCount = 0;
-
-        Invoke(nameof(UpdateWater_Tick), updateTick);
     }
 
     public void UpdateWater(ChunkScript cs, List<Vector3> previouslyModifiedPosition, int chunkIndex)
@@ -76,7 +86,8 @@ public class WaterManager : MonoBehaviour
         bool modified = false;
         List<Vector3> modifiedWaterData = cs.waterData;
         List<Vector3> modifiedPos = new List<Vector3>();
-        foreach(Vector3 v in previouslyModifiedPosition)
+        List<Vector3> addedPos = new List<Vector3>();
+        foreach (Vector3 v in previouslyModifiedPosition)
         {
             modifiedPos.Add(v);
         }
@@ -169,46 +180,46 @@ public class WaterManager : MonoBehaviour
 
             bool onGround(Vector3 checkPos)
             {
-                if(cs.terrainMap[(int)checkPos.x, (int)checkPos.y, (int)checkPos.z] <= mg.terrainSuface)
+                if(cs.terrainMap[(int)checkPos.x, (int)checkPos.y - 1, (int)checkPos.z] <= mg.terrainSuface)
                 {
                     return true;
                 }
-                if(cs.blockPositionData.Contains(new Vector3Int((int)checkPos.x, (int)checkPos.y, (int)checkPos.z)))
+                if(cs.blockPositionData.Contains(new Vector3Int((int)checkPos.x, (int)checkPos.y - 1, (int)checkPos.z)))
                 {
                     return true;
                 }
 
 
 
-                if (cs.rightChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x - 8, (int)checkPos.y, (int)checkPos.z))))
+                if (cs.rightChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x - 8, (int)checkPos.y - 1, (int)checkPos.z))))
                 {
                     return true;
                 }
-                if (cs.leftChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x + 8, (int)checkPos.y, (int)checkPos.z))))
+                if (cs.leftChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x + 8, (int)checkPos.y - 1, (int)checkPos.z))))
                 {
                     return true;
                 }
-                if (cs.frontChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x, (int)checkPos.y, (int)checkPos.z - 8))))
+                if (cs.frontChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x, (int)checkPos.y - 1, (int)checkPos.z - 8))))
                 {
                     return true;
                 }
-                if (cs.backChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x, (int)checkPos.y, (int)checkPos.z + 8))))
+                if (cs.backChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x, (int)checkPos.y - 1, (int)checkPos.z + 8))))
                 {
                     return true;
                 }
-                if (cs.rightChunk.frontChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x - 8, (int)checkPos.y, (int)checkPos.z - 8))))
+                if (cs.rightChunk.frontChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x - 8, (int)checkPos.y - 1, (int)checkPos.z - 8))))
                 {
                     return true;
                 }
-                if (cs.rightChunk.backChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x - 8, (int)checkPos.y, (int)checkPos.z + 8))))
+                if (cs.rightChunk.backChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x - 8, (int)checkPos.y - 1, (int)checkPos.z + 8))))
                 {
                     return true;
                 }
-                if (cs.leftChunk.frontChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x + 8, (int)checkPos.y, (int)checkPos.z - 8))))
+                if (cs.leftChunk.frontChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x + 8, (int)checkPos.y - 1, (int)checkPos.z - 8))))
                 {
                     return true;
                 }
-                if (cs.leftChunk.backChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x + 8, (int)checkPos.y, (int)checkPos.z + 8))))
+                if (cs.leftChunk.backChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x + 8, (int)checkPos.y - 1, (int)checkPos.z + 8))))
                 {
                     return true;
                 }
@@ -354,23 +365,6 @@ public class WaterManager : MonoBehaviour
 
                 CheckEffectingOtherChunks(pos);
             }
-            //else if (hasWaterDown)
-            //{
-            //    modifiedWaterData.RemoveAt(i);
-            //    i--;
-            //    count--;
-            //    modifiedPos.Add(pos);
-            //    CheckEffectingOtherChunks(pos);
-            //}
-            //else if (separated)
-            //{
-            //    modifiedWaterData.RemoveAt(i);
-            //    i--;
-
-            //    modified = true;
-            //    modifiedPos.Add(pos);
-            //}
-
 
 
             #region spread stuff(currently disabled)
@@ -422,7 +416,7 @@ public class WaterManager : MonoBehaviour
 
 
         int modifiedPosCount = modifiedPos.Count;
-        for(int i = 0; i < modifiedPosCount; i++)
+        for (int i = 0; i < modifiedPosCount; i++)
         {
             Vector3 pos = modifiedPos[i];
 
@@ -438,6 +432,31 @@ public class WaterManager : MonoBehaviour
 
         if (modified)
         {
+            bool touchLava = ConflictionWithLava(cs, modifiedWaterData).Count != 0;
+            if (touchLava)
+            {
+                List<Vector3> conf = ConflictionWithLava(cs, modifiedWaterData);
+                foreach (Vector3 v in conf)
+                {
+                    PlaceObsidian(cs, v);
+                    modifiedWaterData.Remove(v);
+                    cs.lavaData.Remove(v);
+                }
+                if (lm.modifiedChunkDataKeys.Contains(cs))
+                {
+                    foreach(Vector3 v  in SpecialFeatures.CoverListWithWalls(conf))
+                    {
+                        if(!lm.modifiedChunksDataDictionary[cs].modifiedPoses.Contains(v))
+                            lm.modifiedChunksDataDictionary[cs].modifiedPoses.Add(v);
+                    }
+                }
+                else
+                {
+                    lm.modifiedChunksDataDictionary.Add(cs, new UpdatedChunkData { cs = cs, modifiedPoses = SpecialFeatures.CoverListWithWalls(conf) });
+                    lm.modifiedChunkDataKeys.Add(cs);
+                }
+            }
+
             cs.waterData = modifiedWaterData;
             modifiedChunksDataDictionary.Add(cs, new UpdatedChunkData { cs = cs, modifiedPoses= modifiedPos });
             modifiedChunkDataKeys.Add(cs);
@@ -447,8 +466,7 @@ public class WaterManager : MonoBehaviour
                 if (!modifiedChunksDataDictionary.ContainsKey(other))
                 {
                     modifiedChunksDataDictionary.Add(other, new UpdatedChunkData { cs = other, modifiedPoses = new List<Vector3>() });
-                    modifiedChunkDataKeys.Add(other);
-                    addedModifiedChunkCount++;
+                    modifiedChunkDataKeys.Insert(chunkIndex + 1, other);
                 }
                 else
                 {
@@ -728,7 +746,7 @@ public class WaterManager : MonoBehaviour
         for (int x = -pourDist; x <= pourDist; x++)
         {
             int width = pourDist - Mathf.Abs(x);
-            for (int y = -0; y <= 0; y++)
+            for (int y = -0; y <= 1; y++)
             {
                 for (int z = -width; z <= width; z++)
                 {
@@ -752,11 +770,48 @@ public class WaterManager : MonoBehaviour
 
         yield return null;
     }
+    List<Vector3> ConflictionWithLava(ChunkScript cs, List<Vector3> input)
+    {
+        List<Vector3> result = new List<Vector3>();
+        foreach(Vector3 v in input)
+        {
+            if (cs.lavaData.Contains(v))
+            {
+                result.Add(v);
+            }
+        }
+        return result;
+    }
     IEnumerator PourWater_ApplyData(ChunkScript cs, List<Vector3> addedPoses, float delay)
     {
         if (addedPoses.Count == 0)
             yield break;
-        List<Vector3> modifiedPoses = new List<Vector3>(addedPoses); //; SpecialFeatures.CoverListWithWalls(addedPoses);
+        bool touchLava = ConflictionWithLava(cs, addedPoses).Count != 0;
+        if (touchLava)
+        {
+            List<Vector3> conf = ConflictionWithLava(cs, addedPoses);
+            foreach (Vector3 v in conf)
+            {
+                cs.waterData.Remove(v);
+                cs.lavaData.Remove(v);
+                PlaceObsidian(cs, v);
+            }
+            if (lm.modifiedChunkDataKeys.Contains(cs))
+            {
+                foreach (Vector3 v in SpecialFeatures.CoverListWithWalls(conf))
+                {
+                    if (!lm.modifiedChunksDataDictionary[cs].modifiedPoses.Contains(v))
+                        lm.modifiedChunksDataDictionary[cs].modifiedPoses.Add(v);
+                }
+            }
+            else
+            {
+                lm.modifiedChunksDataDictionary.Add(cs, new UpdatedChunkData { cs = cs, modifiedPoses = SpecialFeatures.CoverListWithWalls(conf) });
+                lm.modifiedChunkDataKeys.Add(cs);
+            }
+        }
+
+        List<Vector3> modifiedPoses = new List<Vector3>(addedPoses); 
         
         foreach (Vector3 v in modifiedPoses)
         {
@@ -767,8 +822,9 @@ public class WaterManager : MonoBehaviour
                 wpd.triangles = new List<int>();
 
                 cs.waterPointDictionary.Add(v, wpd);
-                cs.wpdList.Add(wpd);
+                cs.wpdList.Add(wpd); 
             }
+
         }
 
         if (delay != 0)
@@ -799,6 +855,10 @@ public class WaterManager : MonoBehaviour
         }
     }
 
+    public void PlaceObsidian(ChunkScript cs, Vector3 pos)
+    {
+        bpm.PlaceBlock(obsidian, null, pos+new Vector3(cs.position.x, 0, cs.position.y), false);
+    }
 
 
 

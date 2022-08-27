@@ -138,6 +138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09835187129cc7d4c851151f80b4836f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  originScale: {x: 1, y: 1, z: 1}
   onlyDisable: 1
   hitParticle: {fileID: 6867620114681038427, guid: e089502c3e5f0f04eaa907c3a6d61ad1,
     type: 3}

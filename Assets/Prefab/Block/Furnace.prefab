@@ -165,6 +165,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   loop: 0
   maxTime: 1
+  randomizeScaleAmount: 0
 --- !u!114 &7387532564868872969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,6 +190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09835187129cc7d4c851151f80b4836f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  originScale: {x: 1.1, y: 1.1, z: 1.1}
   onlyDisable: 0
   hitParticle: {fileID: 6867620114681038427, guid: 3566ace434b956f4da62e6985097c745,
     type: 3}

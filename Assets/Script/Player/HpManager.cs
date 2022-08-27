@@ -34,6 +34,10 @@ public class HpManager : MonoBehaviour
     [Header("Starve")]
     public float starveTick;
 
+    [Header("Lava")]
+    public float lavaTick;
+    public int lavaDamage;
+
     void Awake()
     {
         fpc = usm.firstPersonController;
@@ -51,6 +55,7 @@ public class HpManager : MonoBehaviour
         UpdateHpUI();
         StartCoroutine(AutoRegenHealth());
         StartCoroutine(Starve());
+        CheckLavaDamageTick();
     }
 
     void UpdateHpUI()
@@ -85,7 +90,7 @@ public class HpManager : MonoBehaviour
         {
             lastGroundedHeight = player.transform.position.y;
         }
-        else if(player.transform.position.y > lastGroundedHeight)
+        else if(player.transform.position.y > lastGroundedHeight || fpc.inWater)
         {
             lastGroundedHeight = player.transform.position.y;
         }
@@ -102,8 +107,11 @@ public class HpManager : MonoBehaviour
             float fallHeight = lastGroundedHeight - player.transform.position.y;
             if (fallHeight > minFallDamageHeight)
             {
-                int damage = Mathf.CeilToInt((fallHeight - minFallDamageHeight) * fallDamageMultiplier);
-                TakeDamage(damage);
+                if (!fpc.inWater)
+                {
+                    int damage = Mathf.CeilToInt((fallHeight - minFallDamageHeight) * fallDamageMultiplier);
+                    TakeDamage(damage);
+                }
             }
         }
 
@@ -148,5 +156,14 @@ public class HpManager : MonoBehaviour
     {
         died = true;
         deathUI.SetActive(true);
+    }
+
+    public void CheckLavaDamageTick()
+    {
+        if (fpc.inLava)
+        {
+            TakeDamage(lavaDamage);
+        }
+        Invoke(nameof(CheckLavaDamageTick), lavaTick);
     }
 }

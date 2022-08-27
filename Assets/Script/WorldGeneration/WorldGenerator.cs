@@ -47,6 +47,7 @@ public class WorldGenerator : MonoBehaviour
         ChunkScript cs = chunk.GetComponent<ChunkScript>();
         cs.position = position;
         cs.usm = usm;
+        cs.fpc = usm.firstPersonController;
         cs.GetVariables();
         cs.gameObject.name = "Chunk At " + position.ToString();
 

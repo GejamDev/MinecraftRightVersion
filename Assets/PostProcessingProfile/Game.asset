@@ -1311,43 +1311,6 @@ MonoBehaviour:
       - 0.5
       - 0.5
       - 0.5
---- !u!114 &-3818653371111163680
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b3f6f3f7c722b4544b97e3c75840aa33, type: 3}
-  m_Name: AutoExposure
-  m_EditorClassIdentifier: 
-  active: 1
-  enabled:
-    overrideState: 1
-    value: 1
-  filtering:
-    overrideState: 1
-    value: {x: 50, y: 95}
-  minLuminance:
-    overrideState: 1
-    value: 0
-  maxLuminance:
-    overrideState: 1
-    value: 0
-  keyValue:
-    overrideState: 1
-    value: 1
-  eyeAdaptation:
-    overrideState: 1
-    value: 0
-  speedUp:
-    overrideState: 1
-    value: 2
-  speedDown:
-    overrideState: 1
-    value: 1
 --- !u!114 &-197745852770084832
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1412,9 +1375,9 @@ MonoBehaviour:
   settings:
   - {fileID: 7690552152162363466}
   - {fileID: -197745852770084832}
-  - {fileID: -3818653371111163680}
   - {fileID: 4261948927651217760}
   - {fileID: -6986225800511521667}
+  - {fileID: 8730211428957842811}
 --- !u!114 &4261948927651217760
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1505,4 +1468,38 @@ MonoBehaviour:
     defaultState: 1
   opacity:
     overrideState: 1
+    value: 1
+--- !u!114 &8730211428957842811
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b77c5407dc277943b591ade9e6b18c5, type: 3}
+  m_Name: LensDistortion
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  intensity:
+    overrideState: 0
+    value: 0
+  intensityX:
+    overrideState: 0
+    value: 1
+  intensityY:
+    overrideState: 0
+    value: 1
+  centerX:
+    overrideState: 0
+    value: 0
+  centerY:
+    overrideState: 0
+    value: 0
+  scale:
+    overrideState: 0
     value: 1

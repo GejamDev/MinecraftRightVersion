@@ -311,6 +311,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09835187129cc7d4c851151f80b4836f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  originScale: {x: 2, y: 2, z: 2}
   onlyDisable: 0
   hitParticle: {fileID: 0}
   destroyParticle: {fileID: 0}
@@ -340,7 +341,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ef4395e028249749860f97236bf755f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  usm: {fileID: 0}
 --- !u!1001 &680338472593219755
 PrefabInstance:
   m_ObjectHideFlags: 0

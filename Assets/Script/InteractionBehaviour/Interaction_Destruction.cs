@@ -6,6 +6,7 @@ public class Interaction_Destruction : MonoBehaviour
 {
     UniversalScriptManager usm;
     ItemSpawner itemSpawner;
+    public Vector3 originScale;
     public bool onlyDisable;
 
     public GameObject hitParticle;
@@ -46,13 +47,13 @@ public class Interaction_Destruction : MonoBehaviour
 
             }
         }
+        StopAllCoroutines();
         StartCoroutine(SmashAnimation());
 
 
     }
     IEnumerator SmashAnimation()
     {
-        Vector3 originScale = transform.localScale;
         float playedTime = 0;
         while (playedTime <= smashAnimationTime)
         {

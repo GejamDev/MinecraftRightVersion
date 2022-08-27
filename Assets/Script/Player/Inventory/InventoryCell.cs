@@ -13,6 +13,7 @@ public class InventoryCell : MonoBehaviour, IPointerClickHandler
 
     public bool insideInventory;
     public bool isCraftingOutput;
+    public GameObject nameText;
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -53,6 +54,22 @@ public class InventoryCell : MonoBehaviour, IPointerClickHandler
         {
             iconImage.raycastTarget = false;
         }
+    }
+
+    public void ShowName()
+    {
+        if (nameText == null)
+            return;
+        if (im.inventoryDictionary[this].item == null || im.inventoryDictionary[this].amount<1)
+            return;
+        nameText.transform.GetChild(0).GetComponent<Text>().text = im.inventoryDictionary[this].item.name;
+        nameText.SetActive(true);
+    }
+    public void HideName()
+    {
+        if (nameText == null)
+            return;
+        nameText.SetActive(false);
     }
 
 }

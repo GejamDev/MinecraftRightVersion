@@ -7,6 +7,7 @@ TagManager:
   - DamageZone
   - Water
   - ExplosionZone
+  - Lava
   layers:
   - Default
   - TransparentFX
@@ -19,6 +20,9 @@ TagManager:
   - Ground
   - Object
   - Item
+  - Player
+  - Lava
+  - PlayerLiquidDetector
   - 
   - 
   - 
@@ -36,10 +40,7 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
-  - Camera
+  - PostProcessing
   m_SortingLayers:
   - name: Default
     uniqueID: 0

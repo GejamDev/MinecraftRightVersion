@@ -8,8 +8,10 @@ public class MeshGenerator : MonoBehaviour
     WorldGenerationPreset wgPreset;
     ChunkLoader cl;
     WaterManager wm;
+    public GameObject waterColliderPrefab;
+    public GameObject lavaColliderPrefab;
 
-    
+
     public float terrainSuface;
     public float caveStartLevel;
     public float caveSurface;
@@ -32,7 +34,10 @@ public class MeshGenerator : MonoBehaviour
     public bool smoothWater;
 
     public int maxPossibleHeight;
-    
+
+    public float waterCollisionGenTime;
+    public float lavaCollisionGenTime;
+
     void Awake()
     {
         wgPreset = usm.worldGenerationPreset;
@@ -106,9 +111,9 @@ public class MeshGenerator : MonoBehaviour
                 {
                     float groundNoise;
                     groundNoise = y - thisHeight;
-                    if (isWater && groundNoise >= 0 && y < originalHeight)
+                    if (isWater && groundNoise >= 0 && y - 1< originalHeight && y-1>=0)
                     {
-                        cs.waterData.Add(new Vector3(x, y, z));
+                        cs.waterData.Add(new Vector3(x, y - 1, z));
                     }
 
 
@@ -151,23 +156,26 @@ public class MeshGenerator : MonoBehaviour
                     float lavaNoise = lavaNoiseMap[x, y, z];
                     if (lavaNoise < lavaSurfaceLevel && cs.terrainMap[x, y, z] <= terrainSuface)
                     {
-                        bool onGround = false;
-                        if(y == 0)
+                        if (y >= 1)
                         {
-                            onGround = true;
-                        }
-                        else if(cs.terrainMap[x,y-1, z] <= terrainSuface)
-                        {
-                            onGround = true;
-                        }
-                        else if(cs.lavaData.Contains(new Vector3(x, y - 1, z)))
-                        {
-                            onGround = true;
-                        }
-                        if (onGround)
-                        {
-                            cs.terrainMap[x, y, z] = 1;
-                            cs.lavaData.Add(new Vector3(x, y, z));
+                            bool onGround = false;
+                            if (y == 1)
+                            {
+                                onGround = true;
+                            }
+                            else if (cs.terrainMap[x, y, z] <= terrainSuface)
+                            {
+                                onGround = true;
+                            }
+                            else if (cs.lavaData.Contains(new Vector3(x, y - 2, z)))
+                            {
+                                onGround = true;
+                            }
+                            if (onGround)
+                            {
+                                cs.terrainMap[x, y, z] = 1;
+                                cs.lavaData.Add(new Vector3(x, y - 1, z));
+                            }
                         }
                     }
                 }
@@ -411,7 +419,7 @@ public class MeshGenerator : MonoBehaviour
             }
         }
 
-        BuildWaterMesh(cs);
+        BuildWaterMesh(cs, 0);
 
         //yield return null;
     }
@@ -431,8 +439,7 @@ public class MeshGenerator : MonoBehaviour
 
     IEnumerator GenerateWaterMesh_WaitForFinishedChunk(ChunkScript cs, bool delay)
     {
-        if(!cl.chunkDictionary.ContainsKey(cs.position + Vector2.right * wgPreset.chunkSize) || !cl.chunkDictionary.ContainsKey(cs.position + Vector2.right * wgPreset.chunkSize) ||!cl.chunkDictionary.ContainsKey(cs.position + Vector2.up * wgPreset.chunkSize) ||
-        cl.chunkDictionary.ContainsKey(cs.position + Vector2.down * wgPreset.chunkSize))
+        if(!cl.chunkDictionary.ContainsKey(cs.position + Vector2.right * wgPreset.chunkSize) || !cl.chunkDictionary.ContainsKey(cs.position + Vector2.left * wgPreset.chunkSize) ||!cl.chunkDictionary.ContainsKey(cs.position + Vector2.up * wgPreset.chunkSize) || cl.chunkDictionary.ContainsKey(cs.position + Vector2.down * wgPreset.chunkSize))
         {
 
             yield return new WaitUntil(() =>
@@ -503,7 +510,7 @@ public class MeshGenerator : MonoBehaviour
         //}
 
 
-        BuildWaterMesh(cs);
+        BuildWaterMesh(cs, waterCollisionGenTime);
     }
 
     int GetCubeConfiguration_Water(bool[] cube)
@@ -668,14 +675,37 @@ public class MeshGenerator : MonoBehaviour
 
 
 
-    public void BuildWaterMesh(ChunkScript cs)
+    public void BuildWaterMesh(ChunkScript cs, float collisionDelay)
     {
         Mesh mesh = new Mesh();
         mesh.vertices = cs.vertices_water.ToArray();
         mesh.triangles = cs.triangles_water.ToArray();
         mesh.RecalculateNormals();
         cs.waterMF.mesh = mesh;
-        cs.waterMC.sharedMesh = mesh;
+        cs.waterMC.sharedMesh  = mesh;
+        if (cs.playerInWater)
+        {
+            cs.FlipWaterMesh();
+        }
+        //generate collision
+        for (int i = 0; i < cs.waterCollisionParent.childCount; i++)
+        {
+            Destroy(cs.waterCollisionParent.GetChild(i).gameObject);
+        }
+        StartCoroutine(BuildWaterCollision(collisionDelay, cs));
+    }
+    IEnumerator BuildWaterCollision(float time, ChunkScript cs)
+    {
+        if (time != 0)
+            yield return new WaitForSeconds(time);
+
+        foreach (Vector3 v in cs.waterData)
+        {
+            GameObject b = Instantiate(waterColliderPrefab);
+            b.transform.position = v + cs.waterObj.transform.position;
+            b.transform.SetParent(cs.waterCollisionParent);
+        }
+
     }
 
 
@@ -691,7 +721,9 @@ public class MeshGenerator : MonoBehaviour
     public void ReGenerateLavaMesh(ChunkScript cs, List<Vector3> modifiedPos)
     {
         if (cs.lavaPointDictionary.Count == 0)
+        {
             return;
+        }
         int preVCount = cs.vertices_lava.Count;
         int preTCount = cs.triangles_lava.Count;
         cs.vertices_lava.Clear();
@@ -728,20 +760,20 @@ public class MeshGenerator : MonoBehaviour
             }
         }
 
-        BuildLavaMesh(cs);
+        BuildLavaMesh(cs, 0);
 
         //yield return null;
     }
 
 
-    public void GenerateLavaMesh(ChunkScript cs, bool delay)
+    public void GenerateLavaMesh(ChunkScript cs, bool delay, bool colGen)
     {
 
-        StartCoroutine(GenerateLavaMesh_WaitForFinishedChunk(cs, delay));
+        StartCoroutine(GenerateLavaMesh_WaitForFinishedChunk(cs, delay, colGen));
 
     }
 
-    IEnumerator GenerateLavaMesh_WaitForFinishedChunk(ChunkScript cs, bool delay)
+    IEnumerator GenerateLavaMesh_WaitForFinishedChunk(ChunkScript cs, bool delay, bool colGen)
     {
         #region wait
         yield return new WaitUntil(() =>
@@ -806,12 +838,12 @@ public class MeshGenerator : MonoBehaviour
         {
             bool needDelay;
             MarchLavaCube(cs, v, out needDelay, checkedPosList, out checkedPosList);
-            yield return new WaitForSeconds(0.01f);
             if (delay && needDelay)
             {
+                yield return new WaitForSeconds(0.01f);
             }
         }
-        BuildLavaMesh(cs);
+        BuildLavaMesh(cs, colGen ? lavaCollisionGenTime : 0);
     }
 
     int GetCubeConfiguration_Lava(bool[] cube)
@@ -982,7 +1014,7 @@ public class MeshGenerator : MonoBehaviour
 
 
 
-    public void BuildLavaMesh(ChunkScript cs)
+    public void BuildLavaMesh(ChunkScript cs, float time)
     {
         Mesh mesh = new Mesh();
         mesh.vertices = cs.vertices_lava.ToArray();
@@ -990,6 +1022,32 @@ public class MeshGenerator : MonoBehaviour
         mesh.RecalculateNormals();
         cs.lavaMF.mesh = mesh;
         cs.lavaMC.sharedMesh = mesh;
+
+
+        if (cs.playerInLava)
+        {
+            cs.FlipLavaMesh();
+        }
+
+        //generate collision
+        for (int i = 0; i < cs.lavaCollisionParent.childCount; i++)
+        {
+            Destroy(cs.lavaCollisionParent.GetChild(i).gameObject);
+        }
+        StartCoroutine(BuildLavaCollision(time, cs));
+    }
+
+    IEnumerator BuildLavaCollision(float time, ChunkScript cs)
+    {
+        if (time != 0)
+            yield return new WaitForSeconds(time);
+
+        foreach (Vector3 v in cs.lavaData)
+        {
+            GameObject b = Instantiate(lavaColliderPrefab);
+            b.transform.position = v + cs.lavaObj.transform.position;
+            b.transform.SetParent(cs.lavaCollisionParent);
+        }
     }
 
 

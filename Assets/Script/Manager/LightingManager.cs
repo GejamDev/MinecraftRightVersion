@@ -11,7 +11,6 @@ public class LightingManager : MonoBehaviour
     public Light DirectionalLight;
     public LightingPreset Preset;
     public Material skybox;
-    public PostProcessVolume volume;
     public ColorGrading colorGrading;
     public GameObject SunMoon;
     public Image blackColor;

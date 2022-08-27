@@ -80,7 +80,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 1
     - _GlossyReflections: 1
-    - _Height: 0
+    - _Height: 0.01
     - _HorSpeed: 0.67
     - _Metallic: 0
     - _Mode: 3
@@ -92,7 +92,7 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _Softness: 0.021
     - _SpecularHighlights: 1
-    - _SpeedV: 10
+    - _SpeedV: 1
     - _SrcBlend: 1
     - _Stretch: 2
     - _TopScale: 0.15

@@ -10,18 +10,22 @@ public class Custom_R_Bucket : MonoBehaviour
     WaterManager wm;
     InventoryManager im;
     Transform cam;
+    LavaManager lm;
     public float maxDistance;
     public float drainRadius;
     public float delay;
     public LayerMask waterLayer;
+    public LayerMask lavaLayer;
     public Item waterBucket;
-    
+    public Item lavaBucket;
+
     private void Awake()
     {
         cam = Camera.main.transform;
 
         wm = usm.waterManager;
         im = usm.inventoryManager;
+        lm = usm.lavaManager;
     }
     public void Use()
     {
@@ -30,11 +34,14 @@ public class Custom_R_Bucket : MonoBehaviour
 
 
         RaycastHit hit_water;
-        if (Physics.Raycast(cam.position, cam.forward, out hit_water, maxDistance, waterLayer))
+        RaycastHit hit_lava;
+        bool waterDetected = Physics.Raycast(cam.position, cam.forward, out hit_water, maxDistance, waterLayer);
+        bool lavaDetected = Physics.Raycast(cam.position, cam.forward, out hit_lava, maxDistance, lavaLayer);
+        void DoWater()
         {
             Vector3 dryingPos = hit_water.point;
 
-            ChunkScript chunk = hit_water.collider.transform.parent.parent.GetComponent<ChunkScript>();
+            ChunkScript chunk = hit_water.collider.transform.parent.parent.parent.GetComponent<ChunkScript>();
             StartCoroutine(wm.DrainWater(chunk, dryingPos, drainRadius, delay));
 
 
@@ -51,6 +58,49 @@ public class Custom_R_Bucket : MonoBehaviour
             }
             usedCell.UpdateCell();
             im.UpdateSeletedSlot();
+
+        }
+        void DoLava()
+        {
+            Vector3 dryingPos = hit_lava.point;
+
+            ChunkScript chunk = hit_lava.collider.transform.parent.parent.parent.GetComponent<ChunkScript>();
+            StartCoroutine(lm.DrainLava(chunk, dryingPos, drainRadius, delay));
+
+
+            //swap item 
+            im.inventoryDictionary[usedCell].amount--;
+            if (im.inventoryDictionary[usedCell].amount <= 0)
+            {
+                im.inventoryDictionary[usedCell].item = waterBucket;
+                im.inventoryDictionary[usedCell].amount = 1;
+            }
+            else
+            {
+                im.ObtainItem(new InventorySlot { item = lavaBucket, amount = 1 });
+            }
+            usedCell.UpdateCell();
+            im.UpdateSeletedSlot();
+
+        }
+        if (waterDetected&&!lavaDetected)
+        {
+            DoWater();
+        }
+        else if (lavaDetected && !waterDetected)
+        {
+            DoLava();
+        }
+        else if(lavaDetected && waterDetected)
+        {
+            if(Vector3.Distance(cam.transform.position, hit_water.point) > Vector3.Distance(cam.transform.position, hit_lava.point))
+            {
+                DoWater();
+            }
+            else
+            {
+                DoLava();
+            }
         }
     }
 }

@@ -1,18 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 public class ChunkScript : MonoBehaviour
 {
     [Header("Objects")]
     public GameObject objectBundle;
     public GameObject meshObject;
     public GameObject bedrock;
-    public GameObject waterObj;
-    public GameObject lavaObj;
-    public MeshFilter waterMF;
-    public MeshFilter lavaMF;
-    public MeshCollider waterMC;
-    public MeshCollider lavaMC;
+    public Transform waterCollisionParent;
+    public Transform lavaCollisionParent;
 
     [Header("Properties")]
     public bool activated;
@@ -31,6 +28,27 @@ public class ChunkScript : MonoBehaviour
     WorldGenerator wg;
     ObjectPool objectPool;
 
+    [Header("Water Stuff")]
+    public GameObject waterObj;
+    public MeshFilter waterMF;
+    public MeshCollider waterMC;
+    public MeshRenderer waterMR;
+    public Material defaultWaterMaterial;
+    public Material waterMaterialInWater;
+    public bool playerInWater;
+
+    [Header("Lava Stuff")]
+    public GameObject lavaObj;
+    public MeshFilter lavaMF;
+    public MeshCollider lavaMC;
+    public MeshRenderer lavaMR;
+    public Material defaultLavaMaterial;
+    public Material lavaMaterialInWater;
+    public bool playerInLava;
+
+
+
+    [HideInInspector] public FirstPersonController fpc;
 
     [HideInInspector] public MeshRenderer mr;
     [HideInInspector] public MeshCollider mc;
@@ -83,6 +101,36 @@ public class ChunkScript : MonoBehaviour
     [HideInInspector] public List<Vector3Int> blockPositionData = new List<Vector3Int>();
 
 
+    private void Update()
+    {
+        bool preWaterState = playerInWater;
+        bool preLavaState = playerInLava;
+        if (fpc != null)
+        {
+            playerInWater = fpc.headInWater;
+            playerInLava = fpc.headInLava;
+        }
+        if((preWaterState && !playerInWater) || (!preWaterState && playerInWater))
+        {
+            FlipWaterMesh();
+        }
+        if ((preLavaState && !playerInLava) || (!preLavaState && playerInLava))
+        {
+            FlipLavaMesh();
+        }
+        waterObj.SetActive(waterData.Count != 0);
+        lavaObj.SetActive(lavaData.Count != 0);
+    }
+    public void FlipWaterMesh()
+    {
+        waterMF.mesh.triangles = waterMF.mesh.triangles.Reverse().ToArray();
+        waterMR.material = fpc.headInWater ? waterMaterialInWater : defaultWaterMaterial;
+    }
+    public void FlipLavaMesh()
+    {
+        lavaMF.mesh.triangles = lavaMF.mesh.triangles.Reverse().ToArray();
+        lavaMR.material = fpc.headInWater ? lavaMaterialInWater : defaultLavaMaterial;
+    }
 
     public void GetVariables()
     {
@@ -127,27 +175,20 @@ public class ChunkScript : MonoBehaviour
             lm.modifiedChunksDataDictionary.Add(this, new UpdatedChunkData { cs = this, modifiedPoses = new List<Vector3>() });
         }
     }
-    private void Update()
+
+    public void ReGenerateLiquidMesh()
     {
-        if (Input.GetKeyDown(KeyCode.T))
+        if (!wm.modifiedChunkDataKeys.Contains(this))
         {
-            if (!wm.modifiedChunkDataKeys.Contains(this))
-            {
-                wm.modifiedChunkDataKeys.Add(this);
-                wm.modifiedChunksDataDictionary.Add(this, new UpdatedChunkData { cs = this, modifiedPoses = new List<Vector3>() });
-            }
+            wm.modifiedChunkDataKeys.Add(this);
+            wm.modifiedChunksDataDictionary.Add(this, new UpdatedChunkData { cs = this, modifiedPoses = new List<Vector3>() });
         }
-        else if (Input.GetKeyDown(KeyCode.R))
+        if (!lm.modifiedChunkDataKeys.Contains(this))
         {
-            vertices_water.Clear();
-            triangles_water.Clear();
-            verticesRangeDictionary_water.Clear();
-            waterPointDictionary.Clear();
-            wpdList.Clear();
-            wm.GenerateWater(this, true);
+            lm.modifiedChunkDataKeys.Add(this);
+            lm.modifiedChunksDataDictionary.Add(this, new UpdatedChunkData { cs = this, modifiedPoses = new List<Vector3>() });
         }
     }
-
 
 }
 [System.Serializable]
