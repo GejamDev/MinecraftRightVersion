@@ -138,13 +138,17 @@ public class TerrainModifier : MonoBehaviour
             if (currentlyTouchingObject == null)
             {
                 usedItem_CameraShake.Clear();
+
                 return;
             }
             else
             {
                 sm.PlaySound("Punch", 1);
 
-                if(currentlyTouchingObject.type == ModifiableObjectType.Weak)
+
+                DestroyStuffInChunk(currentlyTouchingObject.transform.parent.parent.GetComponent<ChunkScript>(), touchingPosition);
+
+                if (currentlyTouchingObject.type == ModifiableObjectType.Weak)
                 {
                     //modify object
                     currentlyTouchingObject.Interact();
@@ -372,24 +376,7 @@ public class TerrainModifier : MonoBehaviour
 
 
 
-
-        //destroy grass
-        bool destroyedGrass = false;
-        for (int i = 0; i < cs.grassList.Count; i++)
-        {
-            GrassScript gs = cs.grassList[i];
-            if (Vector3.Distance(gs.transform.position, touchingPosition) <= destroyMaxDistance + 0.5f)
-            {
-                gs.Scatter();
-                cs.grassList.RemoveAt(i);
-                i--;
-                destroyedGrass = true;
-            }
-        }
-        if (destroyedGrass)
-        {
-            sm.PlaySound("DestroyGrass" + Random.Range(1, 5).ToString(), 1);
-        }
+        DestroyStuffInChunk(cs, touchingPosition);
 
 
 
@@ -430,6 +417,45 @@ public class TerrainModifier : MonoBehaviour
             im.ObtainItem(new InventorySlot { item = flintItem, amount = 1 }, 0, 36);
         }
 
+    }
+    public void DestroyStuffInChunk(ChunkScript cs, Vector3 pos)
+    {
+
+        //destroy grass
+        bool destroyedGrass = false;
+        for (int i = 0; i < cs.grassList.Count; i++)
+        {
+            GrassScript gs = cs.grassList[i];
+            if (Vector3.Distance(gs.transform.position, pos) <= destroyMaxDistance + 0.5f)
+            {
+                gs.Scatter();
+                cs.grassList.RemoveAt(i);
+                i--;
+                destroyedGrass = true;
+            }
+        }
+        if (destroyedGrass)
+        {
+            sm.PlaySound("DestroyGrass" + Random.Range(1, 5).ToString(), 1);
+        }
+
+        bool destroyedFire = false;
+        for (int i = 0; i < cs.fireData.Count; i++)
+        {
+            FireScript fs = cs.fireDictionary[cs.fireData[i]];
+            if (Vector3.Distance(fs.transform.position, pos) <= destroyMaxDistance + 0.5f)
+            {
+                Destroy(fs.gameObject);
+                cs.fireDictionary.Remove(cs.fireData[i]);
+                cs.fireData.RemoveAt(i);
+                i--;
+                destroyedFire = true;
+            }
+        }
+        if (destroyedFire)
+        {
+            sm.PlaySound("DestroyGrass" + Random.Range(1, 5).ToString(), 1);
+        }
     }
     void Place()
     {

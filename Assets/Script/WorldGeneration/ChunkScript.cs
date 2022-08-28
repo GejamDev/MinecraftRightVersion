@@ -17,6 +17,8 @@ public class ChunkScript : MonoBehaviour
     public float[,,] terrainMap;
     public float[,] heightMap;
     public List<GrassScript> grassList = new List<GrassScript>();
+    public List<ObsidianBlock> obsidianData = new List<ObsidianBlock>();
+    public List<Vector3> netherPortalData = new List<Vector3>();
     public BiomeProperty biomeProperty;
 
 
@@ -99,6 +101,8 @@ public class ChunkScript : MonoBehaviour
 
     [HideInInspector] public List<GameObject> ores = new List<GameObject>();
     [HideInInspector] public List<Vector3Int> blockPositionData = new List<Vector3Int>();
+    [HideInInspector] public List<Vector3> fireData = new List<Vector3>();
+    [HideInInspector] public Dictionary<Vector3, FireScript> fireDictionary = new Dictionary<Vector3, FireScript>();
 
 
     private void Update()

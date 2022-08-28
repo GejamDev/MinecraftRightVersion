@@ -14,6 +14,7 @@ public class LavaManager : MonoBehaviour
     int addedModifiedChunkCount = 0;
     public List<ChunkScript> modifiedChunkDataKeys = new List<ChunkScript>();
     public Dictionary<ChunkScript, UpdatedChunkData> modifiedChunksDataDictionary = new Dictionary<ChunkScript, UpdatedChunkData>();
+    public int lavaFireTime;
 
 
     void Awake()

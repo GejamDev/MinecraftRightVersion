@@ -8,6 +8,7 @@ TagManager:
   - Water
   - ExplosionZone
   - Lava
+  - Fire
   layers:
   - Default
   - TransparentFX
@@ -23,7 +24,7 @@ TagManager:
   - Player
   - Lava
   - PlayerLiquidDetector
-  - 
+  - Fire
   - 
   - 
   - 

@@ -35,6 +35,8 @@ public class UniversalScriptManager : MonoBehaviour
     public ExplosionManager explosionManager;
     public LavaManager lavaManager;
     public BlockPlacementManager blockPlacementManager;
+    public FireManager fireManager;
+    public NetherPortalGenerationManager netherPortalGenerationManager;
 
     [Header("Layer")]
     public LayerMask groundLayer;

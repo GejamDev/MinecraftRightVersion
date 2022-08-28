@@ -58,14 +58,21 @@ public class BlockPlacementManager : MonoBehaviour
             }
 
             ChunkScript parentCs = cl.chunkDictionary[new Vector2(Mathf.Floor(blockPos.x / 8) * 8, Mathf.Floor(blockPos.z / 8) * 8)].cs;
-            if (parentCs.blockPositionData.Contains(new Vector3Int((int)blockPos.x, (int)blockPos.y, (int)blockPos.z)))
+            if (parentCs.blockPositionData.Contains(new Vector3Int((int)blockPos.x - (int)parentCs.position.x, (int)blockPos.y, (int)blockPos.z - (int)parentCs.position.y)))
             {
                 Destroy(block);
                 return;
             }
-            parentCs.blockPositionData.Add(new Vector3Int((int)blockPos.x, (int)blockPos.y, (int)blockPos.z) - new Vector3Int((int)parentCs.position.x, 0, (int)parentCs.position.y));
             block.transform.SetParent(parentCs.objectBundle.transform);
+            parentCs.blockPositionData.Add(new Vector3Int((int)blockPos.x, (int)blockPos.y, (int)blockPos.z) - new Vector3Int((int)parentCs.position.x, 0, (int)parentCs.position.y));
 
+
+            ObsidianBlock ob;
+            if(block.TryGetComponent<ObsidianBlock>(out ob))
+            {
+                parentCs.obsidianData.Add(ob);
+                ob.cs = parentCs;
+            }
 
         }
         else

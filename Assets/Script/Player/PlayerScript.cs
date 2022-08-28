@@ -7,6 +7,10 @@ public class PlayerScript : MonoBehaviour
     public UniversalScriptManager usm;
     HpManager hm;
     SoundManager sm;
+    public bool onFire;
+    float fireLeftTime;
+    public ParticleSystem fireParticle;
+    public Light fireLight;
 
     void Awake()
     {
@@ -19,6 +23,17 @@ public class PlayerScript : MonoBehaviour
         {
             transform.position = new Vector3(15.3f, 28, 39);
         }
+
+        if (onFire)
+        {
+            fireLeftTime -= Time.deltaTime;
+            if (fireLeftTime <= 0)
+            {
+                onFire = false;
+                fireParticle.Stop();
+                fireLight.enabled = false;
+            }
+        }
     }
     void OnTriggerEnter(Collider other)
     {
@@ -28,11 +43,28 @@ public class PlayerScript : MonoBehaviour
         }
         if (other.gameObject.CompareTag("Water"))
         {
+            onFire = false;
+            fireParticle.Stop();
+            fireLight.enabled = false;
             sm.PlaySound("WaterSplash", 1);
         }
         else if (other.gameObject.CompareTag("Lava"))
         {
 
+        }
+    }
+    public void LitFire(float time)
+    {
+        if (!onFire)
+        {
+            fireParticle.Play();
+            fireLight.enabled = true;
+            onFire = true;
+            fireLeftTime = time;
+        }
+        else if (fireLeftTime < time)
+        {
+            fireLeftTime = time;
         }
     }
 }

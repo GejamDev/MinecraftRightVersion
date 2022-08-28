@@ -11,6 +11,8 @@ public class HpManager : MonoBehaviour
     CameraManager cm;
     HungerManager hungerM;
     SoundManager sm;
+    PlayerScript ps;
+    LavaManager lm;
     public GameObject deathUI;
     [Header("HP")]
     public int hp;
@@ -38,6 +40,10 @@ public class HpManager : MonoBehaviour
     public float lavaTick;
     public int lavaDamage;
 
+    [Header("Fire")]
+    public float fireTick;
+    public int fireDamage;
+
     void Awake()
     {
         fpc = usm.firstPersonController;
@@ -45,6 +51,8 @@ public class HpManager : MonoBehaviour
         cm = usm.cameraManager;
         hungerM = usm.hungerManager;
         sm = usm.soundManager;
+        ps = usm.player.GetComponent<PlayerScript>();
+        lm = usm.lavaManager;
         hp = 20;
         for (int i = 0; i < 10; i++)
         {
@@ -56,6 +64,7 @@ public class HpManager : MonoBehaviour
         StartCoroutine(AutoRegenHealth());
         StartCoroutine(Starve());
         CheckLavaDamageTick();
+        CheckFireDamageTick();
     }
 
     void UpdateHpUI()
@@ -163,7 +172,16 @@ public class HpManager : MonoBehaviour
         if (fpc.inLava)
         {
             TakeDamage(lavaDamage);
+            ps.LitFire(lm.lavaFireTime);
         }
         Invoke(nameof(CheckLavaDamageTick), lavaTick);
+    }
+    public void CheckFireDamageTick()
+    {
+        if (ps.onFire)
+        {
+            TakeDamage(fireDamage);
+        }
+        Invoke(nameof(CheckFireDamageTick), fireTick);
     }
 }
