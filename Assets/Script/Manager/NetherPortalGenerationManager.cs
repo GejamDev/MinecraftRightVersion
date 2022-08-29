@@ -4,8 +4,17 @@ using UnityEngine;
 
 public class NetherPortalGenerationManager : MonoBehaviour
 {
+    public UniversalScriptManager usm;
+    CameraManager cm;
      public List<NetherPortalRecipe> netherPortalRecipes = new List<NetherPortalRecipe>();
     public GameObject netherPortalPrefab;
+    public float generated_camShakeTime;
+    public float generated_camShakeIntensity;
+
+    private void Awake()
+    {
+        cm = usm.cameraManager;
+    }
     public void TryMakeNetherPortal(ObsidianBlock ob, out bool succeded)
     {
         List<ObsidianBlock> obsidianDatas = new List<ObsidianBlock>();
@@ -64,7 +73,9 @@ public class NetherPortalGenerationManager : MonoBehaviour
                     succeded = true;
 
                     Debug.Log("success");
-                    if(cs.netherPortalData.Contains(recipe.t_pos + pos - startpos - new Vector3(cs.position.x, 0, cs.position.y)))
+                    cm.ShakeCamera(generated_camShakeTime, generated_camShakeIntensity, true, 0);
+                    cm.ShakeCamera(generated_camShakeTime*15, generated_camShakeIntensity/30, true, 0);
+                    if (cs.netherPortalData.Contains(recipe.t_pos + pos - startpos - new Vector3(cs.position.x, 0, cs.position.y)))
                     {
                         succeded = false;
                         return;
@@ -83,6 +94,8 @@ public class NetherPortalGenerationManager : MonoBehaviour
                     {
                         usedob.connectedPortalList.Add(np);
                     }
+
+
                     return;
                 }
             }

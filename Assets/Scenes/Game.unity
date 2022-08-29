@@ -17,7 +17,7 @@ RenderSettings:
   m_Fog: 1
   m_FogColor: {r: 1, g: 1, b: 1, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.008
+  m_FogDensity: 0.013
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 0.4
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: d9a12ffaaa5dd67418211def4dfaee9a, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 4323fde32dbcebf4195ad58c05f28e84, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -12004,7 +12004,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 1
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.75
@@ -12194,6 +12194,7 @@ Transform:
   - {fileID: 165956146}
   - {fileID: 1657675316}
   - {fileID: 1083017560}
+  - {fileID: 1653950328}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -13063,7 +13064,7 @@ MonoBehaviour:
   usm: {fileID: 1992538525}
   DirectionalLight: {fileID: 705507994}
   Preset: {fileID: 11400000, guid: 0c174f64528b4b642a30bac414f8afdf, type: 2}
-  skybox: {fileID: 2100000, guid: d9a12ffaaa5dd67418211def4dfaee9a, type: 2}
+  skybox: {fileID: 2100000, guid: 4323fde32dbcebf4195ad58c05f28e84, type: 2}
   colorGrading: {fileID: 0}
   SunMoon: {fileID: 950556665}
   blackColor: {fileID: 1697323388}
@@ -13719,6 +13720,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a7d4d9b9e2962649a77ba18eca2d181, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  usm: {fileID: 1992538525}
   netherPortalRecipes:
   - vectorList:
     - {x: 0, y: 0, z: 0}
@@ -13764,6 +13766,8 @@ MonoBehaviour:
     t_rot: {x: 0, y: 270, z: 0}
   netherPortalPrefab: {fileID: 3700748431851658003, guid: 6ce5ea07b721ab447a8954c210b56b42,
     type: 3}
+  generated_camShakeTime: 0.2
+  generated_camShakeIntensity: 50
 --- !u!1 &1129246768
 GameObject:
   m_ObjectHideFlags: 0
@@ -15032,6 +15036,50 @@ MonoBehaviour:
   targetRotation: {x: 0, y: 0, z: 0, w: 0}
   posFollowSpeed: 0
   rotFollowSpeed: 10
+--- !u!1 &1653950327
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1653950328}
+  - component: {fileID: 1653950329}
+  m_Layer: 0
+  m_Name: DimensionTransportationManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1653950328
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1653950327}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 736412979}
+  m_RootOrder: 28
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1653950329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1653950327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4243bc1fa3034394488df6dca97a14e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  usm: {fileID: 1992538525}
 --- !u!1 &1657675315
 GameObject:
   m_ObjectHideFlags: 0
@@ -16111,6 +16159,7 @@ MonoBehaviour:
   blockPlacementManager: {fileID: 165956147}
   fireManager: {fileID: 1657675317}
   netherPortalGenerationManager: {fileID: 1083017561}
+  dimensionTransportationManager: {fileID: 1653950329}
   groundLayer:
     serializedVersion: 2
     m_Bits: 256

@@ -40,7 +40,7 @@ public class Custom_R_WaterBucket : MonoBehaviour
         RaycastHit hit_ground;
         if (Physics.Raycast(cam.position, cam.forward, out hit_ground, maxDistance, groundLayer))
         {
-            Vector3 pouringPos = hit_ground.point + Vector3.up;// + Vector3.down;
+            Vector3 pouringPos = hit_ground.point - (hit_ground.point - cam.position).normalized * 0.3f;// + Vector3.down;
 
             ChunkScript chunk = hit_ground.collider.transform.parent.parent.GetComponent<ChunkScript>();
 

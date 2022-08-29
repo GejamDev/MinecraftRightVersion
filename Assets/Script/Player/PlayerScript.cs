@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerScript : MonoBehaviour
 {
     public UniversalScriptManager usm;
+    DimensionTransportationManager dtm;
     HpManager hm;
     SoundManager sm;
     public bool onFire;
@@ -16,6 +17,7 @@ public class PlayerScript : MonoBehaviour
     {
         hm = usm.hpManager;
         sm = usm.soundManager;
+        dtm = usm.dimensionTransportationManager;
     }
     private void Update()
     {
@@ -51,6 +53,10 @@ public class PlayerScript : MonoBehaviour
         else if (other.gameObject.CompareTag("Lava"))
         {
 
+        }
+        else if (other.gameObject.CompareTag("NetherPortal"))
+        {
+            dtm.GoToNether();
         }
     }
     public void LitFire(float time)

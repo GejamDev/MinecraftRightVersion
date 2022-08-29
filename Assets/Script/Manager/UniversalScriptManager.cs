@@ -37,6 +37,7 @@ public class UniversalScriptManager : MonoBehaviour
     public BlockPlacementManager blockPlacementManager;
     public FireManager fireManager;
     public NetherPortalGenerationManager netherPortalGenerationManager;
+    public DimensionTransportationManager dimensionTransportationManager;
 
     [Header("Layer")]
     public LayerMask groundLayer;

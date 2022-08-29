@@ -44,6 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67644a231e4bccc43864e497744549fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cs: {fileID: 0}
+  posInChunk: {x: 0, y: 0, z: 0}
 --- !u!1 &4795673491917411619
 GameObject:
   m_ObjectHideFlags: 0
@@ -55,9 +57,10 @@ GameObject:
   - component: {fileID: 2947367684082435624}
   - component: {fileID: 6317431115081533051}
   - component: {fileID: 5954871600833735185}
-  m_Layer: 0
+  - component: {fileID: 8302588542438963566}
+  m_Layer: 15
   m_Name: NetherPortal
-  m_TagString: Untagged
+  m_TagString: NetherPortal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -123,3 +126,16 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &8302588542438963566
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4795673491917411619}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}

@@ -9,6 +9,7 @@ TagManager:
   - ExplosionZone
   - Lava
   - Fire
+  - NetherPortal
   layers:
   - Default
   - TransparentFX
@@ -25,7 +26,7 @@ TagManager:
   - Lava
   - PlayerLiquidDetector
   - Fire
-  - 
+  - NetherPortal
   - 
   - 
   - 
