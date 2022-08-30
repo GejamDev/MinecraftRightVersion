@@ -12,7 +12,8 @@ public class MainMenuManager : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
-    public void StartNewWorld()
+    public void CreateNewWorld
+        ()
     {
         SceneManager.LoadScene("Game");
     }
