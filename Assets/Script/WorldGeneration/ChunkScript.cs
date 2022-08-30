@@ -15,6 +15,7 @@ public class ChunkScript : MonoBehaviour
     public bool activated;
     public Vector2 position;
     public float[,,] terrainMap;
+    public float[,,] terrainMap_pre;
     public float[,] heightMap;
     public List<GrassScript> grassList = new List<GrassScript>();
     public List<ObsidianBlock> obsidianData = new List<ObsidianBlock>();
@@ -29,6 +30,7 @@ public class ChunkScript : MonoBehaviour
     LavaManager lm;
     WorldGenerator wg;
     ObjectPool objectPool;
+    WorldDataRecorder wdr;
 
     [Header("Water Stuff")]
     public GameObject waterObj;
@@ -114,7 +116,7 @@ public class ChunkScript : MonoBehaviour
             playerInWater = fpc.headInWater;
             playerInLava = fpc.headInLava;
         }
-        if((preWaterState && !playerInWater) || (!preWaterState && playerInWater))
+        if ((preWaterState && !playerInWater) || (!preWaterState && playerInWater))
         {
             FlipWaterMesh();
         }
@@ -124,6 +126,11 @@ public class ChunkScript : MonoBehaviour
         }
         waterObj.SetActive(waterData.Count != 0);
         lavaObj.SetActive(lavaData.Count != 0);
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Debug.Log("1:" + terrainMap.GetLength(0) + "2:" + terrainMap.GetLength(1) + "3:" + terrainMap.GetLength(2));
+        }
     }
     public void FlipWaterMesh()
     {
@@ -177,6 +184,26 @@ public class ChunkScript : MonoBehaviour
         {
             lm.modifiedChunkDataKeys.Add(this);
             lm.modifiedChunksDataDictionary.Add(this, new UpdatedChunkData { cs = this, modifiedPoses = new List<Vector3>() });
+        }
+
+        if (wdr == null)
+        {
+            wdr = usm.worldDataRecorder;
+        }
+        for(int x = 0; x < terrainMap.GetLength(0); x++)
+        {
+            for (int y = 0; y < terrainMap.GetLength(1); y++)
+            {
+                for (int z = 0; z < terrainMap.GetLength(2); z++)
+                {
+                    if (terrainMap_pre[x, y, z] != terrainMap[x, y, z])
+                    {
+                        wdr.RecordTerrainData(new Vector3Int(x, y, z), terrainMap[x, y, z]);
+                        terrainMap_pre[x, y, z] = terrainMap[x, y, z];
+                        Debug.Log(new Vector3Int(x, y, z));
+                    }
+                }
+            }
         }
     }
 

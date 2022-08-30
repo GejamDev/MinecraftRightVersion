@@ -8,6 +8,7 @@ public class MeshGenerator : MonoBehaviour
     WorldGenerationPreset wgPreset;
     ChunkLoader cl;
     WaterManager wm;
+    SaveManager sm;
     public GameObject waterColliderPrefab;
     public GameObject lavaColliderPrefab;
 
@@ -43,6 +44,7 @@ public class MeshGenerator : MonoBehaviour
         wgPreset = usm.worldGenerationPreset;
         cl = usm.chunkLoader;
         wm = usm.waterManager;
+        sm = usm.saveManager;
 
         width = wgPreset.chunkSize;
         height = wgPreset.maxHeight;
@@ -56,6 +58,7 @@ public class MeshGenerator : MonoBehaviour
     public void GenerateMesh(ChunkScript cs, bool loadingTimeExists)
     {
         cs.terrainMap = new float[width + 1, height + 1, width + 1];
+        cs.terrainMap_pre = new float[width + 1, height + 1, width + 1];
         PopulateTerrainMap(cs);
         if (loadingTimeExists)
         {
@@ -126,6 +129,7 @@ public class MeshGenerator : MonoBehaviour
                     if (groundNoise >= caveStartLevel || y > maxPossibleHeight)// just ground
                     {
                         cs.terrainMap[x, y, z] = groundNoise;
+                        cs.terrainMap_pre[x, y, z] = groundNoise;
                     }
                     else//below the surface
                     {
@@ -138,6 +142,7 @@ public class MeshGenerator : MonoBehaviour
                         {
                             //make hole
                             cs.terrainMap[x, y, z] = terrainSuface + Mathf.Clamp(noiseMap2D[x, (z + Mathf.Abs(y)) % 5 ]*1, 0.1f, 1);
+                            cs.terrainMap_pre[x, y, z] = terrainSuface + Mathf.Clamp(noiseMap2D[x, (z + Mathf.Abs(y)) % 5] * 1, 0.1f, 1);
                         }
                     }
                 }
@@ -174,6 +179,7 @@ public class MeshGenerator : MonoBehaviour
                             if (onGround)
                             {
                                 cs.terrainMap[x, y, z] = 1;
+                                cs.terrainMap_pre[x, y, z] = 1;
                                 cs.lavaData.Add(new Vector3(x, y - 1, z));
                             }
                         }
@@ -181,6 +187,23 @@ public class MeshGenerator : MonoBehaviour
                 }
             }
         }
+        //load data
+        for (int x = 0; x < width+1; x++)
+        {
+            for (int y = 0; y < height+1; y++)
+            {
+                for (int z = 0; z < width + 1; z++)
+                {
+                    if (sm.modifiedTerrainValue.ContainsKey(new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)))
+                    {
+                        cs.terrainMap[x, y, z] = sm.modifiedTerrainValue[new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)];
+                        cs.terrainMap_pre[x, y, z] = sm.modifiedTerrainValue[new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)];
+                        Debug.Log("huh");
+                    }
+                }
+            }
+        }
+
     }
     IEnumerator CreateMeshData_Cor(ChunkScript cs, bool onlySurface)
     {

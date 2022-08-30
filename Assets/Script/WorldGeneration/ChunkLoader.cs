@@ -101,6 +101,8 @@ public class ChunkLoader : MonoBehaviour
     IEnumerator UpdateEnabledChunk_Cor()
     {
         loadingTerrain = true;
+
+
         bool spawnPlayerAtEnd = firstTimeLoading;
         if (spawnPlayerAtEnd)
         {
@@ -138,6 +140,14 @@ public class ChunkLoader : MonoBehaviour
         lm.goal = enabledChunkPositionList.Count;
         float lt = firstTimeLoading ? firstTimeLoadingTime : loadingTime;
         float lf = firstTimeLoading ? firstTimeLoadingFrequency : loadingFrequency;
+
+        //wait if fisrt
+        if (firstTimeLoading)
+        {
+            yield return new WaitForSeconds(1);
+        }
+
+
         for (int i = 0; i < enabledChunkPositionList.Count; i++)
         {
             lm.curProgress = i + 1;

@@ -5,37 +5,24 @@ using UnityEngine;
 public class DimensionTransportationManager : MonoBehaviour
 {
     public UniversalScriptManager usm;
+    SaveManager sm;
     GameObject player;
 
     private void Awake()
     {
         player = usm.player;
+        sm = usm.saveManager;
     }
 
     public void GoToNether()
     {
         Debug.Log("gotonether");
-
-        SaveSystem.SaveWorldData(usm);
+        sm.Save();
     }
 
     public void GoToOverWorld()
     {
         Debug.Log("gotooverworld");
-
-        WorldData data = SaveSystem.LoadWorldData();
-        player.transform.position = new Vector3(data.lastPlayerPosition_OverWorld[0], data.lastPlayerPosition_OverWorld[1], data.lastPlayerPosition_OverWorld[2]);
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            GoToNether();
-        }
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            GoToOverWorld();
-        }
-    }
 }

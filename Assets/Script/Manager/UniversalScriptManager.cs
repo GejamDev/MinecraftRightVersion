@@ -38,6 +38,9 @@ public class UniversalScriptManager : MonoBehaviour
     public FireManager fireManager;
     public NetherPortalGenerationManager netherPortalGenerationManager;
     public DimensionTransportationManager dimensionTransportationManager;
+    public WorldDataRecorder worldDataRecorder;
+    public SeedManager seedManager;
+    public SaveManager saveManager;
 
     [Header("Layer")]
     public LayerMask groundLayer;
