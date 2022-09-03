@@ -28,9 +28,10 @@ public class DebugManager : MonoBehaviour
             debugText.text =
                 "fps : " + (Mathf.Ceil(1 / Time.deltaTime)).ToString() + "\r\n" +
                 "player pos : " + player.transform.position.ToString() + "\r\n" +
-                "time of day:" + (Mathf.RoundToInt(lm.TimeOfDay)).ToString() + " (" + (lm.isNight ? "night" : "day") +  ")";
-                
-                
+                "time of day : " + (Mathf.RoundToInt(lm.TimeOfDay)).ToString() + " (" + (lm.isNight ? "night" : "day") + ")" + "\r\n" +
+                "seed : " + usm.seedManager.seed.ToString() + "\r\n" +
+                "world name : " + usm.saveManager.currentWorldName.ToString()
+
                 ;
         }
 

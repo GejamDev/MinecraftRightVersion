@@ -95,6 +95,9 @@ public class MeshGenerator : MonoBehaviour
 
         cs.heightMap = new float[noiseMap2D.GetLength(0), noiseMap2D.GetLength(1)];
 
+        bool hasSavedWaterData = sm.savedWaterData.ContainsKey(cs.position);
+        bool hasSaveLavaData = sm.savedLavaData.ContainsKey(cs.position);
+
         for (int x = 0; x < width + 1; x++)
         {
 
@@ -114,9 +117,12 @@ public class MeshGenerator : MonoBehaviour
                 {
                     float groundNoise;
                     groundNoise = y - thisHeight;
-                    if (isWater && groundNoise >= 0 && y - 1< originalHeight && y-1>=0)
+                    if (!hasSavedWaterData)
                     {
-                        cs.waterData.Add(new Vector3(x, y - 1, z));
+                        if (isWater && groundNoise >= 0 && y - 1 < originalHeight && y - 1 >= 0)
+                        {
+                            cs.waterData.Add(new Vector3(x, y - 1, z));
+                        }
                     }
 
 
@@ -141,7 +147,7 @@ public class MeshGenerator : MonoBehaviour
                         else
                         {
                             //make hole
-                            cs.terrainMap[x, y, z] = terrainSuface + Mathf.Clamp(noiseMap2D[x, (z + Mathf.Abs(y)) % 5 ]*1, 0.1f, 1);
+                            cs.terrainMap[x, y, z] = terrainSuface + Mathf.Clamp(noiseMap2D[x, (z + Mathf.Abs(y)) % 5] * 1, 0.1f, 1);
                             cs.terrainMap_pre[x, y, z] = terrainSuface + Mathf.Clamp(noiseMap2D[x, (z + Mathf.Abs(y)) % 5] * 1, 0.1f, 1);
                         }
                     }
@@ -152,7 +158,7 @@ public class MeshGenerator : MonoBehaviour
 
 
         //generate lava
-        for(int x = 0; x < lavaNoiseMap.GetLength(0); x++)
+        for (int x = 0; x < lavaNoiseMap.GetLength(0); x++)
         {
             for (int y = 0; y < lavaStartHeight; y++)
             {
@@ -180,30 +186,48 @@ public class MeshGenerator : MonoBehaviour
                             {
                                 cs.terrainMap[x, y, z] = 1;
                                 cs.terrainMap_pre[x, y, z] = 1;
-                                cs.lavaData.Add(new Vector3(x, y - 1, z));
+                                if (!hasSaveLavaData)
+                                {
+                                    cs.lavaData.Add(new Vector3(x, y - 1, z));
+                                }
                             }
                         }
                     }
                 }
             }
         }
+
         //load data
-        for (int x = 0; x < width+1; x++)
+        for (int x = 0; x < width + 1; x++)
         {
-            for (int y = 0; y < height+1; y++)
+            for (int y = 0; y < height + 1; y++)
             {
                 for (int z = 0; z < width + 1; z++)
                 {
                     if (sm.modifiedTerrainValue.ContainsKey(new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)))
                     {
+                        Debug.Log("fuck");
                         cs.terrainMap[x, y, z] = sm.modifiedTerrainValue[new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)];
                         cs.terrainMap_pre[x, y, z] = sm.modifiedTerrainValue[new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)];
-                        Debug.Log("huh");
                     }
                 }
             }
         }
-
+        if (hasSavedWaterData)
+        {
+            foreach (Vector3Int v in sm.savedWaterData[cs.position])
+            {
+                cs.waterData.Add(v);
+            }
+        }
+        if (hasSaveLavaData)
+        {
+            foreach (Vector3Int v in sm.savedLavaData[cs.position])
+            {
+                Debug.Log("yes");
+                cs.lavaData.Add(v);
+            }
+        }
     }
     IEnumerator CreateMeshData_Cor(ChunkScript cs, bool onlySurface)
     {

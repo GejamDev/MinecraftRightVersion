@@ -20,7 +20,6 @@ public class HungerManager : MonoBehaviour
     {
         fpc = usm.firstPersonController;
         player = usm.player;
-        hunger = 20;
         for (int i = 0; i < 10; i++)
         {
             GameObject h = Instantiate(hungerPrefab, HungerUI);

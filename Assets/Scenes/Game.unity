@@ -13119,6 +13119,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   setToSetting: 1
+  setted: 0
+  hasSpecificSpawnPos: 0
+  specificSpawnPos: {x: 0, y: 0, z: 0}
   usm: {fileID: 1992538525}
   loadingTerrain: 0
   firstTimeLoading: 1
@@ -14375,6 +14378,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a10dcf4e957bba445a1f595ad75cfdac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentWorldName: 
   usm: {fileID: 1992538525}
 --- !u!1 &1463448580
 GameObject:
@@ -14689,7 +14693,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usm: {fileID: 1992538525}
   deathUI: {fileID: 742189318}
-  hp: 0
+  hp: 20
   heartPrefab: {fileID: 4016817013430837404, guid: fa4abe2829ea8e74482cf3306cf6e3fa,
     type: 3}
   hpUI: {fileID: 607944739}
@@ -14973,6 +14977,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ad3d91bbf263d646855bd7c382ffdec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  modifiedTerrainDataKeys: []
 --- !u!1 &1623847286
 GameObject:
   m_ObjectHideFlags: 0
@@ -15983,38 +15988,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   usm: {fileID: 1992538525}
+  savedInventorySlotList: []
   itemThrowTransform: {fileID: 1180273292}
   itemThrowForce: 25
   additionalThrowForce: {x: 0, y: 10, z: 0}
   showingInventoryUI: 0
   inventoryUI: {fileID: 139753154}
-  savedInventorySlotList:
-  - item: {fileID: 11400000, guid: 85c3977be5e9b8b4fa5d9b5784d45a96, type: 2}
-    amount: 100
-  - item: {fileID: 11400000, guid: ceec430c23e301446bdca0292dbd8995, type: 2}
-    amount: 100
-  - item: {fileID: 11400000, guid: 54a30450d086cb84b93ecb5d215d248d, type: 2}
-    amount: 100
-  - item: {fileID: 11400000, guid: c208128b3178f7647a13f0f0bc0ca292, type: 2}
-    amount: 100
-  - item: {fileID: 11400000, guid: d7d5e611b887f8a47a942fb791921adf, type: 2}
-    amount: 100
-  - item: {fileID: 11400000, guid: 1c463a5861a1bd643aad6990a0a87127, type: 2}
-    amount: 100
-  - item: {fileID: 11400000, guid: 54445928ac7e4154db64515b3332fb43, type: 2}
-    amount: 1
-  - item: {fileID: 11400000, guid: 82d64e6b30a8e1746924da691737926b, type: 2}
-    amount: 1
-  - item: {fileID: 11400000, guid: ac45f2c66f2539f4ca14da5b5d798da0, type: 2}
-    amount: 999
-  - item: {fileID: 11400000, guid: ce48f8c4a2c7e9048853d6ae0c49fa4a, type: 2}
-    amount: 999
-  - item: {fileID: 11400000, guid: 315dbc154996e3247ae14d804bc1a0d0, type: 2}
-    amount: 999
-  - item: {fileID: 11400000, guid: ceec430c23e301446bdca0292dbd8995, type: 2}
-    amount: 999
-  - item: {fileID: 11400000, guid: 2633f9b17d5ccbf4886d34eadb683705, type: 2}
-    amount: 999
   inventoryCellList: []
   parent_main: {fileID: 231893010}
   parent_inside: {fileID: 1062496797}
@@ -16083,6 +16062,55 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0e2e0c20aadea0344ab0eff0cf11a514, type: 2}
   - {fileID: 11400000, guid: 1424a253df896004e837f9b4b107ac1e, type: 2}
   - {fileID: 11400000, guid: df9a5b2bd26fb734f9b34345f9bac51f, type: 2}
+  itemList:
+  - {fileID: 11400000, guid: ceec430c23e301446bdca0292dbd8995, type: 2}
+  - {fileID: 11400000, guid: cc6ad212242efcc44bec50a45e797cd0, type: 2}
+  - {fileID: 11400000, guid: 85c3977be5e9b8b4fa5d9b5784d45a96, type: 2}
+  - {fileID: 11400000, guid: 21e70d8f0ac4d404382583684710aa99, type: 2}
+  - {fileID: 11400000, guid: e1d4d3e8cd449274aa837f160bb1b67b, type: 2}
+  - {fileID: 11400000, guid: 9f751bdbaa3dbda4388fbd2c37e37a84, type: 2}
+  - {fileID: 11400000, guid: fcc011e686d8c5d45964c8b4d00ed28c, type: 2}
+  - {fileID: 11400000, guid: 2fd988ebd85a9834cbf04072d8e3c61a, type: 2}
+  - {fileID: 11400000, guid: 5b309ee9485f9954db5cd0e43a5b5461, type: 2}
+  - {fileID: 11400000, guid: 1b36ccfb84449ec4a957a7df61bb750b, type: 2}
+  - {fileID: 11400000, guid: bd2ea04b8205bfe44a991b1776a1aeef, type: 2}
+  - {fileID: 11400000, guid: 315dbc154996e3247ae14d804bc1a0d0, type: 2}
+  - {fileID: 11400000, guid: 6fa2f755e9604e646a860353bf212add, type: 2}
+  - {fileID: 11400000, guid: 6a51ab35e898f324f8cfbe6dced975d3, type: 2}
+  - {fileID: 11400000, guid: ce48f8c4a2c7e9048853d6ae0c49fa4a, type: 2}
+  - {fileID: 11400000, guid: 39b9585b3ca50fb40b66e77169a3343e, type: 2}
+  - {fileID: 11400000, guid: 581e596a4d88c91459f0c4e26e978144, type: 2}
+  - {fileID: 11400000, guid: 829cb12e0948de74898416a5da185c3a, type: 2}
+  - {fileID: 11400000, guid: 70751095c7965884ab7eeaa890c2604e, type: 2}
+  - {fileID: 11400000, guid: 2633f9b17d5ccbf4886d34eadb683705, type: 2}
+  - {fileID: 11400000, guid: c7b7cb84cea7c82488a542c87d03aa99, type: 2}
+  - {fileID: 11400000, guid: fe40d32e569b6ab43b9d4de1e7613850, type: 2}
+  - {fileID: 11400000, guid: 57b45f31bf4b9ea4691b4ce2d7052b5e, type: 2}
+  - {fileID: 11400000, guid: 54445928ac7e4154db64515b3332fb43, type: 2}
+  - {fileID: 11400000, guid: c208128b3178f7647a13f0f0bc0ca292, type: 2}
+  - {fileID: 11400000, guid: c0ec22c6df968d2438dffc1cf2584990, type: 2}
+  - {fileID: 11400000, guid: 54a30450d086cb84b93ecb5d215d248d, type: 2}
+  - {fileID: 11400000, guid: a4626fed32bf4ee48aef3d10637ef44b, type: 2}
+  - {fileID: 11400000, guid: 090e09ec504a2be43b2dfc775bdf8a8b, type: 2}
+  - {fileID: 11400000, guid: 82d64e6b30a8e1746924da691737926b, type: 2}
+  - {fileID: 11400000, guid: 76f49113cdb0872468e1513613276d86, type: 2}
+  - {fileID: 11400000, guid: e430f745e3abeaa4192ed007273dd46a, type: 2}
+  - {fileID: 11400000, guid: c8b0eaa2bee81c2489f10efef961988a, type: 2}
+  - {fileID: 11400000, guid: b116632281932be4eb3a8fbf2f9b9007, type: 2}
+  - {fileID: 11400000, guid: d7d5e611b887f8a47a942fb791921adf, type: 2}
+  - {fileID: 11400000, guid: 57c9059eb9aafce4099aa33fe92cbec6, type: 2}
+  - {fileID: 11400000, guid: 02d54fa7397b03e49983c198ae877141, type: 2}
+  - {fileID: 11400000, guid: 1b2f9c7296f3286429e8965523f89f9d, type: 2}
+  - {fileID: 11400000, guid: 1c463a5861a1bd643aad6990a0a87127, type: 2}
+  - {fileID: 11400000, guid: 66357c4d2cdd10e4da69b8205aa926f0, type: 2}
+  - {fileID: 11400000, guid: f243d6d3f3acbaa4798f08d73ec920cd, type: 2}
+  - {fileID: 11400000, guid: 79486021869f4604d9be5a3f882b73fa, type: 2}
+  - {fileID: 11400000, guid: e9445f28ddd1fd644aa9bcc8b515d09f, type: 2}
+  - {fileID: 11400000, guid: ac45f2c66f2539f4ca14da5b5d798da0, type: 2}
+  - {fileID: 11400000, guid: 6ef627153a4e44348a28370145aecd34, type: 2}
+  - {fileID: 11400000, guid: b07a87481e11fb046aebf96e7a0812e4, type: 2}
+  - {fileID: 11400000, guid: 2962773f8cce19740ae46def388aa739, type: 2}
+  - {fileID: 11400000, guid: 225ffa928528b674dbb08388fa9cb4a6, type: 2}
   furnaceProgress: {fileID: 1348152445}
   curMode: 0
   hand: {fileID: 11400000, guid: 43fac11dcf35a1144861964aa6faf103, type: 2}

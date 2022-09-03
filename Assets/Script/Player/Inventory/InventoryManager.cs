@@ -16,6 +16,7 @@ public enum InventoryMode
 public class InventoryManager : MonoBehaviour
 {
     public UniversalScriptManager usm;
+    public List<InventorySlot> savedInventorySlotList = new List<InventorySlot>();
     UIManager um;
     LoadingManager lm;
     PauseManager pm;
@@ -30,7 +31,6 @@ public class InventoryManager : MonoBehaviour
 
     public bool showingInventoryUI;
     public GameObject inventoryUI;
-    public List<InventorySlot> savedInventorySlotList = new List<InventorySlot>();
     public List<InventoryCell> inventoryCellList = new List<InventoryCell>();
     public Dictionary<InventoryCell, InventorySlot> inventoryDictionary = new Dictionary<InventoryCell, InventorySlot>();
     public Transform parent_main;
@@ -67,6 +67,7 @@ public class InventoryManager : MonoBehaviour
     public InventoryCell furnaceOutputCell;
 
     public CraftingRecipe[] craftingRecipes;
+    public Item[] itemList;
     
     public Image furnaceProgress;
 
@@ -83,6 +84,9 @@ public class InventoryManager : MonoBehaviour
         itemSpawner = usm.itemSpawner;
 
         player = usm.player;
+    }
+    public void SetInventory()
+    {
         for (int i = 1; i <= 54; i++)
         {
             InventoryCell ic = Instantiate(inventoryCellPrefab).GetComponent<InventoryCell>();
@@ -144,7 +148,7 @@ public class InventoryManager : MonoBehaviour
             else if (isCraftingInput_Table)
             {
                 int index = i - 42;
-                ic.gameObject.name = "CraftingInput_" + (index +1).ToString();
+                ic.gameObject.name = "CraftingInput_" + (index + 1).ToString();
                 ic.transform.SetParent(parent_craftingInput_Table);
                 ic.transform.localPosition = new Vector2(((index % 3) - 1) * 40, (index <= 2 ? 40 : (index <= 5 ? 0 : -40)));
                 craftingCells_Table.Add(ic);
@@ -195,9 +199,11 @@ public class InventoryManager : MonoBehaviour
 
 
             inventoryCellList.Add(ic);
-            if (savedInventorySlotList.Count >= i)//put in previously saved dictionary
+            Debug.Log(savedInventorySlotList.Count);
+            if ((isMain || isInside) && savedInventorySlotList.Count!=0)
             {
-                inventoryDictionary.Add(ic, savedInventorySlotList[i - 1]);
+                //inventoryDictionary.Add(ic, new InventorySlot() { amount = 0, item = null });
+                inventoryDictionary.Add(ic, new InventorySlot() { amount = savedInventorySlotList[i - 1].amount, item = savedInventorySlotList[i - 1].item });
             }
             else
             {
@@ -739,5 +745,16 @@ public class InventoryManager : MonoBehaviour
         }
         havingCell = null;
         return false;
+    }
+
+    public Item ItemByName(string itemName)
+    {
+        foreach(Item i in itemList)
+        {
+            if (i.name == itemName)
+                return i;
+        }
+        Debug.LogWarning("item, " + itemName + " not found");
+        return null;
     }
 }

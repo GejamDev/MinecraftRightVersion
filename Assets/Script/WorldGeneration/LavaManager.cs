@@ -180,42 +180,42 @@ public class LavaManager : MonoBehaviour
                 {
                     return true;
                 }
-                if (cs.blockPositionData.Contains(new Vector3Int((int)checkPos.x, (int)checkPos.y - 1, (int)checkPos.z)))
+                if (cs.HasBlockAt(new Vector3Int((int)checkPos.x, (int)checkPos.y - 1, (int)checkPos.z)))
                 {
                     return true;
                 }
 
 
 
-                if (cs.rightChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x - 8, (int)checkPos.y - 1, (int)checkPos.z))))
+                if (cs.rightChunk.HasBlockAt((new Vector3Int((int)checkPos.x - 8, (int)checkPos.y - 1, (int)checkPos.z))))
                 {
                     return true;
                 }
-                if (cs.leftChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x + 8, (int)checkPos.y - 1, (int)checkPos.z))))
+                if (cs.leftChunk.HasBlockAt((new Vector3Int((int)checkPos.x + 8, (int)checkPos.y - 1, (int)checkPos.z))))
                 {
                     return true;
                 }
-                if (cs.frontChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x, (int)checkPos.y - 1, (int)checkPos.z - 8))))
+                if (cs.frontChunk.HasBlockAt((new Vector3Int((int)checkPos.x, (int)checkPos.y - 1, (int)checkPos.z - 8))))
                 {
                     return true;
                 }
-                if (cs.backChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x, (int)checkPos.y - 1, (int)checkPos.z + 8))))
+                if (cs.backChunk.HasBlockAt((new Vector3Int((int)checkPos.x, (int)checkPos.y - 1, (int)checkPos.z + 8))))
                 {
                     return true;
                 }
-                if (cs.rightChunk.frontChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x - 8, (int)checkPos.y - 1, (int)checkPos.z - 8))))
+                if (cs.rightChunk.frontChunk.HasBlockAt((new Vector3Int((int)checkPos.x - 8, (int)checkPos.y - 1, (int)checkPos.z - 8))))
                 {
                     return true;
                 }
-                if (cs.rightChunk.backChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x - 8, (int)checkPos.y - 1, (int)checkPos.z + 8))))
+                if (cs.rightChunk.backChunk.HasBlockAt((new Vector3Int((int)checkPos.x - 8, (int)checkPos.y - 1, (int)checkPos.z + 8))))
                 {
                     return true;
                 }
-                if (cs.leftChunk.frontChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x + 8, (int)checkPos.y - 1, (int)checkPos.z - 8))))
+                if (cs.leftChunk.frontChunk.HasBlockAt((new Vector3Int((int)checkPos.x + 8, (int)checkPos.y - 1, (int)checkPos.z - 8))))
                 {
                     return true;
                 }
-                if (cs.leftChunk.backChunk.blockPositionData.Contains((new Vector3Int((int)checkPos.x + 8, (int)checkPos.y - 1, (int)checkPos.z + 8))))
+                if (cs.leftChunk.backChunk.HasBlockAt((new Vector3Int((int)checkPos.x + 8, (int)checkPos.y - 1, (int)checkPos.z + 8))))
                 {
                     return true;
                 }

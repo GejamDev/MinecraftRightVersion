@@ -53,7 +53,7 @@ public class HpManager : MonoBehaviour
         sm = usm.soundManager;
         ps = usm.player.GetComponent<PlayerScript>();
         lm = usm.lavaManager;
-        hp = 20;
+        //hp = 20;
         for (int i = 0; i < 10; i++)
         {
             GameObject h = Instantiate(heartPrefab, hpUI);

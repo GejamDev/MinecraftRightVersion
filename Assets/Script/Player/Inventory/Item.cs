@@ -11,6 +11,7 @@ public class Item : ScriptableObject
     [Space(10)]
 
     [Header("Default Variables")]
+    public int itemCode;
     public string usingAnimationName;
     public float coolTime;
 

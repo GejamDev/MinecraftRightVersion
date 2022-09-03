@@ -7,7 +7,7 @@ public static class SaveSystem
     public static void SaveWorldData(UniversalScriptManager usm)
     {
         BinaryFormatter formatter = new BinaryFormatter();
-        string path = Application.persistentDataPath + "/world.gejam";
+        string path = Application.persistentDataPath + "/" + usm.saveManager.currentWorldName+".gejam";
         FileStream stream = new FileStream(path, FileMode.Create);
 
 
@@ -18,10 +18,10 @@ public static class SaveSystem
 
     }
 
-    public static WorldData LoadWorldData()
+    public static WorldData LoadWorldData(string worldName)
     {
 
-        string path = Application.persistentDataPath + "/world.gejam";
+        string path = Application.persistentDataPath + "/" + worldName + ".gejam";
         if (File.Exists(path))
         {
             BinaryFormatter formatter = new BinaryFormatter();
@@ -33,7 +33,7 @@ public static class SaveSystem
         }
         else
         {
-            Debug.LogError("Save File Not found, path:" + path);
+            Debug.LogWarning("Save File Not found, path:" + path);
             return null;
         }
     }

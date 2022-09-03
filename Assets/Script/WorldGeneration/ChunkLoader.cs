@@ -5,6 +5,9 @@ using UnityEngine;
 public class ChunkLoader : MonoBehaviour
 {
     public bool setToSetting;
+    public bool setted;
+    public bool hasSpecificSpawnPos;
+    public Vector3 specificSpawnPos;
 
 
 
@@ -49,8 +52,10 @@ public class ChunkLoader : MonoBehaviour
 
     void Update()
     {
-
-        CheckPlayerPosition();
+        if (setted)
+        {
+            CheckPlayerPosition();
+        }
 
         if (firstTimeLoading)
         {
@@ -72,7 +77,7 @@ public class ChunkLoader : MonoBehaviour
             StartCoroutine(UpdateEnabledChunk_Cor());
         }
     }
-    void CheckPlayerPosition()
+    public void CheckPlayerPosition()
     {
         Vector2 prePlayerPosition = roundedPlayerPosition;
         float playerPosX = player.transform.position.x;
@@ -144,7 +149,7 @@ public class ChunkLoader : MonoBehaviour
         //wait if fisrt
         if (firstTimeLoading)
         {
-            yield return new WaitForSeconds(1);
+            yield return new WaitUntil(()=>setted);
         }
 
 
@@ -208,7 +213,13 @@ public class ChunkLoader : MonoBehaviour
     }
     public void SpawnPlayer()
     {
+        if (hasSpecificSpawnPos)
+        {
 
+            player.transform.position = specificSpawnPos;
+            lm.loading = false;
+            return;
+        }
         Vector3 spawnPos = Vector3.zero;
         spawnPos += Vector3.up * chunkDictionary[Vector2.zero].cs.heightMap[0, 0];
         spawnPos += Vector3.up * 2;

@@ -102,7 +102,7 @@ public class ChunkScript : MonoBehaviour
 
 
     [HideInInspector] public List<GameObject> ores = new List<GameObject>();
-    [HideInInspector] public List<Vector3Int> blockPositionData = new List<Vector3Int>();
+    [HideInInspector] public List<BlockData> blockDataList = new List<BlockData>();
     [HideInInspector] public List<Vector3> fireData = new List<Vector3>();
     [HideInInspector] public Dictionary<Vector3, FireScript> fireDictionary = new Dictionary<Vector3, FireScript>();
 
@@ -198,9 +198,8 @@ public class ChunkScript : MonoBehaviour
                 {
                     if (terrainMap_pre[x, y, z] != terrainMap[x, y, z])
                     {
-                        wdr.RecordTerrainData(new Vector3Int(x, y, z), terrainMap[x, y, z]);
+                        wdr.RecordTerrainData(new Vector3Int(x, y, z) + new Vector3Int((int)position.x, 0, (int)position.y), terrainMap[x, y, z]);
                         terrainMap_pre[x, y, z] = terrainMap[x, y, z];
-                        Debug.Log(new Vector3Int(x, y, z));
                     }
                 }
             }
@@ -221,10 +220,37 @@ public class ChunkScript : MonoBehaviour
         }
     }
 
+    public bool HasBlockAt(Vector3Int pos)
+    {
+        foreach(BlockData bd in blockDataList)
+        {
+            if (bd.position == pos)
+                return true;
+        }
+        return false;
+    }
+    public void RemoveBlockAt(Vector3Int pos)
+    {
+        foreach (BlockData bd in blockDataList)
+        {
+            if (bd.position == pos)
+            {
+                blockDataList.Remove(bd);
+                return;
+            }
+        }
+    }
 }
 [System.Serializable]
 public class WaterPointData
 {
     public List<Vector3> vertices = new List<Vector3>();
     public List<int> triangles = new List<int>();
+}
+
+[System.Serializable]
+public class BlockData
+{
+    public Vector3Int position;
+    public Item block;
 }
