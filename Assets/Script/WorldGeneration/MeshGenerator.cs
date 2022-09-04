@@ -224,7 +224,6 @@ public class MeshGenerator : MonoBehaviour
         {
             foreach (Vector3Int v in sm.savedLavaData[cs.position])
             {
-                Debug.Log("yes");
                 cs.lavaData.Add(v);
             }
         }

@@ -199,7 +199,6 @@ public class InventoryManager : MonoBehaviour
 
 
             inventoryCellList.Add(ic);
-            Debug.Log(savedInventorySlotList.Count);
             if ((isMain || isInside) && savedInventorySlotList.Count!=0)
             {
                 //inventoryDictionary.Add(ic, new InventorySlot() { amount = 0, item = null });

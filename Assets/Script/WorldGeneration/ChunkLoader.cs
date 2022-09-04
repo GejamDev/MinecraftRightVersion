@@ -29,7 +29,7 @@ public class ChunkLoader : MonoBehaviour
     public float loadingTime;
     public int firstTimeLoadingFrequency;
     public int loadingFrequency;
-    [Range(1, 30)] public int viewDistance;
+    [Range(1, 50)] public int viewDistance;
 
 
     [Header("Chunk")]
@@ -47,7 +47,7 @@ public class ChunkLoader : MonoBehaviour
         wg = usm.worldGenerator;
         lm = usm.loadingManager;
         if(setToSetting)
-            viewDistance = Mathf.RoundToInt(PlayerPrefs.GetFloat("ViewDistance") * 9) + 6;
+            viewDistance = Mathf.RoundToInt(PlayerPrefs.GetFloat("ViewDistance") * 12) + 6;
     }
 
     void Update()
@@ -70,7 +70,7 @@ public class ChunkLoader : MonoBehaviour
         int preViewDistance = viewDistance;
 
         if (setToSetting)
-            viewDistance = Mathf.RoundToInt(PlayerPrefs.GetFloat("ViewDistance") * 9) + 6;
+            viewDistance = Mathf.RoundToInt(PlayerPrefs.GetFloat("ViewDistance") * 12) + 6;
 
         if (viewDistance != preViewDistance)
         {

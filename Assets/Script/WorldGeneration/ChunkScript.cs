@@ -107,6 +107,7 @@ public class ChunkScript : MonoBehaviour
     [HideInInspector] public Dictionary<Vector3, FireScript> fireDictionary = new Dictionary<Vector3, FireScript>();
 
 
+
     private void Update()
     {
         bool preWaterState = playerInWater;
@@ -129,7 +130,7 @@ public class ChunkScript : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            Debug.Log("1:" + terrainMap.GetLength(0) + "2:" + terrainMap.GetLength(1) + "3:" + terrainMap.GetLength(2));
+            //Debug.Log("1:" + terrainMap.GetLength(0) + "2:" + terrainMap.GetLength(1) + "3:" + terrainMap.GetLength(2));
         }
     }
     public void FlipWaterMesh()
@@ -224,7 +225,7 @@ public class ChunkScript : MonoBehaviour
     {
         foreach(BlockData bd in blockDataList)
         {
-            if (bd.position == pos)
+            if (bd.obj.transform.position == pos + new Vector3(position.x, 0, position.y))
                 return true;
         }
         return false;
@@ -233,7 +234,7 @@ public class ChunkScript : MonoBehaviour
     {
         foreach (BlockData bd in blockDataList)
         {
-            if (bd.position == pos)
+            if (bd.obj.transform.position == pos + new Vector3(position.x, 0, position.y))
             {
                 blockDataList.Remove(bd);
                 return;
@@ -251,6 +252,14 @@ public class WaterPointData
 [System.Serializable]
 public class BlockData
 {
-    public Vector3Int position;
+    public GameObject obj;
+    public Item block;
+}
+
+[System.Serializable]
+public class BlockData_Transform
+{
+    public Vector3 pos;
+    public Vector3 rot;
     public Item block;
 }

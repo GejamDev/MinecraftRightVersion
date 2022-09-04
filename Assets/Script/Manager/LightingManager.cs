@@ -14,6 +14,7 @@ public class LightingManager : MonoBehaviour
     public ColorGrading colorGrading;
     public GameObject SunMoon;
     public Image blackColor;
+    public DynamicSky dynamicSky;
     WeatherManager wm;
 
     //Variables
@@ -76,6 +77,7 @@ public class LightingManager : MonoBehaviour
         {
             blackColor.color = Preset.blackColor.Evaluate(timePercent);
         }
+        //dynamicSky.skyHeight = Preset.skyHeight.Evaluate(timePercent);
     }
 
     //Try to find a directional light to use if we haven't set one

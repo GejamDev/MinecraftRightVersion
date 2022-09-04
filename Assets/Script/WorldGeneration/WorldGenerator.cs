@@ -15,6 +15,8 @@ public class WorldGenerator : MonoBehaviour
     EntitySpawner es;
     LavaManager lm;
     ObjectPool objectPool;
+    SaveManager sm;
+    FireManager fm;
 
     public GameObject chunkPrefab;
     public Transform worldBundle;
@@ -36,6 +38,8 @@ public class WorldGenerator : MonoBehaviour
         es = usm.entitySpawner;
         lm = usm.lavaManager;
         objectPool = usm.objectPool;
+        sm = usm.saveManager;
+        fm = usm.fireManager;
         wgPreset = usm.worldGenerationPreset;
     }
 
@@ -69,7 +73,22 @@ public class WorldGenerator : MonoBehaviour
         {
             GenerateGrass(cs);
         }
+        GenerateFire(cs);
         es.SpawnEntities(cs);
+
+        if (sm.savedBlockData.ContainsKey(cs.position))
+        {
+            foreach(BlockData_Transform bdt in sm.savedBlockData[cs.position])
+            {
+                GameObject b = Instantiate(bdt.block.blockInstance);
+                b.transform.SetParent(cs.objectBundle.transform);
+                b.transform.localPosition = bdt.pos;
+                b.transform.eulerAngles = bdt.rot;
+                cs.blockDataList.Add(new BlockData { obj = b, block = bdt.block });
+            }
+        }
+
+
 
         cs.Activate();
         return cs;
@@ -130,6 +149,24 @@ public class WorldGenerator : MonoBehaviour
         GameObject grassPrefab = cs.biomeProperty.grassObject;
 
         NoisePreset np = cs.biomeProperty.grassNoisePreset;
+        if(sm.savedGrassData.ContainsKey(cs.position))
+        {
+            foreach(GrassProperty gp in sm.savedGrassData[cs.position])
+            {
+                GameObject g = Instantiate(grassPrefab);
+                g.transform.SetParent(grassParent);
+                g.transform.localPosition = gp.pos;
+                GrassScript gs = g.GetComponent<GrassScript>();
+                cs.grassList.Add(gs);
+                gs.grassObject.transform.localScale = new Vector3(1, gp.scale, 1);
+                gs.grassHolder.transform.eulerAngles = new Vector3(gp.rot.x, 0, gp.rot.y);
+
+
+                if (grassGenerationLoadingTime != 0)
+                    yield return new WaitForSeconds(grassGenerationLoadingTime);
+            }
+            yield break;
+        }
         for(int x = 0; x< wgPreset.chunkSize; x++)
         {
             for (int y = 0; y < wgPreset.chunkSize; y++)
@@ -153,6 +190,7 @@ public class WorldGenerator : MonoBehaviour
                             cs.grassList.Add(gs);
 
                             //set scale
+                            //yScale *= (np.heightMultiplier.Evaluate(Noise.Noise2D(x * 0.25f + cs.position.x + 1972, y * 0.25f + cs.position.y - 1972, np)) * 0.5f + 0.8f);
                             gs.grassObject.transform.localScale = new Vector3(1, yScale, 1);
 
 
@@ -237,6 +275,16 @@ public class WorldGenerator : MonoBehaviour
             }
         }
         yield return null;
+    }
+
+    public void GenerateFire(ChunkScript cs)
+    {
+        if (!sm.savedFireData.ContainsKey(cs.position))
+            return;
+        foreach(Vector3 v in sm.savedFireData[cs.position])
+        {
+            fm.LitFire(v + new Vector3(cs.position.x, 0, cs.position.y), cs);
+        }
     }
 
     

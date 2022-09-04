@@ -9,6 +9,9 @@ public class SaveManager : MonoBehaviour
     public Dictionary<Vector3Int, float> modifiedTerrainValue = new Dictionary<Vector3Int, float>();
     public Dictionary<Vector2, List<Vector3Int>> savedWaterData = new Dictionary<Vector2, List<Vector3Int>>();
     public Dictionary<Vector2, List<Vector3Int>> savedLavaData = new Dictionary<Vector2, List<Vector3Int>>();
+    public Dictionary<Vector2, List<BlockData_Transform>> savedBlockData = new Dictionary<Vector2, List<BlockData_Transform>>();
+    public Dictionary<Vector2, List<GrassProperty>> savedGrassData = new Dictionary<Vector2, List<GrassProperty>>();
+    public Dictionary<Vector2, List<Vector3>> savedFireData = new Dictionary<Vector2, List<Vector3>>();
 
     private void Awake()
     {
@@ -39,11 +42,13 @@ public class SaveManager : MonoBehaviour
             usm.chunkLoader.setted = true;
             usm.inventoryManager.savedInventorySlotList = new List<InventorySlot>();
             usm.inventoryManager.SetInventory();
+            usm.player.transform.eulerAngles = new Vector3(0, 0, 0);
             return;
         }
         Debug.Log("loaded world");
         usm.seedManager.ChangeSeed(data.seed);
         usm.player.transform.position = new Vector3(data.lastPlayerPosition_OverWorld[0], data.lastPlayerPosition_OverWorld[1], data.lastPlayerPosition_OverWorld[2]);
+        usm.player.transform.eulerAngles = new Vector3(0, data.playerYRot, 0);
 
         //terrain
         modifiedTerrainValue.Clear();
@@ -85,9 +90,70 @@ public class SaveManager : MonoBehaviour
             {
                 Vector3Int lavaPos_global = new Vector3Int(data.lavaData[curLavaIndex * 3], data.lavaData[curLavaIndex * 3 + 1], data.lavaData[curLavaIndex * 3 + 2]);
                 Vector3Int lavaPos_local = lavaPos_global - new Vector3Int((int)chunkPos.x, 0, (int)chunkPos.y);
+
                 savedLavaData[chunkPos].Add(lavaPos_local);
 
                 curLavaIndex++;
+            }
+        }
+
+        //fire
+        savedFireData.Clear();
+        int curFireIndex = 0;
+        for (int i = 0; i < data.fireChunkData.GetLength(0); i++)
+        {
+            Vector2 chunkPos = new Vector2(data.fireChunkData[i, 0], data.fireChunkData[i, 1]);
+            savedFireData.Add(chunkPos, new List<Vector3>());
+            for (int k = 0; k < data.fireChunkData[i, 2]; k++)
+            {
+                Vector3 firePos_global = new Vector3(data.fireData[curFireIndex * 3], data.fireData[curFireIndex * 3 + 1], data.fireData[curFireIndex * 3 + 2]);
+                Vector3 firePos_local = firePos_global - new Vector3((int)chunkPos.x, 0, (int)chunkPos.y);
+
+                savedFireData[chunkPos].Add(firePos_local);
+
+                curFireIndex++;
+            }
+        }
+
+
+        //grass
+        savedGrassData.Clear();
+        int curGrassIndex = 0;
+        for (int i = 0; i < data.grassChunkData.GetLength(0); i++)
+        {
+            Vector2 chunkPos = new Vector2(data.grassChunkData[i, 0], data.grassChunkData[i, 1]);
+            savedGrassData.Add(chunkPos, new List<GrassProperty>());
+            for (int k = 0; k < data.grassChunkData[i, 2]; k++)
+            {
+                Vector3 grassPos_global = new Vector3(data.grassData[curGrassIndex * 6], data.grassData[curGrassIndex * 6 + 1], data.grassData[curGrassIndex * 6 + 2]);
+                Vector3 grassPos_local = grassPos_global - new Vector3((int)chunkPos.x, 0, (int)chunkPos.y);
+                float grassScale = data.grassData[curGrassIndex * 6 + 3];
+                Vector2 grassRot = new Vector2(data.grassData[curGrassIndex * 6 + 4], data.grassData[curGrassIndex * 6 + 5]);
+
+                GrassProperty gp = new GrassProperty { pos = grassPos_local, scale = grassScale, rot = grassRot };
+
+                savedGrassData[chunkPos].Add(gp);
+
+                curGrassIndex++;
+            }
+        }
+
+        //block
+        savedBlockData.Clear();
+        int curBlockIndex = 0;
+        for(int i = 0; i < data.blockChunkData.GetLength(0); i++)
+        {
+            Vector2 chunkPos = new Vector2(data.blockChunkData[i, 0], data.blockChunkData[i, 1]);
+            savedBlockData.Add(chunkPos, new List<BlockData_Transform>());
+            for (int k = 0; k < data.blockChunkData[i, 2]; k++)
+            {
+                Vector3 blockPos = new Vector3(data.blockData_transform[curBlockIndex * 6], data.blockData_transform[curBlockIndex * 6 + 1], data.blockData_transform[curBlockIndex * 6 + 2]);
+                Debug.Log(blockPos);
+                Vector3 blockRot = new Vector3(data.blockData_transform[curBlockIndex * 6 + 3], data.blockData_transform[curBlockIndex * 6 + 4], data.blockData_transform[curBlockIndex * 6 + 5]);
+                BlockData_Transform bdt = new BlockData_Transform { pos = blockPos, rot = blockRot, block = usm.inventoryManager.ItemByName(data.blockData_blockType[curBlockIndex]) };
+                savedBlockData[chunkPos].Add(bdt);
+
+                curBlockIndex++;
             }
         }
 
@@ -105,10 +171,8 @@ public class SaveManager : MonoBehaviour
 
         usm.inventoryManager.curInventorySlot = data.curSlot;
         usm.inventoryManager.savedInventorySlotList = new List<InventorySlot>();
-        Debug.Log("inve");
         for(int i =0; i < 36; i++)
         {
-            Debug.Log("haha");
             usm.inventoryManager.savedInventorySlotList.Add(new InventorySlot { amount = data.playerInventory_amount[i], item = usm.inventoryManager.ItemByName(data.playerInventory_item[i]) });
         }
         usm.inventoryManager.SetInventory();
@@ -120,4 +184,11 @@ public class SaveManager : MonoBehaviour
 public enum Dimension
 {
     OverWorld,Nether,Ender
+}
+
+public class GrassProperty
+{
+    public Vector3 pos;
+    public float scale;
+    public Vector2 rot;
 }

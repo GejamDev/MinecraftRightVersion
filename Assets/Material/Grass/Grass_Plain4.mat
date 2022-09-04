@@ -89,8 +89,8 @@ Material:
     - _Strength: 5
     - _SwayMax: 0.03
     - _UVSec: 0
-    - _WindSpeed: 30
-    - _WindStrength: 0.03
+    - _WindSpeed: 32.44
+    - _WindStrength: 0.1
     - _YOffset: 0
     - _ZWrite: 1
     m_Colors:
