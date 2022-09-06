@@ -12,6 +12,7 @@ public class SaveManager : MonoBehaviour
     public Dictionary<Vector2, List<BlockData_Transform>> savedBlockData = new Dictionary<Vector2, List<BlockData_Transform>>();
     public Dictionary<Vector2, List<GrassProperty>> savedGrassData = new Dictionary<Vector2, List<GrassProperty>>();
     public Dictionary<Vector2, List<Vector3>> savedFireData = new Dictionary<Vector2, List<Vector3>>();
+    public Dictionary<Vector3, List<Vector3>> obsidianNetherPortalData = new Dictionary<Vector3, List<Vector3>>();
 
     private void Awake()
     {
@@ -136,6 +137,18 @@ public class SaveManager : MonoBehaviour
 
                 curGrassIndex++;
             }
+        }
+
+
+        obsidianNetherPortalData.Clear();
+        for(int i = 0; i < data.obsidianData.GetLength(0); i++)
+        {
+            List<Vector3> list = new List<Vector3>();
+            for(int k = i; k < i+ data.obsidianData[i, 3]; k++)
+            {
+                list.Add(new Vector3(data.obsidian_linkedData[k * 3], data.obsidian_linkedData[k * 3 + 1], data.obsidian_linkedData[k * 3 + 2]));
+            }
+            obsidianNetherPortalData.Add(new Vector3(data.obsidianData[i, 0], data.obsidianData[i, 1], data.obsidianData[i, 2]), list);
         }
 
         //block

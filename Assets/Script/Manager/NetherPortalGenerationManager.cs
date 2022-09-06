@@ -10,6 +10,8 @@ public class NetherPortalGenerationManager : MonoBehaviour
     public GameObject netherPortalPrefab;
     public float generated_camShakeTime;
     public float generated_camShakeIntensity;
+    public Item netherPortalItem;
+    public Dictionary<Vector3, NetherPortal> netherPortalDictionary = new Dictionary<Vector3, NetherPortal>();
 
     private void Awake()
     {
@@ -86,14 +88,16 @@ public class NetherPortalGenerationManager : MonoBehaviour
                     p.transform.eulerAngles = recipe.t_rot;
                     NetherPortal np = p.GetComponent<NetherPortal>();
                     np.cs = cs;
-                    np.posInChunk = p.transform.position - new Vector3(cs.position.x, 0, cs.position.y);
+                    np.posInChunk = p.transform.position - new Vector3(cs.position.x, 0, cs.position.y) + new Vector3(0.1f, 0.1f, 0.1f);
                     p.transform.SetParent(cs.objectBundle.transform);
                     cs.netherPortalData.Add(p.transform.position - new Vector3(cs.position.x, 0, cs.position.y));
+                    cs.blockDataList.Add(new BlockData { block = netherPortalItem, obj = p });
 
                     foreach (ObsidianBlock usedob in usedObsidians)
                     {
                         usedob.connectedPortalList.Add(np);
                     }
+                    netherPortalDictionary.Add(p.transform.position, np);
 
 
                     return;

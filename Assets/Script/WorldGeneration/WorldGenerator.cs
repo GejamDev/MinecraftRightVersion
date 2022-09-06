@@ -17,6 +17,7 @@ public class WorldGenerator : MonoBehaviour
     ObjectPool objectPool;
     SaveManager sm;
     FireManager fm;
+    NetherPortalGenerationManager npgm;
 
     public GameObject chunkPrefab;
     public Transform worldBundle;
@@ -40,6 +41,7 @@ public class WorldGenerator : MonoBehaviour
         objectPool = usm.objectPool;
         sm = usm.saveManager;
         fm = usm.fireManager;
+        npgm = usm.netherPortalGenerationManager;
         wgPreset = usm.worldGenerationPreset;
     }
 
@@ -85,6 +87,23 @@ public class WorldGenerator : MonoBehaviour
                 b.transform.localPosition = bdt.pos;
                 b.transform.eulerAngles = bdt.rot;
                 cs.blockDataList.Add(new BlockData { obj = b, block = bdt.block });
+                if (bdt.block.name == "NetherPortal")
+                {
+                    NetherPortal np = b.GetComponent<NetherPortal>();
+                    np.posInChunk = bdt.pos;
+                    np.cs = cs;
+                    npgm.netherPortalDictionary.Add(b.transform.position, np);
+                }
+                else if (bdt.block.name == "Obsidian")
+                {
+                    ObsidianBlock ob = b.GetComponent<ObsidianBlock>();
+                    ob.cs = cs;
+                    cs.obsidianData.Add(ob);
+                    if (sm.obsidianNetherPortalData.ContainsKey(b.transform.position))
+                    {
+                        StartCoroutine(ob.SearchForLinkedPortal(sm.obsidianNetherPortalData[b.transform.position], npgm));
+                    }
+                }
             }
         }
 

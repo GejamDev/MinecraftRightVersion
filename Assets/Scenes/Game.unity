@@ -13938,6 +13938,7 @@ MonoBehaviour:
     type: 3}
   generated_camShakeTime: 0.2
   generated_camShakeIntensity: 50
+  netherPortalItem: {fileID: 11400000, guid: 07f4ab7fe5a66ab42852d19a7bb9c08f, type: 2}
 --- !u!1 &1129246768
 GameObject:
   m_ObjectHideFlags: 0
@@ -16291,6 +16292,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b07a87481e11fb046aebf96e7a0812e4, type: 2}
   - {fileID: 11400000, guid: 2962773f8cce19740ae46def388aa739, type: 2}
   - {fileID: 11400000, guid: 225ffa928528b674dbb08388fa9cb4a6, type: 2}
+  - {fileID: 11400000, guid: 07f4ab7fe5a66ab42852d19a7bb9c08f, type: 2}
   furnaceProgress: {fileID: 1348152445}
   curMode: 0
   hand: {fileID: 11400000, guid: 43fac11dcf35a1144861964aa6faf103, type: 2}

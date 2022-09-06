@@ -9,6 +9,7 @@ public class PauseManager : MonoBehaviour
     public UniversalScriptManager usm;
     InventoryManager im;
     LoadingManager lm;
+    SaveManager sm;
     HpManager hm;
     public GameObject pauseUI;
     public bool paused;
@@ -16,6 +17,7 @@ public class PauseManager : MonoBehaviour
     public float deathTimeDecreaseSpeed;
     public void GoToMenu()
     {
+        sm.Save();
         SceneManager.LoadScene("MainMenu");
     }
 
@@ -24,6 +26,7 @@ public class PauseManager : MonoBehaviour
         im = usm.inventoryManager;
         lm = usm.loadingManager;
         hm = usm.hpManager;
+        sm = usm.saveManager;
         pauseUI.SetActive(false);
     }
     void Update()

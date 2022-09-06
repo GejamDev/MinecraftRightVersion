@@ -27,4 +27,15 @@ public class ObsidianBlock : MonoBehaviour
         }
         cs.obsidianData.Remove(this);
     }
+
+    public IEnumerator SearchForLinkedPortal(List<Vector3> portalPos, NetherPortalGenerationManager npgm)
+    {
+
+        foreach(Vector3 v in portalPos)
+        {
+            yield return new WaitUntil(() => npgm.netherPortalDictionary.ContainsKey(v));
+            connectedPortalList.Add(npgm.netherPortalDictionary[v]);
+        }
+        Debug.Log("Ang");
+    }
 }

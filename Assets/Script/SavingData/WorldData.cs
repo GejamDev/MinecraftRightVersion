@@ -27,6 +27,10 @@ public class WorldData
     public float[] grassData;
     public int[,] fireChunkData;
     public float[] fireData;
+    public int[,] netherPortalChunkData;
+    public float[] netherPortalData;
+    public float[,] obsidianData;
+    public float[] obsidian_linkedData;
     public WorldData (UniversalScriptManager usm)
     {
 
@@ -330,6 +334,99 @@ public class WorldData
 
 
 
+        //linked obsidian
+        List<ObsidianBlock> obsidianBlockList = new List<ObsidianBlock>();
+        List<int> obsidianBlockCountList = new List<int>();
+        List<ObsidianBlockSavedData_Temporary> obsidianBlockList_preSaved = new List<ObsidianBlockSavedData_Temporary>();
+        List<List<Vector3>> obsidianBlock_Linked_List = new List<List<Vector3>>();
+        int totalPortalLinkedCount = 0;
+        foreach(ChunkProperties cp in usm.chunkLoader.chunkDictionary.Values)
+        {
+            ChunkScript cs = cp.cs;
+            foreach(BlockData bd in cs.blockDataList)
+            {
+                if (bd.block.name == "Obsidian")
+                {
+                    ObsidianBlock ob = bd.obj.GetComponent<ObsidianBlock>();
+                    if (ob.connectedPortalList.Count != 0)
+                    {
+                        obsidianBlockList.Add(ob);
+                        int count = 0;
+                        List<Vector3> datas = new List<Vector3>();
+                        foreach(NetherPortal np in ob.connectedPortalList)
+                        {
+                            if (np != null)
+                            {
+                                count++;
+                                totalPortalLinkedCount++;
+                                datas.Add(np.gameObject.transform.position);
+                            }
+                        }
+                        obsidianBlockCountList.Add(count);
+                        obsidianBlock_Linked_List.Add(datas);
+                    }
+                }
+            }
+        }
+
+        bool alreadyInObsidianBlockList(Vector3 v)
+        {
+            foreach (ObsidianBlock ob in obsidianBlockList)
+            {
+                if (ob.transform.position == v)
+                    return true;
+            }
+            return false;
+        }
+        foreach (Vector3 v in usm.saveManager.obsidianNetherPortalData.Keys)
+        {
+            if (!alreadyInObsidianBlockList(v))
+            {
+                ObsidianBlockSavedData_Temporary ob = new ObsidianBlockSavedData_Temporary { linkedCount = usm.saveManager.obsidianNetherPortalData[v].Count, pos = v };
+                List<Vector3> list = usm.saveManager.obsidianNetherPortalData[v];
+                obsidianBlock_Linked_List.Add(list);
+                obsidianBlockList_preSaved.Add(ob);
+            }
+        }
+        obsidianData = new float[obsidianBlockList.Count + obsidianBlockList_preSaved.Count, 4];
+        obsidian_linkedData = new float[totalPortalLinkedCount * 3];
+        int linkedPortalIndex = 0;
+        for(int i =0; i < obsidianBlockList.Count; i++)
+        {
+            obsidianData[i, 0] = obsidianBlockList[i].transform.position.x;
+            obsidianData[i, 1] = obsidianBlockList[i].transform.position.y;
+            obsidianData[i, 2] = obsidianBlockList[i].transform.position.z;
+            int linkedPortalCount = obsidianBlockCountList[i];
+            obsidianData[i, 3] = linkedPortalCount;
+            foreach (Vector3 v in obsidianBlock_Linked_List[i])
+            {
+                Debug.Log(1);
+                obsidian_linkedData[linkedPortalIndex * 3] = v.x;
+                obsidian_linkedData[linkedPortalIndex * 3 + 1] = v.y;
+                obsidian_linkedData[linkedPortalIndex * 3 + 2] = v.z;
+
+                Debug.Log(2);
+                linkedPortalIndex++;
+            }
+            Debug.Log(3);
+        }
+        for (int i = obsidianBlockList.Count; i < obsidianBlockList.Count + obsidianBlockList_preSaved.Count; i++)
+        {
+            obsidianData[i, 0] = obsidianBlockList_preSaved[i - obsidianBlockList.Count].pos.x;
+            obsidianData[i, 1] = obsidianBlockList_preSaved[i - obsidianBlockList.Count].pos.y;
+            obsidianData[i, 2] = obsidianBlockList_preSaved[i - obsidianBlockList.Count].pos.z;
+            obsidianData[i, 3] = obsidianBlockList_preSaved[i - obsidianBlockList.Count].linkedCount;
+            foreach (Vector3 v in obsidianBlock_Linked_List[i])
+            {
+                obsidian_linkedData[linkedPortalIndex * 3] = v.x;
+                obsidian_linkedData[linkedPortalIndex * 3 + 1] = v.y;
+                obsidian_linkedData[linkedPortalIndex * 3 + 2] = v.z;
+
+                linkedPortalIndex++;
+            }
+        }
+
+
 
 
 
@@ -398,6 +495,14 @@ public class WorldData
         }
 
 
+
+
         #endregion
     }
+}
+
+class ObsidianBlockSavedData_Temporary
+{
+    public Vector3 pos;
+    public int linkedCount;
 }

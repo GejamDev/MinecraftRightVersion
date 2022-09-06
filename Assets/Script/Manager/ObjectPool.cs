@@ -15,7 +15,7 @@ public class ObjectPool : MonoBehaviour
     {
         cl = usm.chunkLoader;
 
-        int multiplyingCount = 841;
+        int multiplyingCount = 1300;
         //pre generate
         for (int i = 0; i < poolObjectList.Count; i++)
         {
