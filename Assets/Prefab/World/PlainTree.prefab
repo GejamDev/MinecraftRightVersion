@@ -287,8 +287,10 @@ MonoBehaviour:
   treeBundleDefaultYPos: -1
   objectBundle: {fileID: 8461326858410737360}
   treeTrunk: {fileID: 2543328830211580039}
-  minHeight: 0.8
-  maxHeight: 1.1
+  minHeight: 0.7
+  maxHeight: 1
+  minThiccness: 0.2
+  maxThiccness: 1
   treeMeshes:
   - {fileID: 3582805594628865998, guid: fd10b2e42394f674aa4744c5ad769998, type: 3}
   - {fileID: 3582805594628865998, guid: efc848cd9d0422540a5aa9de7f436460, type: 3}
@@ -304,8 +306,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 129dd2951ade67f438f259ed19b21645, type: 2}
   - {fileID: 2100000, guid: d0540c7ff95d3714a989e263bd7888e1, type: 2}
   - {fileID: 2100000, guid: 2f10c2af2b225944b9652ea1f1707fe0, type: 2}
-  minLeafScale: 2.1
-  maxLeafScale: 2.5
+  minLeafScale: 1.8
+  maxLeafScale: 2.1
 --- !u!114 &8008316750062625783
 MonoBehaviour:
   m_ObjectHideFlags: 0

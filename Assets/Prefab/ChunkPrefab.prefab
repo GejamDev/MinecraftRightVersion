@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7392497320529089071}
   - component: {fileID: 8777723719327918404}
   - component: {fileID: 5726400787828157157}
+  - component: {fileID: 4852049527653958073}
   m_Layer: 4
   m_Name: Water
   m_TagString: Water
@@ -94,6 +95,21 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &4852049527653958073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2454298735291405263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ea1caa2371334446bba66871119ef00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ps: {fileID: 0}
+  amount: {x: 0, y: 0.2, z: 0}
+  speed: 1
 --- !u!1 &5723810378054214725
 GameObject:
   m_ObjectHideFlags: 0
@@ -143,16 +159,21 @@ MonoBehaviour:
   bedrock: {fileID: 8280631244884071757}
   waterCollisionParent: {fileID: 4576075435438879646}
   lavaCollisionParent: {fileID: 5334076008676780130}
+  dimension: 0
   activated: 0
   position: {x: 0, y: 0}
   grassList: []
+  obsidianData: []
+  netherPortalData: []
   biomeProperty:
     name: 
     noiseValue: 0
     terrainMaterial: {fileID: 0}
     hasTree: 0
     hasGrass: 0
+    hasSmallGrass: 0
     grassObject: {fileID: 0}
+    smallGrasObject: {fileID: 0}
     grassNoisePreset: {fileID: 0}
     minGrassYScale: 0
     treeObject: {fileID: 0}
@@ -160,6 +181,7 @@ MonoBehaviour:
     groundDestroyParticle: {fileID: 0}
   usm: {fileID: 0}
   waterObj: {fileID: 2454298735291405263}
+  waterSway: {fileID: 0}
   waterMF: {fileID: 8777723719327918404}
   waterMC: {fileID: 5726400787828157157}
   waterMR: {fileID: 7392497320529089071}
@@ -199,7 +221,8 @@ MonoBehaviour:
   lpdList: []
   lavaBeingModified: 0
   ores: []
-  blockPositionData: []
+  blockDataList: []
+  fireData: []
 --- !u!1 &6395136882227605321
 GameObject:
   m_ObjectHideFlags: 0

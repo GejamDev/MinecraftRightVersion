@@ -11,6 +11,8 @@ public class TreeScript : MonoBehaviour
     public GameObject treeTrunk;
     public float minHeight;
     public float maxHeight;
+    public float minThiccness;
+    public float maxThiccness;
     public Mesh[] treeMeshes;
     public Transform leafSpawnPos;
     public GameObject leaf;
@@ -48,7 +50,8 @@ public class TreeScript : MonoBehaviour
         TT_mc.sharedMesh = treeMesh;
 
         float height = Random.Range(minHeight, maxHeight);
-        treeTrunk.transform.localScale = new Vector3(1, height, 1);
+        float radius = Random.Range(minThiccness, maxThiccness);
+        treeTrunk.transform.localScale = new Vector3(radius, height, radius);
         treeTrunk.transform.localPosition = new Vector3(0, height * 0.5f, 0);
 
         treeTrunk.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
@@ -59,6 +62,8 @@ public class TreeScript : MonoBehaviour
         {
             leaf.transform.position = leafSpawnPos.position;
             Mesh leafMesh = leafMeshes[Random.Range(0, leafMeshes.Length)];
+
+
 
             L_mf.mesh = leafMesh;
             L_mc.sharedMesh = leafMesh;

@@ -22,3 +22,5 @@ MonoBehaviour:
     type: 2}
   biomeNPreset: {fileID: 11400000, guid: 75614b996e33e3f4caacf05a4d598db9, type: 2}
   lavaNoisePreset: {fileID: 11400000, guid: 3329aca02752d1841b93297f915118f0, type: 2}
+  nPreset_Nether: {fileID: 11400000, guid: a33bf3785f868444eb49ed9095e6237f, type: 2}
+  caveNPreset_Nether: {fileID: 11400000, guid: 42d7f90eba8a54d4aad2b6aa597c9630, type: 2}

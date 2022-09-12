@@ -17,6 +17,7 @@ public class ChunkLoader : MonoBehaviour
     WorldGenerationPreset wgPreset;
     WorldGenerator wg;
     LoadingManager lm;
+    DimensionTransportationManager dtm;
 
     [Header("Variables")]
     public bool loadingTerrain;
@@ -24,6 +25,8 @@ public class ChunkLoader : MonoBehaviour
     public float firstTimeLoadingTime;
     public bool playerPositionChanged;
     public Vector2 roundedPlayerPosition;
+    public GameObject overWorldTransform;
+    public GameObject netherTransform;
 
     [Header("Settings")]
     public float loadingTime;
@@ -35,8 +38,10 @@ public class ChunkLoader : MonoBehaviour
     [Header("Chunk")]
     public List<Vector2> enabledChunkPositionList = new List<Vector2>();
     public List<ChunkProperties> activatedChunkList = new List<ChunkProperties>();
+    public List<ChunkProperties> netherActivatedChunkList = new List<ChunkProperties>();
     public Dictionary<Vector2, ChunkProperties> chunkDictionary = new Dictionary<Vector2, ChunkProperties>();
-    
+    public Dictionary<Vector2, ChunkProperties> netherChunkDictionary = new Dictionary<Vector2, ChunkProperties>();
+
 
     void Awake()
     {
@@ -46,6 +51,7 @@ public class ChunkLoader : MonoBehaviour
         wgPreset = usm.worldGenerationPreset;
         wg = usm.worldGenerator;
         lm = usm.loadingManager;
+        dtm = usm.dimensionTransportationManager;
         if(setToSetting)
             viewDistance = Mathf.RoundToInt(PlayerPrefs.GetFloat("ViewDistance") * 12) + 6;
     }
@@ -109,13 +115,40 @@ public class ChunkLoader : MonoBehaviour
 
 
         bool spawnPlayerAtEnd = firstTimeLoading;
+        Debug.Log("spawnplayeratend:" + spawnPlayerAtEnd.ToString());
         if (spawnPlayerAtEnd)
         {
             lm.loading = true;
         }
+
+        //wait if fisrt
+        if (firstTimeLoading)
+        {
+            yield return new WaitUntil(() => setted);
+        }
+
+
+
+        switch (dtm.currentDimesnion)
+        {
+            case Dimension.OverWorld:
+                yield return StartCoroutine(UpdateEnabledChunk_Cor_OverWorld(spawnPlayerAtEnd));
+                break;
+            case Dimension.Nether:
+                yield return StartCoroutine(UpdateEnabledChunk_Cor_Nether(spawnPlayerAtEnd));
+                break;
+        }
+
+
+    }
+    IEnumerator UpdateEnabledChunk_Cor_OverWorld(bool spawnPlayerAtEnd)
+    {
+
+        overWorldTransform.SetActive(true);
+        netherTransform.SetActive(false);
         //update viewable chunk positions
         enabledChunkPositionList.Clear();
-        for(int x = 1 - viewDistance; x < viewDistance; x++)
+        for (int x = 1 - viewDistance; x < viewDistance; x++)
         {
             for (int y = 1 - viewDistance; y < viewDistance; y++)
             {
@@ -124,7 +157,7 @@ public class ChunkLoader : MonoBehaviour
         }
 
         //remove chunks from list that is not in the view distance
-        for(int i = 0; i < activatedChunkList.Count; i++)
+        for (int i = 0; i < activatedChunkList.Count; i++)
         {
             if (!enabledChunkPositionList.Contains(activatedChunkList[i].position))
             {
@@ -135,7 +168,7 @@ public class ChunkLoader : MonoBehaviour
                 activatedChunkList.RemoveAt(i);
 
 
-                
+
 
                 i--;
             }
@@ -146,13 +179,6 @@ public class ChunkLoader : MonoBehaviour
         float lt = firstTimeLoading ? firstTimeLoadingTime : loadingTime;
         float lf = firstTimeLoading ? firstTimeLoadingFrequency : loadingFrequency;
 
-        //wait if fisrt
-        if (firstTimeLoading)
-        {
-            yield return new WaitUntil(()=>setted);
-        }
-
-
         for (int i = 0; i < enabledChunkPositionList.Count; i++)
         {
             lm.curProgress = i + 1;
@@ -161,15 +187,15 @@ public class ChunkLoader : MonoBehaviour
 
             //check if it has chunk
             bool containCurrentEnabledPosition = false;
-            foreach(ChunkProperties cp in activatedChunkList)
+            foreach (ChunkProperties cp in activatedChunkList)
             {
-                if(cp.position == addingPosition)
+                if (cp.position == addingPosition)
                 {
                     containCurrentEnabledPosition = true;
                     break;
                 }
             }
-            
+
 
             if (!containCurrentEnabledPosition)
             {
@@ -185,7 +211,8 @@ public class ChunkLoader : MonoBehaviour
                 else
                 {
                     //make chunk in world generator
-                    ChunkScript cs = wg.MakeChunkAt(addingPosition, !spawnPlayerAtEnd);//main problem
+                    ChunkScript cs = wg.MakeChunkAt(addingPosition, !spawnPlayerAtEnd, Dimension.OverWorld );
+                    //StartCoroutine(wg.MakeChunkAt(addingPosition, !spawnPlayerAtEnd, Dimension.OverWorld, out cs));
                     ChunkProperties cp = new ChunkProperties();
                     cp.position = addingPosition;
                     cp.cs = cs;
@@ -202,17 +229,121 @@ public class ChunkLoader : MonoBehaviour
                 i--;
             }
         }
-        
-        loadingTerrain = false;
+        Debug.Log("spawnplayeratend2:" + spawnPlayerAtEnd.ToString());
         if (spawnPlayerAtEnd)
         {
-            SpawnPlayer();
+            Debug.Log("go spawn");
+            yield return new WaitForSeconds(5);
+            SpawnPlayer_OverWorld();
+        }
+        loadingTerrain = false;
+        yield return null;
+    }
+    IEnumerator UpdateEnabledChunk_Cor_Nether(bool spawnPlayerAtEnd)
+    {
+        overWorldTransform.SetActive(false);
+        netherTransform.SetActive(true);
+        loadingTerrain = false;
+
+
+        #region generation
+
+        enabledChunkPositionList.Clear();
+        for (int x = 1 - viewDistance; x < viewDistance; x++)
+        {
+            for (int y = 1 - viewDistance; y < viewDistance; y++)
+            {
+                enabledChunkPositionList.Add(new Vector2(x, y) * wgPreset.chunkSize + roundedPlayerPosition);
+            }
+        }
+
+        //remove chunks from list that is not in the view distance
+        for (int i = 0; i < netherActivatedChunkList.Count; i++)
+        {
+            if (!enabledChunkPositionList.Contains(netherActivatedChunkList[i].position))
+            {
+                //actually disable chunk 
+                netherActivatedChunkList[i].cs.Deactivate();
+
+
+                netherActivatedChunkList.RemoveAt(i);
+
+
+
+
+                i--;
+            }
+        }
+
+        //add chunks to list that is in the view distance
+        lm.goal = enabledChunkPositionList.Count;
+        float lt = firstTimeLoading ? firstTimeLoadingTime : loadingTime;
+        float lf = firstTimeLoading ? firstTimeLoadingFrequency : loadingFrequency;
+
+        for (int i = 0; i < enabledChunkPositionList.Count; i++)
+        {
+            lm.curProgress = i + 1;
+            Vector2 addingPosition = enabledChunkPositionList[i];
+
+
+            //check if it has chunk
+            bool containCurrentEnabledPosition = false;
+            foreach (ChunkProperties cp in netherActivatedChunkList)
+            {
+                if (cp.position == addingPosition)
+                {
+                    containCurrentEnabledPosition = true;
+                    break;
+                }
+            }
+
+
+            if (!containCurrentEnabledPosition)
+            {
+                if (netherChunkDictionary.ContainsKey(addingPosition))
+                {
+                    //add chunk to activated list
+                    netherActivatedChunkList.Add(netherChunkDictionary[addingPosition]);
+
+                    //actually enable the chunk
+                    netherChunkDictionary[addingPosition].cs.Activate();
+                    //yield return new WaitForSeconds(loadingTime);
+                }
+                else
+                {
+                    //make chunk in world generator
+                    ChunkScript cs = wg.MakeChunkAt(addingPosition, !spawnPlayerAtEnd, Dimension.Nether);//main problem
+                    ChunkProperties cp = new ChunkProperties();
+                    cp.position = addingPosition;
+                    cp.cs = cs;
+                    netherChunkDictionary.Add(addingPosition, cp);
+                    netherActivatedChunkList.Add(cp);
+                    if (i % lf == 0)
+                    {
+                        yield return new WaitForSeconds(lt);
+                    }
+                }
+
+
+
+                i--;
+            }
+        }
+
+#endregion
+
+
+        if (spawnPlayerAtEnd)
+        {
+            usm.hpManager.lastGroundedHeight = 0;
+            player.transform.position = specificSpawnPos;
+            lm.loading = false;
         }
         yield return null;
-
     }
-    public void SpawnPlayer()
+    public void SpawnPlayer_OverWorld()
     {
+        Debug.Log("spawn");
         if (hasSpecificSpawnPos)
         {
 
@@ -220,9 +351,10 @@ public class ChunkLoader : MonoBehaviour
             lm.loading = false;
             return;
         }
+        usm.hpManager.lastGroundedHeight = 0;
         Vector3 spawnPos = Vector3.zero;
         spawnPos += Vector3.up * chunkDictionary[Vector2.zero].cs.heightMap[0, 0];
-        spawnPos += Vector3.up * 2;
+        spawnPos += Vector3.up * 6;
         player.transform.position = spawnPos;
         lm.loading = false;
     }

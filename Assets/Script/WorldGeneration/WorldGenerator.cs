@@ -21,6 +21,7 @@ public class WorldGenerator : MonoBehaviour
 
     public GameObject chunkPrefab;
     public Transform worldBundle;
+    public Transform netherBundle;
     public float grassGenerationLoadingTime;
     public float grassNoiseSpeed;
     public float minGrassYScale;
@@ -45,28 +46,41 @@ public class WorldGenerator : MonoBehaviour
         wgPreset = usm.worldGenerationPreset;
     }
 
-    public ChunkScript MakeChunkAt(Vector2 position, bool loadingTimeExists)
+    public ChunkScript MakeChunkAt(Vector2 position, bool loadingTimeExists, Dimension dimension)
     {
         GameObject chunk = Instantiate(chunkPrefab);
         chunk.transform.position = new Vector3(position.x, 0, position.y);
-        chunk.transform.SetParent(worldBundle);
+        chunk.transform.SetParent(dimension == Dimension.OverWorld ? worldBundle : netherBundle);
         ChunkScript cs = chunk.GetComponent<ChunkScript>();
         cs.position = position;
         cs.usm = usm;
         cs.fpc = usm.firstPersonController;
         cs.GetVariables();
-        cs.gameObject.name = "Chunk At " + position.ToString();
+        cs.dimension = dimension;
+        cs.gameObject.name = (dimension == Dimension.OverWorld ? "Chunk At " : "Nether Chunk At ") + position.ToString();
 
-        BiomeProperty currentBiome = bm.AssignBiome(cs);
+        BiomeProperty currentBiome = dimension == Dimension.OverWorld ? bm.AssignBiome(cs) : bm.AssignBiome_Nether(cs);
         SetEnviromentToBiome(cs, currentBiome);
-
-        mg.GenerateMesh(cs, loadingTimeExists);
-
-
-        wm.GenerateWater(cs, false);
-        lm.GenerateLava(cs, 1);
+        StartCoroutine(MakeChunk_Cor(cs, loadingTimeExists));
 
 
+
+
+        return cs;
+    }
+    IEnumerator MakeChunk_Cor(ChunkScript cs, bool loadingTimeExists)
+    {
+        yield return StartCoroutine(mg.GenerateMesh(cs, loadingTimeExists));
+        yield return new WaitForSeconds(0.1f);
+        Dimension dimension = cs.dimension;
+        if (dimension != Dimension.Nether)
+        {
+            wm.GenerateWater(cs, false);
+            yield return new WaitForSeconds(0.1f);
+        }
+        lm.GenerateLava(cs, 0.1f);
+
+        BiomeProperty currentBiome = cs.biomeProperty;
         if (currentBiome.hasTree)
         {
             GenerateTrees(cs);
@@ -78,46 +92,47 @@ public class WorldGenerator : MonoBehaviour
         GenerateFire(cs);
         es.SpawnEntities(cs);
 
-        if (sm.savedBlockData.ContainsKey(cs.position))
+        switch (dimension)
         {
-            foreach(BlockData_Transform bdt in sm.savedBlockData[cs.position])
-            {
-                GameObject b = Instantiate(bdt.block.blockInstance);
-                b.transform.SetParent(cs.objectBundle.transform);
-                b.transform.localPosition = bdt.pos;
-                b.transform.eulerAngles = bdt.rot;
-                cs.blockDataList.Add(new BlockData { obj = b, block = bdt.block });
-                if (bdt.block.name == "NetherPortal")
+            case Dimension.OverWorld:
+                if (sm.savedBlockData.ContainsKey(cs.position))
                 {
-                    NetherPortal np = b.GetComponent<NetherPortal>();
-                    np.posInChunk = bdt.pos;
-                    np.cs = cs;
-                    npgm.netherPortalDictionary.Add(b.transform.position, np);
-                }
-                else if (bdt.block.name == "Obsidian")
-                {
-                    ObsidianBlock ob = b.GetComponent<ObsidianBlock>();
-                    ob.cs = cs;
-                    cs.obsidianData.Add(ob);
-                    if (sm.obsidianNetherPortalData.ContainsKey(b.transform.position))
+                    foreach (BlockData_Transform bdt in sm.savedBlockData[cs.position])
                     {
-                        StartCoroutine(ob.SearchForLinkedPortal(sm.obsidianNetherPortalData[b.transform.position], npgm));
+                        GameObject b = Instantiate(bdt.block.blockInstance);
+                        b.transform.SetParent(cs.objectBundle.transform);
+                        b.transform.localPosition = bdt.pos;
+                        b.transform.eulerAngles = bdt.rot;
+                        cs.blockDataList.Add(new BlockData { obj = b, block = bdt.block });
+                        if (bdt.block.name == "NetherPortal")
+                        {
+                            NetherPortal np = b.GetComponent<NetherPortal>();
+                            np.posInChunk = bdt.pos;
+                            np.cs = cs;
+                            npgm.netherPortalDictionary.Add(b.transform.position, np);
+                        }
+                        else if (bdt.block.name == "Obsidian")
+                        {
+                            ObsidianBlock ob = b.GetComponent<ObsidianBlock>();
+                            ob.cs = cs;
+                            cs.obsidianData.Add(ob);
+                            if (sm.obsidianNetherPortalData.ContainsKey(b.transform.position))
+                            {
+                                StartCoroutine(ob.SearchForLinkedPortal(sm.obsidianNetherPortalData[b.transform.position], npgm));
+                            }
+                        }
                     }
                 }
-            }
+                break;
         }
-
-
-
         cs.Activate();
-        return cs;
+
+
     }
     public void SetEnviromentToBiome(ChunkScript cs, BiomeProperty bp)
     {
         cs.mr.material = bp.terrainMaterial;
     }
-
-
     public void GenerateTrees(ChunkScript cs)
     {
         NoisePreset nP = cs.biomeProperty.treeNoisePreset;
@@ -166,6 +181,7 @@ public class WorldGenerator : MonoBehaviour
     {
         Transform grassParent = cs.objectBundle.transform;
         GameObject grassPrefab = cs.biomeProperty.grassObject;
+        GameObject smallGrassPrefab = cs.biomeProperty.smallGrasObject;
 
         NoisePreset np = cs.biomeProperty.grassNoisePreset;
         if(sm.savedGrassData.ContainsKey(cs.position))
@@ -269,8 +285,12 @@ public class WorldGenerator : MonoBehaviour
                 cs.ores.Add(ore);
                 ore.transform.SetParent(cs.objectBundle.transform);
                 Vector3 pos = new Vector3(Random.Range(0, 8), Random.Range(0, op.maxYSpawnLevel), Random.Range(0, 8));
-
-                if (cs.terrainMap[(int)pos.x, (int)pos.y, (int)pos.z] > mg.terrainSuface)
+                if(Random.Range(0, 1f) <= op.groundSpawnPossibility)
+                {
+                    pos = new Vector3(pos.x , cs.heightMap[(int)pos.x, (int)pos.z], pos.z);
+                    pos += Vector3.up * 1.5f;
+                }
+                else if (cs.terrainMap[(int)pos.x, (int)pos.y, (int)pos.z] > mg.terrainSuface)
                 {
                     while ((int)pos.y > 0 && cs.terrainMap[(int)pos.x, (int)pos.y, (int)pos.z] > mg.terrainSuface)
                     {

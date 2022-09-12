@@ -27,8 +27,8 @@ TagManager:
   - PlayerLiquidDetector
   - Fire
   - NetherPortal
-  - 
-  - 
+  - EnemyAttack
+  - BrightnessDetector
   - 
   - 
   - 

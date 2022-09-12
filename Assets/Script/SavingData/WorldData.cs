@@ -6,6 +6,7 @@ using UnityEngine;
 public class WorldData
 {
     public float[] lastPlayerPosition_OverWorld;
+    public float[] lastPlayerPosition_Nether;
     public float playerYRot;
     public int seed;
     public int[,] terrainModifiedPoses;
@@ -31,6 +32,7 @@ public class WorldData
     public float[] netherPortalData;
     public float[,] obsidianData;
     public float[] obsidian_linkedData;
+    public string currentDimesnion;
     public WorldData (UniversalScriptManager usm)
     {
 
@@ -38,9 +40,13 @@ public class WorldData
 
         //player pos
         lastPlayerPosition_OverWorld = new float[3];
-        lastPlayerPosition_OverWorld[0] = usm.player.transform.position.x;
-        lastPlayerPosition_OverWorld[1] = usm.player.transform.position.y;
-        lastPlayerPosition_OverWorld[2] = usm.player.transform.position.z;
+        lastPlayerPosition_OverWorld[0] = usm.playerPositionRecorder.lastPos_overWorld.x;
+        lastPlayerPosition_OverWorld[1] = usm.playerPositionRecorder.lastPos_overWorld.y;
+        lastPlayerPosition_OverWorld[2] = usm.playerPositionRecorder.lastPos_overWorld.z;
+        lastPlayerPosition_Nether = new float[3];
+        lastPlayerPosition_Nether[0] = usm.playerPositionRecorder.lastPos_nether.x;
+        lastPlayerPosition_Nether[1] = usm.playerPositionRecorder.lastPos_nether.y;
+        lastPlayerPosition_Nether[2] = usm.playerPositionRecorder.lastPos_nether.z;
         playerYRot = usm.player.transform.eulerAngles.y;
         playerHp = usm.hpManager.hp;
         playerHunger = usm.hungerManager.hunger;
@@ -81,6 +87,9 @@ public class WorldData
 
         //seed
         seed = usm.seedManager.seed;
+
+        //dimension
+        currentDimesnion = usm.dimensionTransportationManager.currentDimesnion.ToString();
 
         //terrain
         WorldDataRecorder wdr = usm.worldDataRecorder;
@@ -384,6 +393,7 @@ public class WorldData
             {
                 ObsidianBlockSavedData_Temporary ob = new ObsidianBlockSavedData_Temporary { linkedCount = usm.saveManager.obsidianNetherPortalData[v].Count, pos = v };
                 List<Vector3> list = usm.saveManager.obsidianNetherPortalData[v];
+                totalPortalLinkedCount+=usm.saveManager.obsidianNetherPortalData[v].Count;
                 obsidianBlock_Linked_List.Add(list);
                 obsidianBlockList_preSaved.Add(ob);
             }
@@ -400,15 +410,12 @@ public class WorldData
             obsidianData[i, 3] = linkedPortalCount;
             foreach (Vector3 v in obsidianBlock_Linked_List[i])
             {
-                Debug.Log(1);
                 obsidian_linkedData[linkedPortalIndex * 3] = v.x;
                 obsidian_linkedData[linkedPortalIndex * 3 + 1] = v.y;
                 obsidian_linkedData[linkedPortalIndex * 3 + 2] = v.z;
 
-                Debug.Log(2);
                 linkedPortalIndex++;
             }
-            Debug.Log(3);
         }
         for (int i = obsidianBlockList.Count; i < obsidianBlockList.Count + obsidianBlockList_preSaved.Count; i++)
         {
@@ -448,11 +455,16 @@ public class WorldData
             ChunkScript cs = cp.cs;
             blockChunkData[blockIndex, 0] = (int)cs.position.x;
             blockChunkData[blockIndex, 1] = (int)cs.position.y;
-            blockChunkData[blockIndex, 2] = cs.blockDataList.Count;
+            int count = 0;
             foreach (BlockData bd in cs.blockDataList)
             {
-                blockDataList.Add(bd);
+                if (bd.obj != null)
+                {
+                    count++;
+                    blockDataList.Add(bd);
+                }
             }
+            blockChunkData[blockIndex, 2] = count;
             blockIndex++;
         }
         foreach (Vector2 pos in usm.saveManager.savedBlockData.Keys)

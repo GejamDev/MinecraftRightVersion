@@ -41,6 +41,8 @@ public class UniversalScriptManager : MonoBehaviour
     public WorldDataRecorder worldDataRecorder;
     public SeedManager seedManager;
     public SaveManager saveManager;
+    public PlayerPositionRecorder playerPositionRecorder;
+    public BrightnessDetector brightnessDetector;
 
     [Header("Layer")]
     public LayerMask groundLayer;

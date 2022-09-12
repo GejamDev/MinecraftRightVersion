@@ -6,6 +6,7 @@ public class SaveManager : MonoBehaviour
 {
     public string currentWorldName;
     public UniversalScriptManager usm;
+    public Dimension savedDimension;
     public Dictionary<Vector3Int, float> modifiedTerrainValue = new Dictionary<Vector3Int, float>();
     public Dictionary<Vector2, List<Vector3Int>> savedWaterData = new Dictionary<Vector2, List<Vector3Int>>();
     public Dictionary<Vector2, List<Vector3Int>> savedLavaData = new Dictionary<Vector2, List<Vector3Int>>();
@@ -38,6 +39,7 @@ public class SaveManager : MonoBehaviour
         if (data == null)
         {
             Debug.Log("new world");
+            usm.dimensionTransportationManager.currentDimesnion = Dimension.OverWorld;
             usm.seedManager.SetSeed_NewWorld();
             usm.chunkLoader.hasSpecificSpawnPos = false;
             usm.chunkLoader.setted = true;
@@ -48,7 +50,18 @@ public class SaveManager : MonoBehaviour
         }
         Debug.Log("loaded world");
         usm.seedManager.ChangeSeed(data.seed);
-        usm.player.transform.position = new Vector3(data.lastPlayerPosition_OverWorld[0], data.lastPlayerPosition_OverWorld[1], data.lastPlayerPosition_OverWorld[2]);
+        usm.dimensionTransportationManager.currentDimesnion = StringToDimension(data.currentDimesnion);
+        switch (data.currentDimesnion)
+        {
+            case "OverWorld":
+                usm.player.transform.position = new Vector3(data.lastPlayerPosition_OverWorld[0], data.lastPlayerPosition_OverWorld[1], data.lastPlayerPosition_OverWorld[2]);
+                break;
+            case "Nether":
+                usm.player.transform.position = new Vector3(data.lastPlayerPosition_Nether[0], data.lastPlayerPosition_Nether[1], data.lastPlayerPosition_Nether[2]);
+                break;
+        }
+        usm.playerPositionRecorder.lastPos_overWorld = new Vector3(data.lastPlayerPosition_OverWorld[0], data.lastPlayerPosition_OverWorld[1], data.lastPlayerPosition_OverWorld[2]);
+        usm.playerPositionRecorder.lastPos_overWorld = new Vector3(data.lastPlayerPosition_Nether[0], data.lastPlayerPosition_OverWorld[1], data.lastPlayerPosition_OverWorld[2]);
         usm.player.transform.eulerAngles = new Vector3(0, data.playerYRot, 0);
 
         //terrain
@@ -191,6 +204,20 @@ public class SaveManager : MonoBehaviour
         usm.inventoryManager.SetInventory();
 
         usm.lightingManager.TimeOfDay = data.currentTime;
+    }
+    public Dimension StringToDimension(string s)
+    {
+        switch (s)
+        {
+            case "OverWorld":
+                return Dimension.OverWorld;
+            case "Nether":
+                return Dimension.Nether;
+            case "Ender":
+                return Dimension.Ender;
+        }
+        Debug.LogError("wrong dimension name:" + s);
+        return Dimension.OverWorld;
     }
 }
 

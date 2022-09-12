@@ -14,11 +14,11 @@ public class LoadingManager : MonoBehaviour
     {
         StartCoroutine(Load());
     }
-    IEnumerator Load()
+    public IEnumerator Load()
     {
         loadingUI.SetActive(true);
 
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.1f);
 
         yield return new WaitUntil(()=>!loading);
 

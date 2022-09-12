@@ -7,6 +7,7 @@ public class EntitySpawner : MonoBehaviour
     public UniversalScriptManager usm;
     LightingManager lm;
     ChunkLoader cl;
+    DimensionTransportationManager dtm;
     GameObject player;
 
     public float minSpawnRange;
@@ -19,6 +20,7 @@ public class EntitySpawner : MonoBehaviour
     {
         lm = usm.lightingManager;
         cl = usm.chunkLoader;
+        dtm = usm.dimensionTransportationManager;
         player = usm.player;
 
 
@@ -32,7 +34,7 @@ public class EntitySpawner : MonoBehaviour
 
         while (true)
         {
-            yield return new WaitUntil(() => lm.isNight || !ep.onlySpawnAtNight);
+            yield return new WaitUntil(() => (lm.isNight || !ep.onlySpawnAtNight) && dtm.currentDimesnion == ep.spawnDimension);
             yield return new WaitForSeconds(Random.Range(ep.minSpawnDelay, ep.maxSpawnDelay));
 
             //spawn
@@ -81,17 +83,22 @@ public class EntitySpawner : MonoBehaviour
 
         foreach (PreSpawningEntityProperty psep in preSpawnList)
         {
-            float value = Random.Range(0, 1f);
-            int spawnCount = Mathf.RoundToInt(psep.spawnCurve.Evaluate(value));
-            if (spawnCount >= 1)
+            if(psep.spawnDimension == dtm.currentDimesnion)
             {
-                GameObject e = Instantiate(psep.entityObj);
-                Vector3 spawnPos = new Vector3(Random.Range(0, 7.9f), 0, Random.Range(0, 7.9f));
-                float y = cs.heightMap[Mathf.RoundToInt(spawnPos.x), Mathf.RoundToInt(spawnPos.z)];
-                spawnPos += Vector3.up * y;
-                e.transform.SetParent(cs.objectBundle.transform);
-                e.transform.localPosition = spawnPos;
-                e.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
+                float value = Random.Range(0, 1f);
+                int spawnCount = Mathf.RoundToInt(psep.spawnCurve.Evaluate(value));
+                if (spawnCount >= 1)
+                {
+                    GameObject e = Instantiate(psep.entityObj);
+                    Vector3 spawnPos = new Vector3(Random.Range(0, 7.9f), 0, Random.Range(0, 7.9f));
+                    float y = cs.heightMap[Mathf.RoundToInt(spawnPos.x), Mathf.RoundToInt(spawnPos.z)];
+                    spawnPos += Vector3.up * y;
+                    e.transform.SetParent(cs.objectBundle.transform);
+                    e.transform.localPosition = spawnPos;
+                    e.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
+                    yield return new WaitForSeconds(0.1f);
+                }
+
             }
         }
     }
@@ -104,6 +111,7 @@ public class EntityProperty
     public bool onlySpawnAtNight;
     public float minSpawnDelay;
     public float maxSpawnDelay;
+    public Dimension spawnDimension;
 }
 
 [System.Serializable]
@@ -111,4 +119,5 @@ public class PreSpawningEntityProperty
 {
     public GameObject entityObj;
     public AnimationCurve spawnCurve;
+    public Dimension spawnDimension;
 }

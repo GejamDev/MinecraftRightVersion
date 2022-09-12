@@ -8,16 +8,19 @@ public class PlayerScript : MonoBehaviour
     DimensionTransportationManager dtm;
     HpManager hm;
     SoundManager sm;
+    PauseManager pm;
     public bool onFire;
     float fireLeftTime;
     public ParticleSystem fireParticle;
     public Light fireLight;
+    public float playedTime;
 
     void Awake()
     {
         hm = usm.hpManager;
         sm = usm.soundManager;
         dtm = usm.dimensionTransportationManager;
+        pm = usm.pauseManager;
     }
     private void Update()
     {
@@ -35,6 +38,11 @@ public class PlayerScript : MonoBehaviour
                 fireParticle.Stop();
                 fireLight.enabled = false;
             }
+        }
+
+        if (!pm.paused)
+        {
+            playedTime += Time.deltaTime;
         }
     }
     void OnTriggerEnter(Collider other)

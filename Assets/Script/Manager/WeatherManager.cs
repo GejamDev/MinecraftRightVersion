@@ -10,6 +10,7 @@ public enum Weather
 public class WeatherManager : MonoBehaviour
 {
     public UniversalScriptManager usm;
+    DimensionTransportationManager dtm;
 
     [Header("Settings")]
     public Weather[] weatherArray;
@@ -38,13 +39,27 @@ public class WeatherManager : MonoBehaviour
 
     void Awake()
     {
+        dtm = usm.dimensionTransportationManager;
         player = usm.player;
         ChangeWeatherRandomly();
     }
 
     public void Update()
     {
-        if(currentWeather == Weather.Sunny)
+        var rainParticleEmission = rainParticle.emission;
+        var rainParticleMain = rainParticle.main;
+        if (dtm.currentDimesnion != Dimension.OverWorld)
+        {
+            rainParticleEmission.rateOverTime = 0;
+            rainParticleMain.simulationSpeed = 0;
+            rainParticle.gameObject.SetActive(false);
+            return;
+        }
+        rainParticle.gameObject.SetActive(true);
+
+
+
+        if (currentWeather == Weather.Sunny)
         {
             if (rainPower <=0)
             {
@@ -70,12 +85,10 @@ public class WeatherManager : MonoBehaviour
         rainParticle.transform.position = rainPosition.position;
 
         float rainAmount = rainAmountCurve.Evaluate(rainPower);
-        var rainParticleEmission = rainParticle.emission;
         rainParticleEmission.rateOverTime = rainAmount;
 
 
         float rainSpeed = rainSpeedCurve.Evaluate(rainPower);
-        var rainParticleMain = rainParticle.main;
         rainParticleMain.simulationSpeed = rainSpeed;
 
     }

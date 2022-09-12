@@ -163,6 +163,7 @@ public class HpManager : MonoBehaviour
 
     public void Die()
     {
+        usm.saveManager.Save();
         died = true;
         deathUI.SetActive(true);
     }

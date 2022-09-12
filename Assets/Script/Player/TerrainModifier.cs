@@ -84,10 +84,20 @@ public class TerrainModifier : MonoBehaviour
         currentlyTouchingObject = null;
         if (Physics.Raycast(cam.position, cam.forward, out hit_ground, maxDistance, groundLayer))
         {
-            currentlyTouchingChunk = hit_ground.collider.gameObject.GetComponent<ObjectContainer>().obj.GetComponent<ChunkScript>();
-            touchingPosition = hit_ground.point;
-            reachable = true;
-            checkedGround = true;
+            if (hit_ground.collider.gameObject.GetComponent<ObjectContainer>() != null)
+            {
+                currentlyTouchingChunk = hit_ground.collider.gameObject.GetComponent<ObjectContainer>().obj.GetComponent<ChunkScript>();
+                touchingPosition = hit_ground.point;
+                reachable = true;
+                checkedGround = true;
+            }
+            else
+            {
+
+                currentlyTouchingChunk = null;
+                reachable = false;
+                checkedGround = false;
+            }
         }
         else
         {

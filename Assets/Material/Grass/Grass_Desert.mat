@@ -70,11 +70,11 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _GrassHeight: 3.4
-    - _GrassWidth: 0.6
-    - _MaxDist: 30
+    - _GrassHeight: 3
+    - _GrassWidth: 0.2
+    - _MaxDist: 40
     - _Metallic: 0
-    - _MinDist: 15
+    - _MinDist: 1
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
@@ -89,8 +89,8 @@ Material:
     - _Strength: 5
     - _SwayMax: 0.03
     - _UVSec: 0
-    - _WindSpeed: 30
-    - _WindStrength: 0.03
+    - _WindSpeed: 32.44
+    - _WindStrength: 0.1
     - _YOffset: 0
     - _ZWrite: 1
     m_Colors:

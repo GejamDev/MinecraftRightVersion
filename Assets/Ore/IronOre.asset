@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: IronOre
   m_EditorClassIdentifier: 
   Name: Iron
-  maxYSpawnLevel: 60
+  maxYSpawnLevel: 65
+  groundSpawnPossibility: 0.005
   spawnCountGraph:
     serializedVersion: 2
     m_Curve:
@@ -57,5 +58,5 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   minSize: {x: 0.8, y: 0.8, z: 0.8}
-  maxSize: {x: 1.5, y: 1.5, z: 1.5}
+  maxSize: {x: 1.8, y: 1.8, z: 1.8}
   objectName: Ore_Iron

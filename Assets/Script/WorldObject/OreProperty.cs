@@ -8,6 +8,7 @@ public class OreProperty : ScriptableObject
     public string Name;
 
     public int maxYSpawnLevel;
+    public float groundSpawnPossibility;
     public AnimationCurve spawnCountGraph;
     public Vector3 minSize;
     public Vector3 maxSize;

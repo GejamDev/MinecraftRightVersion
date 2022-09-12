@@ -12,6 +12,7 @@ public class ChunkScript : MonoBehaviour
     public Transform lavaCollisionParent;
 
     [Header("Properties")]
+    public Dimension dimension;
     public bool activated;
     public Vector2 position;
     public float[,,] terrainMap;
@@ -34,6 +35,7 @@ public class ChunkScript : MonoBehaviour
 
     [Header("Water Stuff")]
     public GameObject waterObj;
+    public WaterSway waterSway;
     public MeshFilter waterMF;
     public MeshCollider waterMC;
     public MeshRenderer waterMR;
@@ -125,8 +127,8 @@ public class ChunkScript : MonoBehaviour
         {
             FlipLavaMesh();
         }
-        waterObj.SetActive(waterData.Count != 0);
-        lavaObj.SetActive(lavaData.Count != 0);
+        //waterObj.SetActive(waterData.Count != 0);
+        //lavaObj.SetActive(lavaData.Count != 0);
 
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -154,6 +156,10 @@ public class ChunkScript : MonoBehaviour
         objectPool = usm.objectPool;
         bedrock.transform.localScale = new Vector3(usm.worldGenerationPreset.chunkSize, 1, usm.worldGenerationPreset.chunkSize);
         bedrock.transform.localPosition = new Vector3(usm.worldGenerationPreset.chunkSize * 0.5f, bedrock.transform.localPosition.y, usm.worldGenerationPreset.chunkSize);
+
+
+        waterSway = waterObj.GetComponent<WaterSway>();
+        waterSway.ps = usm.player.GetComponent<PlayerScript>();
     }
     public void Activate()
     {

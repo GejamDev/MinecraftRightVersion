@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff739c309258ca941b8a498b2b3c7e3b, type: 3}
   m_Name: Water
   m_EditorClassIdentifier: 
-  noiseSpeed: 0.05
+  noiseSpeed: 0.015
   noiseWeight: 1
   groundLevel: 0
-  octaves: 1
-  persistance: 0.5
+  octaves: 3
+  persistance: 0.8
   lacunarity: 2
   heightMultiplier:
     serializedVersion: 2
@@ -24,26 +24,17 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 1
-      inSlope: 3.9999995
-      outSlope: 3.9999995
+      inSlope: 3
+      outSlope: 3
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.56490815
-      value: 3.2596323
-      inSlope: 4
-      outSlope: 4
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
       time: 1
-      value: 5
-      inSlope: 4.0000005
-      outSlope: 4.0000005
+      value: 4
+      inSlope: 3
+      outSlope: 3
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
