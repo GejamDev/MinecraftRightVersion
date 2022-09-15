@@ -7,23 +7,18 @@ public class TreeScript : MonoBehaviour
     public UniversalScriptManager usm;
     public float yPos;
     public float treeBundleDefaultYPos;
+    public GameObject treeTrunkBundle;
+    public TreeVarient[] treeVarients;
+
+
     public GameObject objectBundle;
-    public GameObject treeTrunk;
     public float minHeight;
     public float maxHeight;
     public float minThiccness;
     public float maxThiccness;
-    public Mesh[] treeMeshes;
-    public Transform leafSpawnPos;
-    public GameObject leaf;
     public Mesh[] leafMeshes;
-    public Material[] leafMaterails;
     public float minLeafScale;
     public float maxLeafScale;
-    MeshFilter TT_mf;
-    MeshCollider TT_mc;
-    MeshFilter L_mf;
-    MeshCollider L_mc;
     Interaction_Tree it;
 
     public void SetTree()
@@ -37,41 +32,47 @@ public class TreeScript : MonoBehaviour
     }
     public void Randomize()
     {
-        //get variables
-        TT_mf = treeTrunk.GetComponent<MeshFilter>();
-        TT_mc = treeTrunk.GetComponent<MeshCollider>();
-        L_mf = leaf.GetComponent<MeshFilter>();
-        L_mc = leaf.GetComponent<MeshCollider>();
-
-
-        //randomize tree
-        Mesh treeMesh = treeMeshes[Random.Range(0, treeMeshes.Length)];
-        TT_mf.mesh = treeMesh;
-        TT_mc.sharedMesh = treeMesh;
-
-        float height = Random.Range(minHeight, maxHeight);
-        float radius = Random.Range(minThiccness, maxThiccness);
-        treeTrunk.transform.localScale = new Vector3(radius, height, radius);
-        treeTrunk.transform.localPosition = new Vector3(0, height * 0.5f, 0);
-
-        treeTrunk.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
-
-
-        //randomize leaf
-        if(leafMeshes.Length != 0)
+        Material[] usingMat;
+        foreach(TreeVarient tv in treeVarients)
         {
-            leaf.transform.position = leafSpawnPos.position;
+            tv.trunk.SetActive(false);
+        }
+        TreeVarient usingTV = treeVarients[Random.Range(0, treeVarients.Length)];
+        usingTV.trunk.SetActive(true);
+        usingMat = usingTV.mat;
+        foreach(GameObject l in usingTV.leaves)
+        {
+            l.GetComponent<MeshRenderer>().material = usingMat[Random.Range(0, usingMat.Length)];
             Mesh leafMesh = leafMeshes[Random.Range(0, leafMeshes.Length)];
 
 
 
-            L_mf.mesh = leafMesh;
-            L_mc.sharedMesh = leafMesh;
+            l.GetComponent<MeshFilter>().mesh = leafMesh;
+            l.GetComponent<MeshCollider>().sharedMesh = leafMesh;
 
-            leaf.transform.eulerAngles = new Vector3(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360));
-            leaf.transform.localScale = Vector3.one * Random.Range(minLeafScale, maxLeafScale);
-
-            leaf.GetComponent<MeshRenderer>().material = leafMaterails[Random.Range(0, leafMaterails.Length)];
+            l.transform.eulerAngles = new Vector3(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360));
+            l.transform.localScale *= Random.Range(minLeafScale, maxLeafScale);
         }
+
+
+
+
+
+        float height = Random.Range(minHeight, maxHeight);
+        float radius = Random.Range(minThiccness, maxThiccness);
+        treeTrunkBundle.transform.localScale = new Vector3(radius, height, radius);
+        treeTrunkBundle.transform.localPosition = new Vector3(0, height * 0.5f, 0);
+
+        treeTrunkBundle.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
+
+
     }
+}
+
+[System.Serializable]
+public class TreeVarient
+{
+    public GameObject trunk;
+    public GameObject[] leaves;
+    public Material[] mat;
 }
