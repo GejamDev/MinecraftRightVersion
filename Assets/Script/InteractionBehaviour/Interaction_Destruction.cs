@@ -22,6 +22,8 @@ public class Interaction_Destruction : MonoBehaviour
     public AnimationCurve smashAnimationCurve;
     public float smashAnimationTime;
     public Transform itemSpawnPos;
+    public MonoBehaviour triggeringScript;
+    public string triggerName;
     void Awake()
     {
 
@@ -80,6 +82,11 @@ public class Interaction_Destruction : MonoBehaviour
         for (int i = 0; i < itemDropCount; i++)
         {
             itemSpawner.SpawnItem(new InventorySlot { item = droppingItem, amount = 1 }, (itemSpawnPos == null ? transform.position : itemSpawnPos.position) + new Vector3(Random.Range(-dropPosRandomness, dropPosRandomness), Random.Range(-dropPosRandomness, dropPosRandomness), Random.Range(-dropPosRandomness, dropPosRandomness)), Quaternion.Euler(new Vector3(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360))));
+        }
+
+        if (triggeringScript != null)
+        {
+            triggeringScript.Invoke(triggerName, 0);
         }
 
         if (onlyDisable)

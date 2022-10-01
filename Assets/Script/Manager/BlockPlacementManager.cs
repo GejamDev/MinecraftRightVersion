@@ -10,6 +10,7 @@ public class BlockPlacementManager : MonoBehaviour
     ChunkLoader cl;
     SoundManager sm;
     InventoryManager im;
+    DimensionTransportationManager dtm;
 
     private void Awake()
     {
@@ -18,21 +19,35 @@ public class BlockPlacementManager : MonoBehaviour
         cl = usm.chunkLoader;
         sm = usm.soundManager;
         im = usm.inventoryManager;
+        dtm = usm.dimensionTransportationManager;
     }
     public void PlaceBlock(Item usingItem, InventoryCell usedCell, bool sound)
     {
 
         PlaceBlock(usingItem, usedCell, tm.touchingPosition, sound);
     }
-
     public void PlaceBlock(Item usingItem, InventoryCell usedCell, Vector3 pos, bool sound)
+    {
+        PlaceBlock(usingItem, usedCell, pos, sound, dtm.currentDimesnion);
+    }
+
+    public void PlaceBlock(Item usingItem, InventoryCell usedCell, Vector3 pos, bool sound, Dimension dimension)
     {
 
         Vector3 playerPosition = player.transform.position;
         GameObject block = Instantiate(usingItem.blockInstance);
         block.transform.position = pos;//tm.touchingPosition;
         Vector3 blockPos = block.transform.position;
-        ChunkScript parentCs = cl.chunkDictionary[new Vector2(Mathf.Floor(blockPos.x / 8) * 8, Mathf.Floor(blockPos.z / 8) * 8)].cs;
+        ChunkScript parentCs = null;
+        switch (dimension)
+        {
+            case Dimension.OverWorld:
+                parentCs = cl.chunkDictionary[new Vector2(Mathf.Floor(blockPos.x / 8) * 8, Mathf.Floor(blockPos.z / 8) * 8)].cs;
+                break;
+            case Dimension.Nether:
+                parentCs = cl.nether_chunkDictionary[new Vector2(Mathf.Floor(blockPos.x / 8) * 8, Mathf.Floor(blockPos.z / 8) * 8)].cs;
+                break;
+        }
         if (usingItem.snapPosition)
         {
             float gridSize = usingItem.snapGridSize;
@@ -63,14 +78,17 @@ public class BlockPlacementManager : MonoBehaviour
                 Destroy(block);
                 return;
             }
-            block.transform.SetParent(parentCs.objectBundle.transform);
 
+            block.transform.SetParent(parentCs.objectBundle.transform);
 
             ObsidianBlock ob;
             if(block.TryGetComponent<ObsidianBlock>(out ob))
             {
                 parentCs.obsidianData.Add(ob);
                 ob.cs = parentCs;
+            }
+            else
+            {
             }
 
         }

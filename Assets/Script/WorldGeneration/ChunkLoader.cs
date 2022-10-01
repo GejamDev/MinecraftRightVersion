@@ -17,6 +17,7 @@ public class ChunkLoader : MonoBehaviour
     WorldGenerationPreset wgPreset;
     WorldGenerator wg;
     LoadingManager lm;
+    TerrainModifier tm;
     DimensionTransportationManager dtm;
 
     [Header("Variables")]
@@ -40,7 +41,7 @@ public class ChunkLoader : MonoBehaviour
     public List<ChunkProperties> activatedChunkList = new List<ChunkProperties>();
     public List<ChunkProperties> netherActivatedChunkList = new List<ChunkProperties>();
     public Dictionary<Vector2, ChunkProperties> chunkDictionary = new Dictionary<Vector2, ChunkProperties>();
-    public Dictionary<Vector2, ChunkProperties> netherChunkDictionary = new Dictionary<Vector2, ChunkProperties>();
+    public Dictionary<Vector2, ChunkProperties> nether_chunkDictionary = new Dictionary<Vector2, ChunkProperties>();
 
 
     void Awake()
@@ -51,6 +52,7 @@ public class ChunkLoader : MonoBehaviour
         wgPreset = usm.worldGenerationPreset;
         wg = usm.worldGenerator;
         lm = usm.loadingManager;
+        tm = usm.terrainModifier;
         dtm = usm.dimensionTransportationManager;
         if(setToSetting)
             viewDistance = Mathf.RoundToInt(PlayerPrefs.GetFloat("ViewDistance") * 12) + 6;
@@ -233,7 +235,7 @@ public class ChunkLoader : MonoBehaviour
         if (spawnPlayerAtEnd)
         {
             Debug.Log("go spawn");
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(1);
             SpawnPlayer_OverWorld();
         }
         loadingTerrain = false;
@@ -300,13 +302,13 @@ public class ChunkLoader : MonoBehaviour
 
             if (!containCurrentEnabledPosition)
             {
-                if (netherChunkDictionary.ContainsKey(addingPosition))
+                if (nether_chunkDictionary.ContainsKey(addingPosition))
                 {
                     //add chunk to activated list
-                    netherActivatedChunkList.Add(netherChunkDictionary[addingPosition]);
+                    netherActivatedChunkList.Add(nether_chunkDictionary[addingPosition]);
 
                     //actually enable the chunk
-                    netherChunkDictionary[addingPosition].cs.Activate();
+                    nether_chunkDictionary[addingPosition].cs.Activate();
                     //yield return new WaitForSeconds(loadingTime);
                 }
                 else
@@ -316,7 +318,7 @@ public class ChunkLoader : MonoBehaviour
                     ChunkProperties cp = new ChunkProperties();
                     cp.position = addingPosition;
                     cp.cs = cs;
-                    netherChunkDictionary.Add(addingPosition, cp);
+                    nether_chunkDictionary.Add(addingPosition, cp);
                     netherActivatedChunkList.Add(cp);
                     if (i % lf == 0)
                     {
@@ -337,7 +339,15 @@ public class ChunkLoader : MonoBehaviour
         {
             usm.hpManager.lastGroundedHeight = 0;
             player.transform.position = specificSpawnPos;
+
+            //ensure ground
+
+            tm.Destruct_Custom(specificSpawnPos, dtm.playerEnsureRadius, Dimension.Nether);
+
+
             lm.loading = false;
+
+
         }
         yield return null;
     }
@@ -346,9 +356,9 @@ public class ChunkLoader : MonoBehaviour
         Debug.Log("spawn");
         if (hasSpecificSpawnPos)
         {
-
             player.transform.position = specificSpawnPos;
             lm.loading = false;
+            tm.Destruct_Custom(specificSpawnPos, dtm.playerEnsureRadius, Dimension.OverWorld);
             return;
         }
         usm.hpManager.lastGroundedHeight = 0;

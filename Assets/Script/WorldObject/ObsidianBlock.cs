@@ -7,7 +7,7 @@ public class ObsidianBlock : MonoBehaviour
     public ChunkScript cs;
     public List<NetherPortal> connectedPortalList = new List<NetherPortal>();
 
-    private void OnDestroy()
+    private void Destroy()
     {
         if (cs == null)
             return;
@@ -21,21 +21,37 @@ public class ObsidianBlock : MonoBehaviour
             }
             else
             {
+                foreach(ObsidianBlock ob in np.usedObBlock)
+                {
+                    if (ob.connectedPortalList.Contains(np))
+                    {
+                        ob.connectedPortalList.Remove(np);
+                    }
+                }
                 np.cs.netherPortalData.Remove(np.posInChunk);
                 Destroy(np.gameObject);
             }
         }
         cs.obsidianData.Remove(this);
     }
-
-    public IEnumerator SearchForLinkedPortal(List<Vector3> portalPos, NetherPortalGenerationManager npgm)
+    public IEnumerator SearchForLinkedPortal(List<Vector3> portalPos, NetherPortalGenerationManager npgm, Dimension dimension)
     {
-
-        foreach(Vector3 v in portalPos)
+        switch (dimension)
         {
-            yield return new WaitUntil(() => npgm.netherPortalDictionary.ContainsKey(v));
-            connectedPortalList.Add(npgm.netherPortalDictionary[v]);
+            case Dimension.OverWorld:
+                foreach (Vector3 v in portalPos)
+                {
+                    yield return new WaitUntil(() => npgm.netherPortalDictionary.ContainsKey(v));
+                    connectedPortalList.Add(npgm.netherPortalDictionary[v]);
+                }
+                break;
+            case Dimension.Nether:
+                foreach (Vector3 v in portalPos)
+                {
+                    yield return new WaitUntil(() => npgm.nether_netherPortalDictionary.ContainsKey(v));
+                    connectedPortalList.Add(npgm.netherPortalDictionary[v]);
+                }
+                break;
         }
-        Debug.Log("Ang");
     }
 }

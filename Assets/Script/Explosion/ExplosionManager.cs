@@ -12,6 +12,7 @@ public class ExplosionManager : MonoBehaviour
     HpManager hm;
     FirstPersonController fpc;
     SoundManager sm;
+    DimensionTransportationManager dtm;
 
     public bool hasExplosion;
     public Vector3 explosionPos;
@@ -25,6 +26,7 @@ public class ExplosionManager : MonoBehaviour
         hm = usm.hpManager;
         fpc = usm.firstPersonController;
         sm = usm.soundManager;
+        dtm = usm.dimensionTransportationManager;
     }
     void Update()
     {
@@ -41,7 +43,7 @@ public class ExplosionManager : MonoBehaviour
 
 
         //ground destruction
-        tm.Destruct_Custom(position, expPreset.DestructionRadius);
+        tm.Destruct_Custom(position, expPreset.DestructionRadius, dtm.currentDimesnion);
 
 
         //object destruction

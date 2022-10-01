@@ -6,16 +6,19 @@ public class NetherPortalGenerationManager : MonoBehaviour
 {
     public UniversalScriptManager usm;
     CameraManager cm;
+    DimensionTransportationManager dtm;
      public List<NetherPortalRecipe> netherPortalRecipes = new List<NetherPortalRecipe>();
     public GameObject netherPortalPrefab;
     public float generated_camShakeTime;
     public float generated_camShakeIntensity;
     public Item netherPortalItem;
     public Dictionary<Vector3, NetherPortal> netherPortalDictionary = new Dictionary<Vector3, NetherPortal>();
+    public Dictionary<Vector3, NetherPortal> nether_netherPortalDictionary = new Dictionary<Vector3, NetherPortal>();
 
     private void Awake()
     {
         cm = usm.cameraManager;
+        dtm = usm.dimensionTransportationManager;
     }
     public void TryMakeNetherPortal(ObsidianBlock ob, out bool succeded)
     {
@@ -96,8 +99,17 @@ public class NetherPortalGenerationManager : MonoBehaviour
                     foreach (ObsidianBlock usedob in usedObsidians)
                     {
                         usedob.connectedPortalList.Add(np);
+                        np.usedObBlock.Add(usedob);
                     }
-                    netherPortalDictionary.Add(p.transform.position, np);
+                    switch (dtm.currentDimesnion)
+                    {
+                        case Dimension.OverWorld:
+                            netherPortalDictionary.Add(p.transform.position, np);
+                            break;
+                        case Dimension.Nether:
+                            nether_netherPortalDictionary.Add(p.transform.position, np);
+                            break;
+                    }
 
 
                     return;

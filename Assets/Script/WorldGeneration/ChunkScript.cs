@@ -182,10 +182,13 @@ public class ChunkScript : MonoBehaviour
     {
         mg.ReGenerateMesh(this);
 
-        if (!wm.modifiedChunkDataKeys.Contains(this))
+        if (dimension != Dimension.Nether)
         {
-            wm.modifiedChunkDataKeys.Add(this);
-            wm.modifiedChunksDataDictionary.Add(this, new UpdatedChunkData { cs = this,modifiedPoses = new List<Vector3>( )});
+            if (!wm.modifiedChunkDataKeys.Contains(this))
+            {
+                wm.modifiedChunkDataKeys.Add(this);
+                wm.modifiedChunksDataDictionary.Add(this, new UpdatedChunkData { cs = this, modifiedPoses = new List<Vector3>() });
+            }
         }
         if (!lm.modifiedChunkDataKeys.Contains(this))
         {
@@ -205,7 +208,15 @@ public class ChunkScript : MonoBehaviour
                 {
                     if (terrainMap_pre[x, y, z] != terrainMap[x, y, z])
                     {
-                        wdr.RecordTerrainData(new Vector3Int(x, y, z) + new Vector3Int((int)position.x, 0, (int)position.y), terrainMap[x, y, z]);
+                        switch (dimension)
+                        {
+                            case Dimension.OverWorld:
+                                wdr.RecordTerrainData(new Vector3Int(x, y, z) + new Vector3Int((int)position.x, 0, (int)position.y), terrainMap[x, y, z]);
+                                break;
+                            case Dimension.Nether:
+                                wdr.RecordNetherTerrainData(new Vector3Int(x, y, z) + new Vector3Int((int)position.x, 0, (int)position.y), terrainMap[x, y, z]);
+                                break;
+                        }
                         terrainMap_pre[x, y, z] = terrainMap[x, y, z];
                     }
                 }
@@ -231,8 +242,12 @@ public class ChunkScript : MonoBehaviour
     {
         foreach(BlockData bd in blockDataList)
         {
-            if (bd.obj.transform.position == pos + new Vector3(position.x, 0, position.y))
-                return true;
+            if (bd.obj != null)
+            {
+
+                if (bd.obj.transform.position == pos + new Vector3(position.x, 0, position.y))
+                    return true;
+            }
         }
         return false;
     }

@@ -89,6 +89,7 @@ public class WorldGenerator : MonoBehaviour
         {
             GenerateGrass(cs);
         }
+        Debug.Log(1);
         GenerateFire(cs);
         es.SpawnEntities(cs);
 
@@ -118,7 +119,37 @@ public class WorldGenerator : MonoBehaviour
                             cs.obsidianData.Add(ob);
                             if (sm.obsidianNetherPortalData.ContainsKey(b.transform.position))
                             {
-                                StartCoroutine(ob.SearchForLinkedPortal(sm.obsidianNetherPortalData[b.transform.position], npgm));
+                                StartCoroutine(ob.SearchForLinkedPortal(sm.obsidianNetherPortalData[b.transform.position], npgm, cs.dimension));
+                            }
+                        }
+                    }
+                }
+                break;
+            case Dimension.Nether:
+                if (sm.nether_savedBlockData.ContainsKey(cs.position))
+                {
+                    foreach (BlockData_Transform bdt in sm.nether_savedBlockData[cs.position])
+                    {
+                        GameObject b = Instantiate(bdt.block.blockInstance);
+                        b.transform.SetParent(cs.objectBundle.transform);
+                        b.transform.localPosition = bdt.pos;
+                        b.transform.eulerAngles = bdt.rot;
+                        cs.blockDataList.Add(new BlockData { obj = b, block = bdt.block });
+                        if (bdt.block.name == "NetherPortal")
+                        {
+                            NetherPortal np = b.GetComponent<NetherPortal>();
+                            np.posInChunk = bdt.pos;
+                            np.cs = cs;
+                            npgm.netherPortalDictionary.Add(b.transform.position, np);
+                        }
+                        else if (bdt.block.name == "Obsidian")
+                        {
+                            ObsidianBlock ob = b.GetComponent<ObsidianBlock>();
+                            ob.cs = cs;
+                            cs.obsidianData.Add(ob);
+                            if (sm.nether_obsidianNetherPortalData.ContainsKey(b.transform.position))
+                            {
+                                StartCoroutine(ob.SearchForLinkedPortal(sm.nether_obsidianNetherPortalData[b.transform.position], npgm, cs.dimension));
                             }
                         }
                     }
@@ -184,9 +215,10 @@ public class WorldGenerator : MonoBehaviour
         GameObject smallGrassPrefab = cs.biomeProperty.smallGrasObject;
 
         NoisePreset np = cs.biomeProperty.grassNoisePreset;
-        if(sm.savedGrassData.ContainsKey(cs.position))
+        Dictionary < Vector2, List < GrassProperty >> sourceDictionary = cs.dimension == Dimension.OverWorld ? sm.savedGrassData : sm.nether_savedGrassData;
+        if (sourceDictionary.ContainsKey(cs.position))
         {
-            foreach(GrassProperty gp in sm.savedGrassData[cs.position])
+            foreach(GrassProperty gp in sourceDictionary[cs.position])
             {
                 GameObject g = Instantiate(grassPrefab);
                 g.transform.SetParent(grassParent);
@@ -318,11 +350,30 @@ public class WorldGenerator : MonoBehaviour
 
     public void GenerateFire(ChunkScript cs)
     {
-        if (!sm.savedFireData.ContainsKey(cs.position))
-            return;
-        foreach(Vector3 v in sm.savedFireData[cs.position])
+        Debug.Log(2);
+        switch (cs.dimension)
         {
-            fm.LitFire(v + new Vector3(cs.position.x, 0, cs.position.y), cs);
+            case Dimension.OverWorld:
+                if (!sm.savedFireData.ContainsKey(cs.position))
+                    return;
+
+                foreach (Vector3 v in sm.savedFireData[cs.position])
+                {
+                    fm.LitFire(v + new Vector3(cs.position.x, 0, cs.position.y), cs);
+                }
+                break;
+            case Dimension.Nether:
+                Debug.Log(3);
+                if (!sm.nether_savedFireData.ContainsKey(cs.position))
+                    return;
+
+                Debug.Log(4);
+                foreach (Vector3 v in sm.nether_savedFireData[cs.position])
+                {
+                    Debug.Log(5);
+                    fm.LitFire(v + new Vector3(cs.position.x, 0, cs.position.y), cs);
+                }
+                break;
         }
     }
 

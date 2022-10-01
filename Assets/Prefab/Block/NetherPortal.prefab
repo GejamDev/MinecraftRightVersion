@@ -46,6 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cs: {fileID: 0}
   posInChunk: {x: 0, y: 0, z: 0}
+  usedObBlock: []
 --- !u!1 &4795673491917411619
 GameObject:
   m_ObjectHideFlags: 0
@@ -74,7 +75,7 @@ Transform:
   m_GameObject: {fileID: 4795673491917411619}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 1.7496, y: 2.2295, z: -0}
-  m_LocalScale: {x: 3.7992213, y: 5.0840073, z: 0.5}
+  m_LocalScale: {x: 3.7992213, y: 5.0840073, z: 0.15047}
   m_Children: []
   m_Father: {fileID: 3700748431851658015}
   m_RootOrder: 0

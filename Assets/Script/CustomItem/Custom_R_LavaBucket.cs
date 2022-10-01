@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Custom_R_WaterBucket : MonoBehaviour
+public class Custom_R_LavaBucket : MonoBehaviour
 {
     public UniversalScriptManager usm;
     public Item item;
     public Animator handAnim;
-    WaterManager wm;
+    LavaManager lm;
     InventoryManager im;
+    DimensionTransportationManager dtm;
     Transform cam;
     public float maxDistance;
     public float pourRadius;
@@ -22,8 +23,9 @@ public class Custom_R_WaterBucket : MonoBehaviour
     {
         cam = Camera.main.transform;
 
-        wm = usm.waterManager;
+        lm = usm.lavaManager;
         im = usm.inventoryManager;
+        dtm = usm.dimensionTransportationManager;
 
         reloaded = true;
     }
@@ -40,13 +42,13 @@ public class Custom_R_WaterBucket : MonoBehaviour
         RaycastHit hit_ground;
         if (Physics.Raycast(cam.position, cam.forward, out hit_ground, maxDistance, groundLayer))
         {
-            Vector3 pouringPos = hit_ground.point - (hit_ground.point - cam.position).normalized * 0.3f;// + Vector3.down;
+            Vector3 pouringPos = hit_ground.point - (hit_ground.point-cam.position).normalized*0.3f;// + Vector3.down;
 
             ChunkScript chunk = hit_ground.collider.transform.parent.parent.GetComponent<ChunkScript>();
 
 
             //pour water
-            StartCoroutine(wm.Pourwater(chunk, pouringPos, pourRadius, delay));
+            StartCoroutine(lm.PourLava(chunk, pouringPos, pourRadius, delay));
 
 
             //swap item

@@ -154,9 +154,9 @@ public class TerrainModifier : MonoBehaviour
             else
             {
                 sm.PlaySound("Punch", 1);
-
-
-                DestroyStuffInChunk(currentlyTouchingObject.transform.parent.parent.GetComponent<ChunkScript>(), touchingPosition);
+                ChunkScript touchingCS;
+                touchingCS = currentlyTouchingObject.transform.parent.parent.GetComponent<ChunkScript>();
+                DestroyStuffInChunk(touchingCS, touchingPosition);
 
                 if (currentlyTouchingObject.type == ModifiableObjectType.Weak)
                 {
@@ -210,7 +210,7 @@ public class TerrainModifier : MonoBehaviour
 
         int destroyedPointCount = 0;
         int maxDestroyPointCount = Mathf.RoundToInt((yEnd - yStart) * 4 * destroyMaxDistance * destroyMaxDistance);
-
+        
         for (int y = yStart; y < yEnd; y++)
         {
             if(y >= usingItem.minDiggableYLevel && y <= usingItem.maxDiggableYLevel)
@@ -230,53 +230,54 @@ public class TerrainModifier : MonoBehaviour
 
                             //calculate value
                             float power = destroySpeed * destroySpeedByDistanceCurve.Evaluate(dis / destroyMaxDistance);
+                            Dictionary<Vector2, ChunkProperties> modifyingDictionary = cs.dimension == Dimension.OverWorld ? cl.chunkDictionary : cl.nether_chunkDictionary;
                             if (x == chunkSize && z == chunkSize)//between four chunks
                             {
                                 cs.terrainMap[x, y, z] += power;
-                                cl.chunkDictionary[cs.position + new Vector2(chunkSize, 0)].cs.terrainMap[0, y, z] += power;
-                                cl.chunkDictionary[cs.position + new Vector2(0, chunkSize)].cs.terrainMap[x, y, 0] += power;
-                                cl.chunkDictionary[cs.position + new Vector2(chunkSize, chunkSize)].cs.terrainMap[0, y, 0] += power;
+                                modifyingDictionary[cs.position + new Vector2(chunkSize, 0)].cs.terrainMap[0, y, z] += power;
+                                modifyingDictionary[cs.position + new Vector2(0, chunkSize)].cs.terrainMap[x, y, 0] += power;
+                                modifyingDictionary[cs.position + new Vector2(chunkSize, chunkSize)].cs.terrainMap[0, y, 0] += power;
 
 
-                                AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(chunkSize, 0)].cs);
-                                AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(0, chunkSize)].cs);
-                                AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(chunkSize, chunkSize)].cs);
+                                AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(chunkSize, 0)].cs);
+                                AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(0, chunkSize)].cs);
+                                AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(chunkSize, chunkSize)].cs);
                             }
                             else if (x == chunkSize && z == 0)//between four chunks
                             {
                                 cs.terrainMap[x, y, z] += power;
-                                cl.chunkDictionary[cs.position + new Vector2(chunkSize, 0)].cs.terrainMap[0, y, z] += power;
-                                cl.chunkDictionary[cs.position + new Vector2(0, -chunkSize)].cs.terrainMap[x, y, chunkSize] += power;
-                                cl.chunkDictionary[cs.position + new Vector2(chunkSize, -chunkSize)].cs.terrainMap[0, y, chunkSize] += power;
+                                modifyingDictionary[cs.position + new Vector2(chunkSize, 0)].cs.terrainMap[0, y, z] += power;
+                                modifyingDictionary[cs.position + new Vector2(0, -chunkSize)].cs.terrainMap[x, y, chunkSize] += power;
+                                modifyingDictionary[cs.position + new Vector2(chunkSize, -chunkSize)].cs.terrainMap[0, y, chunkSize] += power;
 
 
-                                AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(chunkSize, 0)].cs);
-                                AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(0, -chunkSize)].cs);
-                                AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(chunkSize, -chunkSize)].cs);
+                                AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(chunkSize, 0)].cs);
+                                AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(0, -chunkSize)].cs);
+                                AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(chunkSize, -chunkSize)].cs);
                             }
                             else if (x == 0 && z == chunkSize)//between four chunks
                             {
                                 cs.terrainMap[x, y, z] += power;
-                                cl.chunkDictionary[cs.position + new Vector2(-chunkSize, 0)].cs.terrainMap[chunkSize, y, z] += power;
-                                cl.chunkDictionary[cs.position + new Vector2(0, chunkSize)].cs.terrainMap[x, y, 0] += power;
-                                cl.chunkDictionary[cs.position + new Vector2(-chunkSize, chunkSize)].cs.terrainMap[chunkSize, y, 0] += power;
+                                modifyingDictionary[cs.position + new Vector2(-chunkSize, 0)].cs.terrainMap[chunkSize, y, z] += power;
+                                modifyingDictionary[cs.position + new Vector2(0, chunkSize)].cs.terrainMap[x, y, 0] += power;
+                                modifyingDictionary[cs.position + new Vector2(-chunkSize, chunkSize)].cs.terrainMap[chunkSize, y, 0] += power;
 
 
-                                AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(-chunkSize, 0)].cs);
-                                AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(0, chunkSize)].cs);
-                                AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(-chunkSize, chunkSize)].cs);
+                                AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(-chunkSize, 0)].cs);
+                                AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(0, chunkSize)].cs);
+                                AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(-chunkSize, chunkSize)].cs);
                             }
                             else if (x == 0 && z == 0)//between four chunks
                             {
                                 cs.terrainMap[x, y, z] += power;
-                                cl.chunkDictionary[cs.position + new Vector2(-chunkSize, 0)].cs.terrainMap[chunkSize, y, z] += power;
-                                cl.chunkDictionary[cs.position + new Vector2(0, -chunkSize)].cs.terrainMap[x, y, chunkSize] += power;
-                                cl.chunkDictionary[cs.position + new Vector2(-chunkSize, -chunkSize)].cs.terrainMap[chunkSize, y, chunkSize] += power;
+                                modifyingDictionary[cs.position + new Vector2(-chunkSize, 0)].cs.terrainMap[chunkSize, y, z] += power;
+                                modifyingDictionary[cs.position + new Vector2(0, -chunkSize)].cs.terrainMap[x, y, chunkSize] += power;
+                                modifyingDictionary[cs.position + new Vector2(-chunkSize, -chunkSize)].cs.terrainMap[chunkSize, y, chunkSize] += power;
 
 
-                                AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(-chunkSize, 0)].cs);
-                                AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(0, -chunkSize)].cs);
-                                AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(-chunkSize, -chunkSize)].cs);
+                                AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(-chunkSize, 0)].cs);
+                                AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(0, -chunkSize)].cs);
+                                AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(-chunkSize, -chunkSize)].cs);
                             }
                             else//just in chunk
                             {
@@ -291,23 +292,23 @@ public class TerrainModifier : MonoBehaviour
 
                                 if (crossedLeft)
                                 {
-                                    modifyingChunk = cl.chunkDictionary[modifyingChunk.position + new Vector2(-chunkSize, 0)].cs;
+                                    modifyingChunk = modifyingDictionary[modifyingChunk.position + new Vector2(-chunkSize, 0)].cs;
                                     modifyingPositionInChunk += new Vector3Int(chunkSize, 0, 0);
                                 }
                                 else if (crossedRight)
                                 {
-                                    modifyingChunk = cl.chunkDictionary[modifyingChunk.position + new Vector2(chunkSize, 0)].cs;
+                                    modifyingChunk = modifyingDictionary[modifyingChunk.position + new Vector2(chunkSize, 0)].cs;
                                     modifyingPositionInChunk += new Vector3Int(-chunkSize, 0, 0);
                                 }
 
                                 if (crossedBack)
                                 {
-                                    modifyingChunk = cl.chunkDictionary[modifyingChunk.position + new Vector2(0, -chunkSize)].cs;
+                                    modifyingChunk = modifyingDictionary[modifyingChunk.position + new Vector2(0, -chunkSize)].cs;
                                     modifyingPositionInChunk += new Vector3Int(0, 0, chunkSize);
                                 }
                                 else if (crossedFront)
                                 {
-                                    modifyingChunk = cl.chunkDictionary[modifyingChunk.position + new Vector2(0, chunkSize)].cs;
+                                    modifyingChunk = modifyingDictionary[modifyingChunk.position + new Vector2(0, chunkSize)].cs;
                                     modifyingPositionInChunk += new Vector3Int(0, 0, -chunkSize);
                                 }
 
@@ -323,27 +324,27 @@ public class TerrainModifier : MonoBehaviour
                                 //collides with another chunk
                                 if (modifyingPositionInChunk.x == chunkSize)
                                 {
-                                    cl.chunkDictionary[modifyingChunk.position + new Vector2(chunkSize, 0)].cs.terrainMap[0, y, modifyingPositionInChunk.z] += power;
+                                    modifyingDictionary[modifyingChunk.position + new Vector2(chunkSize, 0)].cs.terrainMap[0, y, modifyingPositionInChunk.z] += power;
 
-                                    AddChunkToModifiedList(cl.chunkDictionary[modifyingChunk.position + new Vector2(chunkSize, 0)].cs);
+                                    AddChunkToModifiedList(modifyingDictionary[modifyingChunk.position + new Vector2(chunkSize, 0)].cs);
                                 }
                                 else if (modifyingPositionInChunk.x == 0)
                                 {
-                                    cl.chunkDictionary[modifyingChunk.position + new Vector2(-chunkSize, 0)].cs.terrainMap[chunkSize, y, modifyingPositionInChunk.z] += power;
+                                    modifyingDictionary[modifyingChunk.position + new Vector2(-chunkSize, 0)].cs.terrainMap[chunkSize, y, modifyingPositionInChunk.z] += power;
 
-                                    AddChunkToModifiedList(cl.chunkDictionary[modifyingChunk.position + new Vector2(-chunkSize, 0)].cs);
+                                    AddChunkToModifiedList(modifyingDictionary[modifyingChunk.position + new Vector2(-chunkSize, 0)].cs);
                                 }
                                 else if ((modifyingPositionInChunk.z == chunkSize))
                                 {
-                                    cl.chunkDictionary[modifyingChunk.position + new Vector2(0, chunkSize)].cs.terrainMap[modifyingPositionInChunk.x, y, 0] += power;
+                                    modifyingDictionary[modifyingChunk.position + new Vector2(0, chunkSize)].cs.terrainMap[modifyingPositionInChunk.x, y, 0] += power;
 
-                                    AddChunkToModifiedList(cl.chunkDictionary[modifyingChunk.position + new Vector2(0, chunkSize)].cs);
+                                    AddChunkToModifiedList(modifyingDictionary[modifyingChunk.position + new Vector2(0, chunkSize)].cs);
                                 }
                                 else if (modifyingPositionInChunk.z == 0)
                                 {
-                                    cl.chunkDictionary[modifyingChunk.position + new Vector2(0, -chunkSize)].cs.terrainMap[modifyingPositionInChunk.x, y, chunkSize] += power;
+                                    modifyingDictionary[modifyingChunk.position + new Vector2(0, -chunkSize)].cs.terrainMap[modifyingPositionInChunk.x, y, chunkSize] += power;
 
-                                    AddChunkToModifiedList(cl.chunkDictionary[modifyingChunk.position + new Vector2(0, -chunkSize)].cs);
+                                    AddChunkToModifiedList(modifyingDictionary[modifyingChunk.position + new Vector2(0, -chunkSize)].cs);
                                 }
                             }
 
@@ -358,30 +359,41 @@ public class TerrainModifier : MonoBehaviour
 
 
         //sound
-        if (curDestroyingPosition.y <= 66)
+        string str = Random.Range(1, 4).ToString();
+        switch (cs.dimension)
         {
-            string str = Random.Range(1, 4).ToString();
-            for(int i = 0; i < 4; i++)
-            {
-                sm.PlaySound("StoneBreak" + str, 1);
-            }
-        }
-        else
-        {
-            switch (cs.biomeProperty.name)
-            {
-                case "Plain":
-                    sm.PlaySound("DestroyDirt" + Random.Range(1, 4).ToString(), ((float)destroyedPointCount / maxDestroyPointCount) * 1.5f + 0.5f);
-                    break;
-                case "SnowTundra":
-                    sm.PlaySound("DestroySand" + Random.Range(1, 5).ToString(), ((float)destroyedPointCount / maxDestroyPointCount) * 0.7f + 0.2f);
-                    break;
-                case "Desert":
-                    sm.PlaySound("DestroySand" + Random.Range(1, 5).ToString(), ((float)destroyedPointCount / maxDestroyPointCount) * 0.7f + 0.2f);
-                    break;
-                default:
-                    break;
-            }
+            case Dimension.OverWorld:
+                if (curDestroyingPosition.y <= 66)
+                {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        sm.PlaySound("StoneBreak" + str, 1);
+                    }
+                }
+                else
+                {
+                    switch (cs.biomeProperty.name)
+                    {
+                        case "Plain":
+                            sm.PlaySound("DestroyDirt" + Random.Range(1, 4).ToString(), ((float)destroyedPointCount / maxDestroyPointCount) * 1.5f + 0.5f);
+                            break;
+                        case "SnowTundra":
+                            sm.PlaySound("DestroySand" + Random.Range(1, 5).ToString(), ((float)destroyedPointCount / maxDestroyPointCount) * 0.7f + 0.2f);
+                            break;
+                        case "Desert":
+                            sm.PlaySound("DestroySand" + Random.Range(1, 5).ToString(), ((float)destroyedPointCount / maxDestroyPointCount) * 0.7f + 0.2f);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                break;
+            case Dimension.Nether:
+                for (int i = 0; i < 4; i++)
+                {
+                    sm.PlaySound("StoneBreak" + str, 1);
+                }
+                break;
         }
 
 
@@ -399,33 +411,45 @@ public class TerrainModifier : MonoBehaviour
 
         //particle
         BiomeProperty bp = currentlyTouchingChunk.biomeProperty;
-        if(touchingPosition.y >= mg.grassStartHeight)
-        {
-            if (bp.groundDestroyParticle != null)
-            {
-                GameObject p = Instantiate(bp.groundDestroyParticle);
-                p.transform.position = touchingPosition;
-            }
-        }
-        else
-        {
-            GameObject p = Instantiate(rockDestroyParticle);
-            p.transform.position = touchingPosition;
-        }
 
 
         //get rock
-        if(gettingRockCount != 0 && im.HasRoomFor(rockItem))
+        switch (cs.dimension)
         {
-            gettingRockCount = Mathf.RoundToInt(gettingRockCount * rockObtainMultiplier);
-            im.ObtainItem(new InventorySlot { item = rockItem, amount = gettingRockCount }, 0, 36);
+            case Dimension.OverWorld:
+
+                //particle
+                if (touchingPosition.y >= mg.grassStartHeight)
+                {
+                    if (bp.groundDestroyParticle != null)
+                    {
+                        GameObject p = Instantiate(bp.groundDestroyParticle);
+                        p.transform.position = touchingPosition;
+                    }
+                }
+                else
+                {
+                    GameObject p = Instantiate(rockDestroyParticle);
+                    p.transform.position = touchingPosition;
+                }
+
+                //rock
+                if (gettingRockCount != 0 && im.HasRoomFor(rockItem))
+                {
+                    gettingRockCount = Mathf.RoundToInt(gettingRockCount * rockObtainMultiplier);
+                    im.ObtainItem(new InventorySlot { item = rockItem, amount = gettingRockCount }, 0, 36);
+                }
+                //flint
+                if (Random.Range(0, 100) <= flintObtainChance * 100)
+                {
+                    im.ObtainItem(new InventorySlot { item = flintItem, amount = 1 }, 0, 36);
+                }
+                break;
+            case Dimension.Nether:
+                break;
         }
 
         //get flint
-        if(Random.Range(0, 100) <= flintObtainChance * 100)
-        {
-            im.ObtainItem(new InventorySlot { item = flintItem, amount = 1 }, 0, 36);
-        }
 
     }
     public void DestroyStuffInChunk(ChunkScript cs, Vector3 pos)
@@ -635,7 +659,7 @@ public class TerrainModifier : MonoBehaviour
         }
         modifiedChunkList.Clear();
     }
-    public void Destruct_Custom(Vector3 position, float radius)
+    public void Destruct_Custom(Vector3 position, float radius, Dimension dimension)
     {
         int chunkSize = wgPreset.chunkSize;
 
@@ -651,17 +675,31 @@ public class TerrainModifier : MonoBehaviour
             Mathf.Floor(-position.z / chunkSize) * -chunkSize - chunkSize
             );
 
-        if (!cl.chunkDictionary.ContainsKey(modifyingChunkPosition))
+        ChunkScript cs = null;
+        switch (dimension)
         {
-            Debug.LogError("Chunk to modify hasn't been generated");
-            return;
+            case Dimension.OverWorld:
+                if (!cl.chunkDictionary.ContainsKey(modifyingChunkPosition))
+                {
+                    Debug.LogError("Chunk to modify hasn't been generated");
+                    return;
+                }
+                 cs = cl.chunkDictionary[modifyingChunkPosition].cs;
+                break;
+            case Dimension.Nether:
+                if (!cl.nether_chunkDictionary.ContainsKey(modifyingChunkPosition))
+                {
+                    Debug.LogError("Chunk to modify hasn't been generated");
+                    return;
+                }
+                 cs = cl.nether_chunkDictionary[modifyingChunkPosition].cs;
+                break;
         }
 
 
 
 
 
-        ChunkScript cs = cl.chunkDictionary[modifyingChunkPosition].cs;
         Vector3 curDestroyingPosition = position - new Vector3(cs.position.x, 0, cs.position.y);
         
 
@@ -683,56 +721,58 @@ public class TerrainModifier : MonoBehaviour
                     float dis = Vector3.Distance(new Vector3(x, y, z), curDestroyingPosition);
                     if (dis <= radius)
                     {
-
                         //calculate value
                         float power = destroySpeed * destroySpeedByDistanceCurve.Evaluate(dis / radius);
+
+
+                        Dictionary<Vector2, ChunkProperties> modifyingDictionary = cs.dimension == Dimension.OverWorld ? cl.chunkDictionary : cl.nether_chunkDictionary;
                         if (x == chunkSize && z == chunkSize)//between four chunks
                         {
                             cs.terrainMap[x, y, z] += power;
-                            cl.chunkDictionary[cs.position + new Vector2(chunkSize, 0)].cs.terrainMap[0, y, z] += power;
-                            cl.chunkDictionary[cs.position + new Vector2(0, chunkSize)].cs.terrainMap[x, y, 0] += power;
-                            cl.chunkDictionary[cs.position + new Vector2(chunkSize, chunkSize)].cs.terrainMap[0, y, 0] += power;
+                            modifyingDictionary[cs.position + new Vector2(chunkSize, 0)].cs.terrainMap[0, y, z] += power;
+                            modifyingDictionary[cs.position + new Vector2(0, chunkSize)].cs.terrainMap[x, y, 0] += power;
+                            modifyingDictionary[cs.position + new Vector2(chunkSize, chunkSize)].cs.terrainMap[0, y, 0] += power;
 
 
-                            AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(chunkSize, 0)].cs);
-                            AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(0, chunkSize)].cs);
-                            AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(chunkSize, chunkSize)].cs);
+                            AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(chunkSize, 0)].cs);
+                            AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(0, chunkSize)].cs);
+                            AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(chunkSize, chunkSize)].cs);
                         }
                         else if (x == chunkSize && z == 0)//between four chunks
                         {
                             cs.terrainMap[x, y, z] += power;
-                            cl.chunkDictionary[cs.position + new Vector2(chunkSize, 0)].cs.terrainMap[0, y, z] += power;
-                            cl.chunkDictionary[cs.position + new Vector2(0, -chunkSize)].cs.terrainMap[x, y, chunkSize] += power;
-                            cl.chunkDictionary[cs.position + new Vector2(chunkSize, -chunkSize)].cs.terrainMap[0, y, chunkSize] += power;
+                            modifyingDictionary[cs.position + new Vector2(chunkSize, 0)].cs.terrainMap[0, y, z] += power;
+                            modifyingDictionary[cs.position + new Vector2(0, -chunkSize)].cs.terrainMap[x, y, chunkSize] += power;
+                            modifyingDictionary[cs.position + new Vector2(chunkSize, -chunkSize)].cs.terrainMap[0, y, chunkSize] += power;
 
 
-                            AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(chunkSize, 0)].cs);
-                            AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(0, -chunkSize)].cs);
-                            AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(chunkSize, -chunkSize)].cs);
+                            AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(chunkSize, 0)].cs);
+                            AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(0, -chunkSize)].cs);
+                            AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(chunkSize, -chunkSize)].cs);
                         }
                         else if (x == 0 && z == chunkSize)//between four chunks
                         {
                             cs.terrainMap[x, y, z] += power;
-                            cl.chunkDictionary[cs.position + new Vector2(-chunkSize, 0)].cs.terrainMap[chunkSize, y, z] += power;
-                            cl.chunkDictionary[cs.position + new Vector2(0, chunkSize)].cs.terrainMap[x, y, 0] += power;
-                            cl.chunkDictionary[cs.position + new Vector2(-chunkSize, chunkSize)].cs.terrainMap[chunkSize, y, 0] += power;
+                            modifyingDictionary[cs.position + new Vector2(-chunkSize, 0)].cs.terrainMap[chunkSize, y, z] += power;
+                            modifyingDictionary[cs.position + new Vector2(0, chunkSize)].cs.terrainMap[x, y, 0] += power;
+                            modifyingDictionary[cs.position + new Vector2(-chunkSize, chunkSize)].cs.terrainMap[chunkSize, y, 0] += power;
 
 
-                            AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(-chunkSize, 0)].cs);
-                            AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(0, chunkSize)].cs);
-                            AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(-chunkSize, chunkSize)].cs);
+                            AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(-chunkSize, 0)].cs);
+                            AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(0, chunkSize)].cs);
+                            AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(-chunkSize, chunkSize)].cs);
                         }
                         else if (x == 0 && z == 0)//between four chunks
                         {
                             cs.terrainMap[x, y, z] += power;
-                            cl.chunkDictionary[cs.position + new Vector2(-chunkSize, 0)].cs.terrainMap[chunkSize, y, z] += power;
-                            cl.chunkDictionary[cs.position + new Vector2(0, -chunkSize)].cs.terrainMap[x, y, chunkSize] += power;
-                            cl.chunkDictionary[cs.position + new Vector2(-chunkSize, -chunkSize)].cs.terrainMap[chunkSize, y, chunkSize] += power;
+                            modifyingDictionary[cs.position + new Vector2(-chunkSize, 0)].cs.terrainMap[chunkSize, y, z] += power;
+                            modifyingDictionary[cs.position + new Vector2(0, -chunkSize)].cs.terrainMap[x, y, chunkSize] += power;
+                            modifyingDictionary[cs.position + new Vector2(-chunkSize, -chunkSize)].cs.terrainMap[chunkSize, y, chunkSize] += power;
 
 
-                            AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(-chunkSize, 0)].cs);
-                            AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(0, -chunkSize)].cs);
-                            AddChunkToModifiedList(cl.chunkDictionary[cs.position + new Vector2(-chunkSize, -chunkSize)].cs);
+                            AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(-chunkSize, 0)].cs);
+                            AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(0, -chunkSize)].cs);
+                            AddChunkToModifiedList(modifyingDictionary[cs.position + new Vector2(-chunkSize, -chunkSize)].cs);
                         }
                         else//just in chunk
                         {
@@ -747,23 +787,23 @@ public class TerrainModifier : MonoBehaviour
 
                             if (crossedLeft)
                             {
-                                modifyingChunk = cl.chunkDictionary[modifyingChunk.position + new Vector2(-chunkSize, 0)].cs;
+                                modifyingChunk = modifyingDictionary[modifyingChunk.position + new Vector2(-chunkSize, 0)].cs;
                                 modifyingPositionInChunk += new Vector3Int(chunkSize, 0, 0);
                             }
                             else if (crossedRight)
                             {
-                                modifyingChunk = cl.chunkDictionary[modifyingChunk.position + new Vector2(chunkSize, 0)].cs;
+                                modifyingChunk = modifyingDictionary[modifyingChunk.position + new Vector2(chunkSize, 0)].cs;
                                 modifyingPositionInChunk += new Vector3Int(-chunkSize, 0, 0);
                             }
 
                             if (crossedBack)
                             {
-                                modifyingChunk = cl.chunkDictionary[modifyingChunk.position + new Vector2(0, -chunkSize)].cs;
+                                modifyingChunk = modifyingDictionary[modifyingChunk.position + new Vector2(0, -chunkSize)].cs;
                                 modifyingPositionInChunk += new Vector3Int(0, 0, chunkSize);
                             }
                             else if (crossedFront)
                             {
-                                modifyingChunk = cl.chunkDictionary[modifyingChunk.position + new Vector2(0, chunkSize)].cs;
+                                modifyingChunk = modifyingDictionary[modifyingChunk.position + new Vector2(0, chunkSize)].cs;
                                 modifyingPositionInChunk += new Vector3Int(0, 0, -chunkSize);
                             }
 
@@ -779,27 +819,27 @@ public class TerrainModifier : MonoBehaviour
                             //collides with another chunk
                             if (modifyingPositionInChunk.x == chunkSize)
                             {
-                                cl.chunkDictionary[modifyingChunk.position + new Vector2(chunkSize, 0)].cs.terrainMap[0, y, modifyingPositionInChunk.z] += power;
+                                modifyingDictionary[modifyingChunk.position + new Vector2(chunkSize, 0)].cs.terrainMap[0, y, modifyingPositionInChunk.z] += power;
 
-                                AddChunkToModifiedList(cl.chunkDictionary[modifyingChunk.position + new Vector2(chunkSize, 0)].cs);
+                                AddChunkToModifiedList(modifyingDictionary[modifyingChunk.position + new Vector2(chunkSize, 0)].cs);
                             }
                             else if (modifyingPositionInChunk.x == 0)
                             {
-                                cl.chunkDictionary[modifyingChunk.position + new Vector2(-chunkSize, 0)].cs.terrainMap[chunkSize, y, modifyingPositionInChunk.z] += power;
+                                modifyingDictionary[modifyingChunk.position + new Vector2(-chunkSize, 0)].cs.terrainMap[chunkSize, y, modifyingPositionInChunk.z] += power;
 
-                                AddChunkToModifiedList(cl.chunkDictionary[modifyingChunk.position + new Vector2(-chunkSize, 0)].cs);
+                                AddChunkToModifiedList(modifyingDictionary[modifyingChunk.position + new Vector2(-chunkSize, 0)].cs);
                             }
                             else if ((modifyingPositionInChunk.z == chunkSize))
                             {
-                                cl.chunkDictionary[modifyingChunk.position + new Vector2(0, chunkSize)].cs.terrainMap[modifyingPositionInChunk.x, y, 0] += power;
+                                modifyingDictionary[modifyingChunk.position + new Vector2(0, chunkSize)].cs.terrainMap[modifyingPositionInChunk.x, y, 0] += power;
 
-                                AddChunkToModifiedList(cl.chunkDictionary[modifyingChunk.position + new Vector2(0, chunkSize)].cs);
+                                AddChunkToModifiedList(modifyingDictionary[modifyingChunk.position + new Vector2(0, chunkSize)].cs);
                             }
                             else if (modifyingPositionInChunk.z == 0)
                             {
-                                cl.chunkDictionary[modifyingChunk.position + new Vector2(0, -chunkSize)].cs.terrainMap[modifyingPositionInChunk.x, y, chunkSize] += power;
+                                modifyingDictionary[modifyingChunk.position + new Vector2(0, -chunkSize)].cs.terrainMap[modifyingPositionInChunk.x, y, chunkSize] += power;
 
-                                AddChunkToModifiedList(cl.chunkDictionary[modifyingChunk.position + new Vector2(0, -chunkSize)].cs);
+                                AddChunkToModifiedList(modifyingDictionary[modifyingChunk.position + new Vector2(0, -chunkSize)].cs);
                             }
                         }
 

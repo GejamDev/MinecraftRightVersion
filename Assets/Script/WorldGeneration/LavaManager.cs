@@ -428,28 +428,31 @@ public class LavaManager : MonoBehaviour
 
         if (modified)
         {
-            bool touchWater = ConflictionWithWater(cs, modifiedLavaData).Count != 0;
-            if (touchWater)
+            if (cs.dimension != Dimension.Nether)
             {
-                List<Vector3> conf = ConflictionWithWater(cs, modifiedLavaData);
-                foreach (Vector3 v in conf)
+                bool touchWater = ConflictionWithWater(cs, modifiedLavaData).Count != 0;
+                if (touchWater)
                 {
-                    modifiedLavaData.Remove(v);
-                    cs.waterData.Remove(v);
-                    wm.PlaceObsidian(cs, v);
-                }
-                if (wm.modifiedChunkDataKeys.Contains(cs))
-                {
-                    foreach (Vector3 v in SpecialFeatures.CoverListWithWalls(conf))
+                    List<Vector3> conf = ConflictionWithWater(cs, modifiedLavaData);
+                    foreach (Vector3 v in conf)
                     {
-                        if (!wm.modifiedChunksDataDictionary[cs].modifiedPoses.Contains(v))
-                            wm.modifiedChunksDataDictionary[cs].modifiedPoses.Add(v);
+                        modifiedLavaData.Remove(v);
+                        cs.waterData.Remove(v);
+                        wm.PlaceObsidian(cs, v);
                     }
-                }
-                else
-                {
-                    wm.modifiedChunksDataDictionary.Add(cs, new UpdatedChunkData { cs = cs, modifiedPoses = SpecialFeatures.CoverListWithWalls(conf) });
-                    wm.modifiedChunkDataKeys.Add(cs);
+                    if (wm.modifiedChunkDataKeys.Contains(cs))
+                    {
+                        foreach (Vector3 v in SpecialFeatures.CoverListWithWalls(conf))
+                        {
+                            if (!wm.modifiedChunksDataDictionary[cs].modifiedPoses.Contains(v))
+                                wm.modifiedChunksDataDictionary[cs].modifiedPoses.Add(v);
+                        }
+                    }
+                    else
+                    {
+                        wm.modifiedChunksDataDictionary.Add(cs, new UpdatedChunkData { cs = cs, modifiedPoses = SpecialFeatures.CoverListWithWalls(conf) });
+                        wm.modifiedChunkDataKeys.Add(cs);
+                    }
                 }
             }
             cs.lavaData = modifiedLavaData;

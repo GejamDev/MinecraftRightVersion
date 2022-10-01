@@ -240,6 +240,8 @@ MonoBehaviour:
     m_RotationOrder: 4
   smashAnimationTime: 1
   itemSpawnPos: {fileID: 0}
+  triggeringScript: {fileID: 2709766236083205986}
+  triggerName: Destroy
 --- !u!114 &1477030710344659381
 MonoBehaviour:
   m_ObjectHideFlags: 0

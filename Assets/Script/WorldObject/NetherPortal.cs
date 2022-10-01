@@ -6,4 +6,5 @@ public class NetherPortal : MonoBehaviour
 {
     public ChunkScript cs;
     public Vector3 posInChunk;
+    public List<ObsidianBlock> usedObBlock;
 }

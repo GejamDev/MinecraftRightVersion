@@ -138,7 +138,13 @@ public class MeshGenerator : MonoBehaviour
                     //groundNoise = Mathf.Clamp(groundNoise, -2, 2);
 
 
-                    if (groundNoise >= caveStartLevel || y > maxPossibleHeight)// just ground
+                    if (sm.modifiedTerrainValue.ContainsKey(new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)))
+                    {
+                        Debug.Log("owo");
+                        cs.terrainMap[x, y, z] = sm.modifiedTerrainValue[new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)];
+                        cs.terrainMap_pre[x, y, z] = sm.modifiedTerrainValue[new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)];
+                    }
+                    else if (groundNoise >= caveStartLevel || y > maxPossibleHeight)// just ground
                     {
                         cs.terrainMap[x, y, z] = groundNoise;
                         cs.terrainMap_pre[x, y, z] = groundNoise;
@@ -206,21 +212,6 @@ public class MeshGenerator : MonoBehaviour
         }
 
         //load data
-        for (int x = 0; x < width + 1; x++)
-        {
-            for (int y = 0; y < height + 1; y++)
-            {
-                for (int z = 0; z < width + 1; z++)
-                {
-                    if (sm.modifiedTerrainValue.ContainsKey(new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)))
-                    {
-                        Debug.Log("fuck");
-                        cs.terrainMap[x, y, z] = sm.modifiedTerrainValue[new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)];
-                        cs.terrainMap_pre[x, y, z] = sm.modifiedTerrainValue[new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)];
-                    }
-                }
-            }
-        }
         if (hasSavedWaterData)
         {
             foreach (Vector3Int v in sm.savedWaterData[cs.position])
@@ -250,7 +241,7 @@ public class MeshGenerator : MonoBehaviour
 
         cs.heightMap = new float[noiseMap2D.GetLength(0), noiseMap2D.GetLength(1)];
 
-        bool hasSaveLavaData = sm.savedLavaData.ContainsKey(cs.position);
+        bool hasSaveLavaData = sm.nether_savedLavaData.ContainsKey(cs.position);
 
         for (int x = 0; x < width + 1; x++)
         {
@@ -272,7 +263,13 @@ public class MeshGenerator : MonoBehaviour
 
 
                     float caveNoise = caveNoiseMap[x, y, z];
-                    if (caveNoise <= caveSurface + groundNoise * 0.06f)
+                    if (sm.nether_modifiedTerrainValue.ContainsKey(new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)))
+                    {
+                        Debug.Log("nyn");
+                        cs.terrainMap[x, y, z] = sm.nether_modifiedTerrainValue[new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)];
+                        cs.terrainMap_pre[x, y, z] = sm.nether_modifiedTerrainValue[new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)];
+                    }
+                    else if (caveNoise <= caveSurface + groundNoise * 0.06f)
                     {
                         float val = 0;//groundNoise;
                         cs.terrainMap[x, y, z] = groundNoise;
@@ -335,24 +332,9 @@ public class MeshGenerator : MonoBehaviour
         //}
         #endregion
         //load data
-        for (int x = 0; x < width + 1; x++)
-        {
-            for (int y = 0; y < height + 1; y++)
-            {
-                for (int z = 0; z < width + 1; z++)
-                {
-                    if (sm.modifiedTerrainValue.ContainsKey(new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)))
-                    {
-                        Debug.Log("fuck");
-                        cs.terrainMap[x, y, z] = sm.modifiedTerrainValue[new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)];
-                        cs.terrainMap_pre[x, y, z] = sm.modifiedTerrainValue[new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)];
-                    }
-                }
-            }
-        }
         if (hasSaveLavaData)
         {
-            foreach (Vector3Int v in sm.savedLavaData[cs.position])
+            foreach (Vector3Int v in sm.nether_savedLavaData[cs.position])
             {
                 cs.lavaData.Add(v);
             }
@@ -540,7 +522,7 @@ public class MeshGenerator : MonoBehaviour
             case Dimension.OverWorld:
                 return cl.chunkDictionary;
             case Dimension.Nether:
-                return cl.netherChunkDictionary;
+                return cl.nether_chunkDictionary;
         }
         return null;
     }
@@ -975,19 +957,41 @@ public class MeshGenerator : MonoBehaviour
     IEnumerator GenerateLavaMesh_WaitForFinishedChunk(ChunkScript cs, bool delay, bool colGen)
     {
         #region wait
-        yield return new WaitUntil(() =>
 
-        cl.chunkDictionary.ContainsKey(cs.position + Vector2.right * wgPreset.chunkSize) &&
-        cl.chunkDictionary.ContainsKey(cs.position + Vector2.left * wgPreset.chunkSize) &&
-        cl.chunkDictionary.ContainsKey(cs.position + Vector2.up * wgPreset.chunkSize) &&
-        cl.chunkDictionary.ContainsKey(cs.position + Vector2.down * wgPreset.chunkSize)
+        switch (cs.dimension)
+        {
+            case Dimension.OverWorld:
+                yield return new WaitUntil(() =>
+
+                cl.chunkDictionary.ContainsKey(cs.position + Vector2.right * wgPreset.chunkSize) &&
+                cl.chunkDictionary.ContainsKey(cs.position + Vector2.left * wgPreset.chunkSize) &&
+                cl.chunkDictionary.ContainsKey(cs.position + Vector2.up * wgPreset.chunkSize) &&
+                cl.chunkDictionary.ContainsKey(cs.position + Vector2.down * wgPreset.chunkSize)
 
 
-        );
-        cs.rightChunk = cl.chunkDictionary[cs.position + Vector2.right * wgPreset.chunkSize].cs;
-        cs.leftChunk = cl.chunkDictionary[cs.position + Vector2.left * wgPreset.chunkSize].cs;
-        cs.frontChunk = cl.chunkDictionary[cs.position + Vector2.up * wgPreset.chunkSize].cs;
-        cs.backChunk = cl.chunkDictionary[cs.position + Vector2.down * wgPreset.chunkSize].cs;
+                );
+                cs.rightChunk = cl.chunkDictionary[cs.position + Vector2.right * wgPreset.chunkSize].cs;
+                cs.leftChunk = cl.chunkDictionary[cs.position + Vector2.left * wgPreset.chunkSize].cs;
+                cs.frontChunk = cl.chunkDictionary[cs.position + Vector2.up * wgPreset.chunkSize].cs;
+                cs.backChunk = cl.chunkDictionary[cs.position + Vector2.down * wgPreset.chunkSize].cs;
+                break;
+            case Dimension.Nether:
+                yield return new WaitUntil(() =>
+
+                cl.nether_chunkDictionary.ContainsKey(cs.position + Vector2.right * wgPreset.chunkSize) &&
+                cl.nether_chunkDictionary.ContainsKey(cs.position + Vector2.left * wgPreset.chunkSize) &&
+                cl.nether_chunkDictionary.ContainsKey(cs.position + Vector2.up * wgPreset.chunkSize) &&
+                cl.nether_chunkDictionary.ContainsKey(cs.position + Vector2.down * wgPreset.chunkSize)
+
+
+                );
+                cs.rightChunk = cl.nether_chunkDictionary[cs.position + Vector2.right * wgPreset.chunkSize].cs;
+                cs.leftChunk = cl.nether_chunkDictionary[cs.position + Vector2.left * wgPreset.chunkSize].cs;
+                cs.frontChunk = cl.nether_chunkDictionary[cs.position + Vector2.up * wgPreset.chunkSize].cs;
+                cs.backChunk = cl.nether_chunkDictionary[cs.position + Vector2.down * wgPreset.chunkSize].cs;
+                break;
+        }
+
 
 
         if (cs.lavaData.Count == 0)

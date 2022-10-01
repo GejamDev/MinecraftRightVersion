@@ -7,9 +7,11 @@ public class DimensionTransportationManager : MonoBehaviour
     public Dimension currentDimesnion;
     public UniversalScriptManager usm;
     SaveManager sm;
+    BlockPlacementManager bpm;
     ChunkLoader cl;
     HpManager hm;
     GameObject player;
+    public float playerEnsureRadius;
 
     private void Awake()
     {
@@ -17,6 +19,7 @@ public class DimensionTransportationManager : MonoBehaviour
         sm = usm.saveManager;
         cl = usm.chunkLoader;
         hm = usm.hpManager;
+        bpm = usm.blockPlacementManager;
     }
 
     private void Update()
@@ -42,6 +45,9 @@ public class DimensionTransportationManager : MonoBehaviour
         cl.firstTimeLoading = true;
         currentDimesnion = Dimension.Nether;
         hm.lastGroundedHeight = 0;
+
+
+
     }
 
     public void GoToOverWorld()
@@ -50,7 +56,7 @@ public class DimensionTransportationManager : MonoBehaviour
         sm.Save();
         StartCoroutine(usm.loadingManager.Load());
         cl.hasSpecificSpawnPos = true;
-        cl.specificSpawnPos = usm.playerPositionRecorder.lastPos_overWorld;
+        cl.specificSpawnPos = usm.player.transform.position;//usm.playerPositionRecorder.lastPos_overWorld;
         usm.player.transform.position = cl.specificSpawnPos;
         cl.firstTimeLoading = true;
         currentDimesnion = Dimension.OverWorld;
