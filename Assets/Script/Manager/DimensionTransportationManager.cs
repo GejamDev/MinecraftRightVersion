@@ -10,6 +10,7 @@ public class DimensionTransportationManager : MonoBehaviour
     BlockPlacementManager bpm;
     ChunkLoader cl;
     HpManager hm;
+    NetherPortalGenerationManager npgm;
     GameObject player;
     public float playerEnsureRadius;
 
@@ -20,23 +21,24 @@ public class DimensionTransportationManager : MonoBehaviour
         cl = usm.chunkLoader;
         hm = usm.hpManager;
         bpm = usm.blockPlacementManager;
+        npgm = usm.netherPortalGenerationManager;
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Y))
         {
-            GoToNether();
+            GoToNether(null);
         }
         if (Input.GetKeyDown(KeyCode.U))
         {
-            GoToOverWorld();
+            GoToOverWorld(null);
         }
     }
 
-    public void GoToNether()
+    public void GoToNether(NetherPortal usedPortal)
     {
-        Debug.Log("gotonether");
+
         sm.Save();
         StartCoroutine(usm.loadingManager.Load());
         cl.hasSpecificSpawnPos = true;
@@ -45,14 +47,17 @@ public class DimensionTransportationManager : MonoBehaviour
         cl.firstTimeLoading = true;
         currentDimesnion = Dimension.Nether;
         hm.lastGroundedHeight = 0;
-
-
-
+        if (usedPortal == null)
+        {
+            Debug.Log("nope");
+            return;
+        }
+        npgm.CopyNetherPortal(usedPortal, Dimension.Nether);
     }
 
-    public void GoToOverWorld()
+    public void GoToOverWorld(NetherPortal usedPortal)
     {
-        Debug.Log("gotooverworld");
+
         sm.Save();
         StartCoroutine(usm.loadingManager.Load());
         cl.hasSpecificSpawnPos = true;
@@ -61,6 +66,9 @@ public class DimensionTransportationManager : MonoBehaviour
         cl.firstTimeLoading = true;
         currentDimesnion = Dimension.OverWorld;
         hm.lastGroundedHeight = 0;
+        if (usedPortal == null)
+            return;
+        npgm.CopyNetherPortal(usedPortal, Dimension.OverWorld);
     }
 
 

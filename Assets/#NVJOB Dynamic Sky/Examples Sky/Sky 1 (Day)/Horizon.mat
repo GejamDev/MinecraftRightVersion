@@ -105,4 +105,4 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Level0Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Level1Color: {r: 0.2352941, g: 0.37254906, b: 1, a: 0}
+    - _Level1Color: {r: 0.2352941, g: 0.48484072, b: 1, a: 0}

@@ -20,6 +20,7 @@ public class LightingManager : MonoBehaviour
     public GameObject cloud;
     WeatherManager wm;
     BrightnessDetector bd;
+    ChunkLoader cl;
 
     //Variables
     [Range(0, 24)] public float TimeOfDay;
@@ -36,6 +37,7 @@ public class LightingManager : MonoBehaviour
         wm = usm.weatherManager;
         dtm = usm.dimensionTransportationManager;
         bd = usm.brightnessDetector;
+        cl = usm.chunkLoader;
     }
 
     private void Update()

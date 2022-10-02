@@ -43,13 +43,15 @@ public class ObsidianBlock : MonoBehaviour
                 {
                     yield return new WaitUntil(() => npgm.netherPortalDictionary.ContainsKey(v));
                     connectedPortalList.Add(npgm.netherPortalDictionary[v]);
+                    npgm.netherPortalDictionary[v].usedObBlock.Add(this);
                 }
                 break;
             case Dimension.Nether:
                 foreach (Vector3 v in portalPos)
                 {
                     yield return new WaitUntil(() => npgm.nether_netherPortalDictionary.ContainsKey(v));
-                    connectedPortalList.Add(npgm.netherPortalDictionary[v]);
+                    connectedPortalList.Add(npgm.nether_netherPortalDictionary[v]);
+                    npgm.nether_netherPortalDictionary[v].usedObBlock.Add(this);
                 }
                 break;
         }

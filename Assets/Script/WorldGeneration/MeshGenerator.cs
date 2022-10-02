@@ -140,7 +140,7 @@ public class MeshGenerator : MonoBehaviour
 
                     if (sm.modifiedTerrainValue.ContainsKey(new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)))
                     {
-                        Debug.Log("owo");
+
                         cs.terrainMap[x, y, z] = sm.modifiedTerrainValue[new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)];
                         cs.terrainMap_pre[x, y, z] = sm.modifiedTerrainValue[new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)];
                     }
@@ -265,7 +265,7 @@ public class MeshGenerator : MonoBehaviour
                     float caveNoise = caveNoiseMap[x, y, z];
                     if (sm.nether_modifiedTerrainValue.ContainsKey(new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)))
                     {
-                        Debug.Log("nyn");
+
                         cs.terrainMap[x, y, z] = sm.nether_modifiedTerrainValue[new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)];
                         cs.terrainMap_pre[x, y, z] = sm.nether_modifiedTerrainValue[new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)];
                     }

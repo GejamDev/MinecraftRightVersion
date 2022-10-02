@@ -5,6 +5,7 @@ using System.Linq;
 public class ChunkScript : MonoBehaviour
 {
     [Header("Objects")]
+    GameObject player;
     public GameObject objectBundle;
     public GameObject meshObject;
     public GameObject bedrock;
@@ -134,6 +135,7 @@ public class ChunkScript : MonoBehaviour
         {
             //Debug.Log("1:" + terrainMap.GetLength(0) + "2:" + terrainMap.GetLength(1) + "3:" + terrainMap.GetLength(2));
         }
+
     }
     public void FlipWaterMesh()
     {
@@ -153,6 +155,7 @@ public class ChunkScript : MonoBehaviour
         wm = usm.waterManager;
         lm = usm.lavaManager;
         wg = usm.worldGenerator;
+        player = usm.player;
         objectPool = usm.objectPool;
         bedrock.transform.localScale = new Vector3(usm.worldGenerationPreset.chunkSize, 1, usm.worldGenerationPreset.chunkSize);
         bedrock.transform.localPosition = new Vector3(usm.worldGenerationPreset.chunkSize * 0.5f, bedrock.transform.localPosition.y, usm.worldGenerationPreset.chunkSize);

@@ -35,7 +35,7 @@ public class SaveManager : MonoBehaviour
     }
     public void Save()
     {
-        Debug.Log("save");
+
         SaveSystem.SaveWorldData(usm);
     }
     public void Load(string worldName)
@@ -54,7 +54,7 @@ public class SaveManager : MonoBehaviour
             usm.player.transform.eulerAngles = new Vector3(0, 0, 0);
             return;
         }
-        Debug.Log("loaded world");
+
         usm.seedManager.ChangeSeed(data.seed);
         usm.dimensionTransportationManager.currentDimesnion = StringToDimension(data.currentDimesnion);
 
@@ -84,7 +84,7 @@ public class SaveManager : MonoBehaviour
             data.nether_terrainModifiedPoses = new int[0, 0];
             data.nether_terrainModifiedValues = new float[0];
         }
-        Debug.Log(data.nether_terrainModifiedPoses.GetLength(0));
+
         for (int i = 0; i < data.nether_terrainModifiedPoses.GetLength(0); i++)
         {
             Vector3Int pos = new Vector3Int(data.nether_terrainModifiedPoses[i, 0], data.nether_terrainModifiedPoses[i, 1], data.nether_terrainModifiedPoses[i, 2]);

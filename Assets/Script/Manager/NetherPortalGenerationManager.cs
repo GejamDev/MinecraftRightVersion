@@ -6,12 +6,15 @@ public class NetherPortalGenerationManager : MonoBehaviour
 {
     public UniversalScriptManager usm;
     CameraManager cm;
+    ChunkLoader cl;
     DimensionTransportationManager dtm;
+    BlockPlacementManager bpm;
      public List<NetherPortalRecipe> netherPortalRecipes = new List<NetherPortalRecipe>();
     public GameObject netherPortalPrefab;
     public float generated_camShakeTime;
     public float generated_camShakeIntensity;
     public Item netherPortalItem;
+    public Item obsidianBlockItem;
     public Dictionary<Vector3, NetherPortal> netherPortalDictionary = new Dictionary<Vector3, NetherPortal>();
     public Dictionary<Vector3, NetherPortal> nether_netherPortalDictionary = new Dictionary<Vector3, NetherPortal>();
 
@@ -19,6 +22,8 @@ public class NetherPortalGenerationManager : MonoBehaviour
     {
         cm = usm.cameraManager;
         dtm = usm.dimensionTransportationManager;
+        cl = usm.chunkLoader;
+        bpm = usm.blockPlacementManager;
     }
     public void TryMakeNetherPortal(ObsidianBlock ob, out bool succeded)
     {
@@ -118,6 +123,58 @@ public class NetherPortalGenerationManager : MonoBehaviour
         }
 
         succeded = false;
+    }
+    public void CopyNetherPortal(NetherPortal source, Dimension targetDimension)
+    {
+        StartCoroutine(CopyNetherPortal_Cor(source, targetDimension));
+    }
+    IEnumerator CopyNetherPortal_Cor(NetherPortal source, Dimension targetDimension)
+    {
+        Debug.Log("copying");
+        switch (targetDimension)
+        {
+            case Dimension.OverWorld:
+                if (netherPortalDictionary.ContainsKey(source.transform.position))
+                    yield break;
+                break;
+            case Dimension.Nether:
+                if (nether_netherPortalDictionary.ContainsKey(source.transform.position))
+                    yield break;
+                break;
+        }
+        GameObject p = Instantiate(netherPortalPrefab);
+        p.transform.position = source.transform.position;
+        p.transform.eulerAngles = source.transform.eulerAngles;
+        NetherPortal np = p.GetComponent<NetherPortal>();
+        Dictionary<Vector2, ChunkProperties> sourceChunkDic = targetDimension == Dimension.OverWorld ? cl.chunkDictionary : cl.nether_chunkDictionary;
+        Debug.Log(source.cs.position);
+        yield return new WaitUntil(() => sourceChunkDic.ContainsKey(source.cs.position));
+        ChunkScript cs = sourceChunkDic[source.cs.position].cs;
+        np.cs = cs;
+        np.posInChunk = p.transform.position - new Vector3(cs.position.x, 0, cs.position.y) + new Vector3(0.1f, 0.1f, 0.1f);
+        p.transform.SetParent(cs.objectBundle.transform);
+        cs.netherPortalData.Add(p.transform.position - new Vector3(cs.position.x, 0, cs.position.y));
+        cs.blockDataList.Add(new BlockData { block = netherPortalItem, obj = p });
+        Debug.Log(source.usedObBlock.Count);
+        foreach (ObsidianBlock usedob in source.usedObBlock)
+        {
+            GameObject block = bpm.PlaceBlock_Obj(obsidianBlockItem, null, usedob.transform.position, false, targetDimension, false);
+            Debug.Log(block);
+            if (block != null)
+            {
+                ObsidianBlock ob = block.GetComponent<ObsidianBlock>();
+                np.usedObBlock.Add(ob);
+            }
+        }
+        switch (targetDimension)
+        {
+            case Dimension.OverWorld:
+                netherPortalDictionary.Add(p.transform.position, np);
+                break;
+            case Dimension.Nether:
+                nether_netherPortalDictionary.Add(p.transform.position, np);
+                break;
+        }
     }
     bool qualify(List<Vector3> recipe, Vector3 orgPos, Vector3 startPos, List<ObsidianBlock> obsidianDatas, out List<ObsidianBlock> usedObsidians)
     {

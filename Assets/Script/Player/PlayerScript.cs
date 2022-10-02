@@ -14,6 +14,8 @@ public class PlayerScript : MonoBehaviour
     public ParticleSystem fireParticle;
     public Light fireLight;
     public float playedTime;
+    public float portalStayedTime;
+    public float portalPassRequireTime;
 
     void Awake()
     {
@@ -62,9 +64,35 @@ public class PlayerScript : MonoBehaviour
         {
 
         }
-        else if (other.gameObject.CompareTag("NetherPortal"))
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("NetherPortal"))
         {
-            dtm.GoToNether();
+            portalStayedTime += Time.deltaTime;
+            if (portalStayedTime >= portalPassRequireTime)
+            {
+                portalStayedTime = 0;
+                if (other.gameObject.CompareTag("NetherPortal"))
+                {
+                    switch (dtm.currentDimesnion)
+                    {
+                        case Dimension.OverWorld:
+                            dtm.GoToNether(other.transform.parent.GetComponent<NetherPortal>());
+                            break;
+                        case Dimension.Nether:
+                            dtm.GoToOverWorld(other.transform.parent.GetComponent<NetherPortal>());
+                            break;
+                    }
+                }
+            }
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("NetherPortal"))
+        {
+            portalStayedTime = 0;
         }
     }
     public void LitFire(float time)

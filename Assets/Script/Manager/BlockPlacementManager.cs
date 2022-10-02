@@ -33,6 +33,10 @@ public class BlockPlacementManager : MonoBehaviour
 
     public void PlaceBlock(Item usingItem, InventoryCell usedCell, Vector3 pos, bool sound, Dimension dimension)
     {
+        PlaceBlock_Obj(usingItem, usedCell, pos, sound, dimension);
+    }
+    public GameObject PlaceBlock_Obj(Item usingItem, InventoryCell usedCell, Vector3 pos, bool sound, Dimension dimension, bool autocorrection)
+    {
 
         Vector3 playerPosition = player.transform.position;
         GameObject block = Instantiate(usingItem.blockInstance);
@@ -48,7 +52,7 @@ public class BlockPlacementManager : MonoBehaviour
                 parentCs = cl.nether_chunkDictionary[new Vector2(Mathf.Floor(blockPos.x / 8) * 8, Mathf.Floor(blockPos.z / 8) * 8)].cs;
                 break;
         }
-        if (usingItem.snapPosition)
+        if (usingItem.snapPosition && autocorrection)
         {
             float gridSize = usingItem.snapGridSize;
             if (tm.currentlyTouchingChunk != null)
@@ -70,19 +74,18 @@ public class BlockPlacementManager : MonoBehaviour
             if (Mathf.Abs(playerPosition.x - blockPos.x) <= 0.5f + gridSize * 0.5f && Mathf.Abs(playerPosition.z - blockPos.z) <= 0.5f + gridSize * 0.5f && Mathf.Abs(playerPosition.y - blockPos.y) <= 0.5f + gridSize * 0.5f)
             {
                 Destroy(block);
-                return;
+                return null;
             }
 
             if (parentCs.HasBlockAt(new Vector3Int((int)blockPos.x - (int)parentCs.position.x, (int)blockPos.y, (int)blockPos.z - (int)parentCs.position.y)))
             {
                 Destroy(block);
-                return;
+                return null;
             }
-
             block.transform.SetParent(parentCs.objectBundle.transform);
 
             ObsidianBlock ob;
-            if(block.TryGetComponent<ObsidianBlock>(out ob))
+            if (block.TryGetComponent<ObsidianBlock>(out ob))
             {
                 parentCs.obsidianData.Add(ob);
                 ob.cs = parentCs;
@@ -96,7 +99,7 @@ public class BlockPlacementManager : MonoBehaviour
         {
             block.transform.SetParent(parentCs.objectBundle.transform);
         }
-        if (usingItem.lookAtPlayer)
+        if (usingItem.lookAtPlayer && autocorrection)
         {
             if (usingItem.snapPosition)
             {
@@ -143,6 +146,7 @@ public class BlockPlacementManager : MonoBehaviour
             }
         }
 
+
         BlockData bd = new BlockData
         {
             obj = block,
@@ -155,11 +159,18 @@ public class BlockPlacementManager : MonoBehaviour
         {
             sm.PlaySound(usingItem.placeSound, 1);
         }
-        if(usedCell != null)
+        if (usedCell != null)
         {
             im.inventoryDictionary[usedCell].amount--;
             usedCell.UpdateCell();
             im.UpdateSeletedSlot();
         }
+
+        return block;
+    }
+    public GameObject PlaceBlock_Obj(Item usingItem, InventoryCell usedCell, Vector3 pos, bool sound, Dimension dimension)
+    {
+        GameObject block = PlaceBlock_Obj(usingItem, usedCell, pos, sound, dimension, true);
+        return block;
     }
 }

@@ -18,10 +18,10 @@ MonoBehaviour:
     value: 1
   intensity:
     overrideState: 1
-    value: 1.5
+    value: 3.79
   threshold:
     overrideState: 1
-    value: 1
+    value: 1.13
   softKnee:
     overrideState: 1
     value: 0.5
@@ -47,6 +47,43 @@ MonoBehaviour:
   dirtIntensity:
     overrideState: 1
     value: 0
+--- !u!114 &-8895344931695517825
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3f6f3f7c722b4544b97e3c75840aa33, type: 3}
+  m_Name: AutoExposure
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  filtering:
+    overrideState: 1
+    value: {x: 1, y: 99}
+  minLuminance:
+    overrideState: 1
+    value: -9
+  maxLuminance:
+    overrideState: 1
+    value: 9
+  keyValue:
+    overrideState: 1
+    value: 0.5
+  eyeAdaptation:
+    overrideState: 1
+    value: 0
+  speedUp:
+    overrideState: 1
+    value: 2
+  speedDown:
+    overrideState: 1
+    value: 1
 --- !u!114 &-6986225800511521667
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1379,7 +1416,7 @@ MonoBehaviour:
     value: 1
   intensity:
     overrideState: 1
-    value: 0.3
+    value: 0.33
   color:
     overrideState: 1
     value: {r: 0, g: 0, b: 0, a: 1}
@@ -1397,7 +1434,7 @@ MonoBehaviour:
     value: -12
   thicknessModifier:
     overrideState: 1
-    value: 1.32
+    value: 3.25
   directLightingStrength:
     overrideState: 1
     value: 0
@@ -1425,6 +1462,7 @@ MonoBehaviour:
   - {fileID: -9182601942073755647}
   - {fileID: -6986225800511521667}
   - {fileID: 8730211428957842811}
+  - {fileID: -8895344931695517825}
 --- !u!114 &7690552152162363466
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1452,7 +1490,7 @@ MonoBehaviour:
     value: {x: 0.5, y: 0.5}
   intensity:
     overrideState: 1
-    value: 0.403
+    value: 0.45
   smoothness:
     overrideState: 1
     value: 0.2

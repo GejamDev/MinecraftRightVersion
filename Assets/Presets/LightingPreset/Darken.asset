@@ -14,16 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DirectionalColor:
     serializedVersion: 2
-    key0: {r: 0.12156863, g: 0.105882354, b: 0.05490196, a: 1}
-    key1: {r: 0.12156863, g: 0.105882354, b: 0.05490196, a: 1}
+    key0: {r: 0, g: 0, b: 0, a: 1}
+    key1: {r: 0, g: 0, b: 0, a: 1}
     key2: {r: 1, g: 0.95686275, b: 0.8392157, a: 0}
     key3: {r: 1, g: 0.95686275, b: 0.8392157, a: 0}
     key4: {r: 1, g: 0.95686275, b: 0.8392157, a: 0}
     key5: {r: 1, g: 0.95686275, b: 0.8392157, a: 0}
     key6: {r: 1, g: 0.95686275, b: 0.8392157, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 33423
-    ctime1: 58982
+    ctime0: 0
+    ctime1: 65535
     ctime2: 65535
     ctime3: 65535
     ctime4: 65535
@@ -52,7 +52,7 @@ MonoBehaviour:
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 0
-    ctime1: 33423
+    ctime1: 65535
     ctime2: 58982
     ctime3: 65535
     ctime4: 65535
@@ -68,20 +68,20 @@ MonoBehaviour:
     atime6: 0
     atime7: 0
     m_Mode: 0
-    m_NumColorKeys: 3
+    m_NumColorKeys: 2
     m_NumAlphaKeys: 2
   skyColor:
     serializedVersion: 2
-    key0: {r: 0.101960786, g: 0.101960786, b: 0.101960786, a: 1}
-    key1: {r: 0.101960786, g: 0.101960786, b: 0.101960786, a: 1}
+    key0: {r: 0, g: 0, b: 0, a: 1}
+    key1: {r: 0, g: 0, b: 0, a: 1}
     key2: {r: 0.48235294, g: 0.48235294, b: 0.48235294, a: 0}
     key3: {r: 0.48235294, g: 0.48235294, b: 0.48235294, a: 0}
     key4: {r: 0.48235294, g: 0.48235294, b: 0.48235294, a: 0}
     key5: {r: 0.48235294, g: 0.48235294, b: 0.48235294, a: 0}
     key6: {r: 0.7176471, g: 0.7176471, b: 0.7176471, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 33423
-    ctime1: 58982
+    ctime0: 0
+    ctime1: 65535
     ctime2: 65535
     ctime3: 65535
     ctime4: 65535

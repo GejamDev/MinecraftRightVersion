@@ -8,6 +8,7 @@ public class ChunkLoader : MonoBehaviour
     public bool setted;
     public bool hasSpecificSpawnPos;
     public Vector3 specificSpawnPos;
+    public float fogPower;
 
 
 
@@ -54,8 +55,12 @@ public class ChunkLoader : MonoBehaviour
         lm = usm.loadingManager;
         tm = usm.terrainModifier;
         dtm = usm.dimensionTransportationManager;
-        if(setToSetting)
-            viewDistance = Mathf.RoundToInt(PlayerPrefs.GetFloat("ViewDistance") * 12) + 6;
+        if (setToSetting)
+        {
+            float dist = PlayerPrefs.GetFloat("ViewDistance");
+            viewDistance = Mathf.RoundToInt(dist * 12) + 6;
+            RenderSettings.fogDensity = Mathf.Pow(10, Mathf.Lerp(-1, -2, Mathf.Pow(dist, fogPower)));
+        }
     }
 
     void Update()
@@ -78,7 +83,11 @@ public class ChunkLoader : MonoBehaviour
         int preViewDistance = viewDistance;
 
         if (setToSetting)
-            viewDistance = Mathf.RoundToInt(PlayerPrefs.GetFloat("ViewDistance") * 12) + 6;
+        {
+            float dist = PlayerPrefs.GetFloat("ViewDistance");
+            viewDistance = Mathf.RoundToInt(dist * 12) + 6;
+            RenderSettings.fogDensity = Mathf.Pow(10, Mathf.Lerp(-1, -2, Mathf.Pow(dist, fogPower)));
+        }
 
         if (viewDistance != preViewDistance)
         {
@@ -117,7 +126,7 @@ public class ChunkLoader : MonoBehaviour
 
 
         bool spawnPlayerAtEnd = firstTimeLoading;
-        Debug.Log("spawnplayeratend:" + spawnPlayerAtEnd.ToString());
+
         if (spawnPlayerAtEnd)
         {
             lm.loading = true;
@@ -231,10 +240,10 @@ public class ChunkLoader : MonoBehaviour
                 i--;
             }
         }
-        Debug.Log("spawnplayeratend2:" + spawnPlayerAtEnd.ToString());
+
         if (spawnPlayerAtEnd)
         {
-            Debug.Log("go spawn");
+
             yield return new WaitForSeconds(1);
             SpawnPlayer_OverWorld();
         }
@@ -353,7 +362,7 @@ public class ChunkLoader : MonoBehaviour
     }
     public void SpawnPlayer_OverWorld()
     {
-        Debug.Log("spawn");
+
         if (hasSpecificSpawnPos)
         {
             player.transform.position = specificSpawnPos;

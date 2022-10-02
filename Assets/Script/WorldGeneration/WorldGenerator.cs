@@ -89,10 +89,11 @@ public class WorldGenerator : MonoBehaviour
         {
             GenerateGrass(cs);
         }
-        Debug.Log(1);
+
         GenerateFire(cs);
         es.SpawnEntities(cs);
 
+        //load block
         switch (dimension)
         {
             case Dimension.OverWorld:
@@ -140,7 +141,7 @@ public class WorldGenerator : MonoBehaviour
                             NetherPortal np = b.GetComponent<NetherPortal>();
                             np.posInChunk = bdt.pos;
                             np.cs = cs;
-                            npgm.netherPortalDictionary.Add(b.transform.position, np);
+                            npgm.nether_netherPortalDictionary.Add(b.transform.position, np);
                         }
                         else if (bdt.block.name == "Obsidian")
                         {
@@ -156,6 +157,8 @@ public class WorldGenerator : MonoBehaviour
                 }
                 break;
         }
+
+
         cs.Activate();
 
 
@@ -350,7 +353,7 @@ public class WorldGenerator : MonoBehaviour
 
     public void GenerateFire(ChunkScript cs)
     {
-        Debug.Log(2);
+
         switch (cs.dimension)
         {
             case Dimension.OverWorld:
@@ -363,11 +366,11 @@ public class WorldGenerator : MonoBehaviour
                 }
                 break;
             case Dimension.Nether:
-                Debug.Log(3);
+
                 if (!sm.nether_savedFireData.ContainsKey(cs.position))
                     return;
 
-                Debug.Log(4);
+
                 foreach (Vector3 v in sm.nether_savedFireData[cs.position])
                 {
                     Debug.Log(5);
