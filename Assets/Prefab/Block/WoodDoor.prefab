@@ -60,7 +60,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1ccfb9ae17fae7e4a9232870c396a52b, type: 2}
+  - {fileID: 2100000, guid: 66f8d045c4ebf2040b15064a1aa14a64, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -213,6 +213,8 @@ MonoBehaviour:
     m_RotationOrder: 4
   smashAnimationTime: 1
   itemSpawnPos: {fileID: 0}
+  triggeringScript: {fileID: 0}
+  triggerName: 
 --- !u!114 &-3085906181808690080
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -419,7 +421,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1ccfb9ae17fae7e4a9232870c396a52b, type: 2}
+  - {fileID: 2100000, guid: 66f8d045c4ebf2040b15064a1aa14a64, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -452,6 +454,11 @@ PrefabInstance:
       propertyPath: time
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 6867620114681038424, guid: 77e11384b6c7fe645a9c46e73f02af9a,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 66f8d045c4ebf2040b15064a1aa14a64, type: 2}
     - target: {fileID: 6867620114681038427, guid: 77e11384b6c7fe645a9c46e73f02af9a,
         type: 3}
       propertyPath: m_Name

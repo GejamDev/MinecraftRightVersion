@@ -146,6 +146,8 @@ public class LightingManager : MonoBehaviour
     }
     public Color DarkenByBrightness(Color origin, Color darken)
     {
+        if (dtm.currentDimesnion == Dimension.Nether)
+            return origin;
         return origin * (bd.brightness) + darken * (1 - bd.brightness);
     }
 }

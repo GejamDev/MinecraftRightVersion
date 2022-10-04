@@ -364,6 +364,39 @@ public class WaterManager : MonoBehaviour
 
 
                 CheckEffectingOtherChunks(pos);
+                CheckEffectingOtherChunks(pos + Vector3.down);
+            }
+            else
+            {
+                int point = 0;
+                if(hasWaterBottom_R || hasGround_R)
+                {
+                    point++;
+                }
+                if (hasWaterBottom_L || hasGround_L)
+                {
+                    point++;
+                }
+                if (hasWaterBottom_F || hasGround_F)
+                {
+                    point++;
+                }
+                if (hasWaterBottom_B || hasGround_B)
+                {
+                    point++;
+                }
+                if (point == 0)
+                {
+                    modifiedWaterData.RemoveAt(i);
+                    i--;
+                    count--;
+                    modified = true;
+
+                    modifiedPos.Add(pos);
+
+
+                    CheckEffectingOtherChunks(pos);
+                }
             }
 
 

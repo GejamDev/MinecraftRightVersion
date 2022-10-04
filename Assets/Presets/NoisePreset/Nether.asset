@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff739c309258ca941b8a498b2b3c7e3b, type: 3}
   m_Name: Nether
   m_EditorClassIdentifier: 
-  noiseSpeed: 0.0015
-  noiseWeight: 8
-  groundLevel: 90
+  noiseSpeed: 0.0003
+  noiseWeight: 25
+  groundLevel: 40
   octaves: 8
-  persistance: 0.5
+  persistance: 0.8
   lacunarity: 1.9
   heightMultiplier:
     serializedVersion: 2

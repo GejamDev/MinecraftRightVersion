@@ -111,6 +111,8 @@ MonoBehaviour:
     m_RotationOrder: 4
   smashAnimationTime: 1
   itemSpawnPos: {fileID: 2391863034463100723}
+  triggeringScript: {fileID: 0}
+  triggerName: 
 --- !u!114 &1351508702494775720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -302,7 +304,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 0cc9da56aa5b5b44ea876d30ec773b70, type: 2}
+      objectReference: {fileID: 2100000, guid: 66f8d045c4ebf2040b15064a1aa14a64, type: 2}
     - target: {fileID: -588033845913518196, guid: 62c7d23f77fa7b1469d5358296fe1517,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -322,7 +324,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 0cc9da56aa5b5b44ea876d30ec773b70, type: 2}
+      objectReference: {fileID: 2100000, guid: 66f8d045c4ebf2040b15064a1aa14a64, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 62c7d23f77fa7b1469d5358296fe1517, type: 3}
 --- !u!1 &2564259218821609997 stripped

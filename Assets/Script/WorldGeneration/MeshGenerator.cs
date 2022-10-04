@@ -16,7 +16,8 @@ public class MeshGenerator : MonoBehaviour
     public float terrainSuface;
     public float caveStartLevel;
     public float caveSurface;
-     int width = 32;
+    public float netherCaveSurface;
+    int width = 32;
      int height = 8;
     NoisePreset nPreset;
     NoisePreset nPreset_nether;
@@ -32,10 +33,10 @@ public class MeshGenerator : MonoBehaviour
     public float lavaStartHeight;
     public float grassStartHeight;
     public float rockStartHeight;
+    public float netherLavaHeight;
 
     public bool smoothTerrain;
     public bool smoothWater;
-
     public int maxPossibleHeight;
 
     public float waterCollisionGenTime;
@@ -233,11 +234,11 @@ public class MeshGenerator : MonoBehaviour
         float[,] noiseMap2D = Noise.NoiseMap2D(cs.position.x, cs.position.y, width + 1, nPreset_nether);
         yield return new WaitForSeconds(0.01f);
         float[,,] caveNoiseMap = Noise.NoiseMap3D(cs.position.x, cs.position.y, width + 1, height + 1, caveNPreset_nether, new Vector3(1, 1.5f, 1));
-        yield return new WaitForSeconds(0.01f);
+        //yield return new WaitForSeconds(0.01f);
 
 
 
-        float[,,] lavaNoiseMap = Noise.NoiseMap3D(cs.position.x, cs.position.y, width + 1, maxPossibleHeight + 1, lavaNoisePreset, new Vector3(1, 2, 1));
+        //float[,,] lavaNoiseMap = Noise.NoiseMap3D(cs.position.x, cs.position.y, width + 1, maxPossibleHeight + 1, lavaNoisePreset, new Vector3(1, 2, 1));
 
         cs.heightMap = new float[noiseMap2D.GetLength(0), noiseMap2D.GetLength(1)];
 
@@ -248,7 +249,7 @@ public class MeshGenerator : MonoBehaviour
 
             for (int z = 0; z < width + 1; z++)
             {
-                float thisHeight = nPreset.heightMultiplier.Evaluate(noiseMap2D[x, z]) * nPreset.noiseWeight + nPreset.groundLevel;
+                float thisHeight = nPreset_nether.heightMultiplier.Evaluate(noiseMap2D[x, z]) * nPreset_nether.noiseWeight + nPreset_nether.groundLevel;
                 cs.heightMap[x, z] = thisHeight;
                 for (int y = 0; y < height + 1; y++)
                 {
@@ -263,24 +264,41 @@ public class MeshGenerator : MonoBehaviour
 
 
                     float caveNoise = caveNoiseMap[x, y, z];
+                    float val = 0;
                     if (sm.nether_modifiedTerrainValue.ContainsKey(new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)))
                     {
 
                         cs.terrainMap[x, y, z] = sm.nether_modifiedTerrainValue[new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)];
                         cs.terrainMap_pre[x, y, z] = sm.nether_modifiedTerrainValue[new Vector3Int(x + (int)cs.position.x, y, z + (int)cs.position.y)];
                     }
-                    else if (caveNoise <= caveSurface + groundNoise * 0.06f)
-                    {
-                        float val = 0;//groundNoise;
-                        cs.terrainMap[x, y, z] = groundNoise;
-                        cs.terrainMap_pre[x, y, z] = groundNoise;
-                    }
                     else
                     {
-                        float val = Mathf.Lerp(groundNoise, 1, (caveSurface + groundNoise * 0.06f - caveNoise)*-8);
-                        //make hole
-                        cs.terrainMap[x, y, z] = val;//terrainSuface + Mathf.Clamp(noiseMap2D[x, (z + Mathf.Abs(y)) % 5] * 1, 0.1f, 1);
-                        cs.terrainMap_pre[x, y, z] = val;//terrainSuface + Mathf.Clamp(noiseMap2D[x, (z + Mathf.Abs(y)) % 5] * 1, 0.1f, 1);
+                        if (caveNoise >= netherCaveSurface + groundNoise * 0.06f)
+                        {
+                            val = (caveNoise - netherCaveSurface) * 3;
+                            if (groundNoise <= terrainSuface)
+                            {
+                                val = groundNoise;
+                            }
+                        }
+                        else
+                        {
+                            //make hole
+                            val = (caveNoise - netherCaveSurface) * 3;//Mathf.Lerp(groundNoise, 1, (netherCaveSurface + groundNoise * 0.06f - caveNoise) * -8);
+                            if (groundNoise > terrainSuface)
+                            {
+                            }
+                            else
+                            {
+                                val = groundNoise;
+                            }
+                        }
+                    }
+                    cs.terrainMap[x, y, z] = val;
+                    cs.terrainMap_pre[x, y, z] = val;
+                    if (val > terrainSuface && y <=netherLavaHeight)
+                    {
+                        cs.lavaData.Add(new Vector3(x, y, z));
                     }
                 }
             }
@@ -911,7 +929,7 @@ public class MeshGenerator : MonoBehaviour
         cs.triangles_lava.Clear();
         cs.verticesRangeDictionary_lava.Clear();
 
-        List<Vector3> checkedPosList = new List<Vector3>();
+        List<Vector3> checkedPosList = new List<Vector3>();//<Vector3, bool>();
         for (int x = 0; x < width; x++)
         {
             for (int z = 0; z < width; z++)
@@ -1034,7 +1052,6 @@ public class MeshGenerator : MonoBehaviour
         //        }
         //    }
         //}
-
         List<Vector3> checkedPosList = new List<Vector3>();
 
         foreach (Vector3 v in checkingPosList)
@@ -1120,6 +1137,8 @@ public class MeshGenerator : MonoBehaviour
             }
             else
             {
+
+                //cube[i] = false;
                 if (cs.lavaData.Contains(v))
                 {
                     cube[i] = true;

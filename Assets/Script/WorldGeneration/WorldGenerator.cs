@@ -55,9 +55,9 @@ public class WorldGenerator : MonoBehaviour
         cs.position = position;
         cs.usm = usm;
         cs.fpc = usm.firstPersonController;
-        cs.GetVariables();
         cs.dimension = dimension;
         cs.gameObject.name = (dimension == Dimension.OverWorld ? "Chunk At " : "Nether Chunk At ") + position.ToString();
+        cs.GetVariables();
 
         BiomeProperty currentBiome = dimension == Dimension.OverWorld ? bm.AssignBiome(cs) : bm.AssignBiome_Nether(cs);
         SetEnviromentToBiome(cs, currentBiome);

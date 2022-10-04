@@ -59,7 +59,7 @@ public class ChunkLoader : MonoBehaviour
         {
             float dist = PlayerPrefs.GetFloat("ViewDistance");
             viewDistance = Mathf.RoundToInt(dist * 12) + 6;
-            RenderSettings.fogDensity = Mathf.Pow(10, Mathf.Lerp(-1, -2, Mathf.Pow(dist, fogPower)));
+            RenderSettings.fogDensity = Mathf.Pow(10, Mathf.Lerp(-1.3f, -2, Mathf.Pow(dist, fogPower)));
         }
     }
 
@@ -86,7 +86,7 @@ public class ChunkLoader : MonoBehaviour
         {
             float dist = PlayerPrefs.GetFloat("ViewDistance");
             viewDistance = Mathf.RoundToInt(dist * 12) + 6;
-            RenderSettings.fogDensity = Mathf.Pow(10, Mathf.Lerp(-1, -2, Mathf.Pow(dist, fogPower)));
+            RenderSettings.fogDensity = Mathf.Pow(10, Mathf.Lerp(-1.3f, -2, Mathf.Pow(dist, fogPower)));
         }
 
         if (viewDistance != preViewDistance)

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff739c309258ca941b8a498b2b3c7e3b, type: 3}
   m_Name: NetherCave
   m_EditorClassIdentifier: 
-  noiseSpeed: 0.05
+  noiseSpeed: 0.02
   noiseWeight: 1
   groundLevel: 0
   octaves: 4

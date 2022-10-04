@@ -81,7 +81,7 @@ Material:
     - _IntensityT1: 1.5
     - _IntensityT2: 1.5
     - _IntensityT3: -0.5
-    - _Level0: 55
+    - _Level0: 114.3
     - _Level1: 800
     - _Metallic: 0
     - _Mode: 0
@@ -105,4 +105,4 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Level0Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Level1Color: {r: 0.2352941, g: 0.48484072, b: 1, a: 0}
+    - _Level1Color: {r: 0.028021831, g: 0, b: 0.7075472, a: 0}

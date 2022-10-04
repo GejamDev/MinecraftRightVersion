@@ -9,6 +9,7 @@ public class ChunkScript : MonoBehaviour
     public GameObject objectBundle;
     public GameObject meshObject;
     public GameObject bedrock;
+    public GameObject bedrock_nether;
     public Transform waterCollisionParent;
     public Transform lavaCollisionParent;
 
@@ -49,6 +50,8 @@ public class ChunkScript : MonoBehaviour
     public MeshFilter lavaMF;
     public MeshCollider lavaMC;
     public MeshRenderer lavaMR;
+    public Material netherLavaMat;
+    public Material overWorldLavaMat;
     public Material defaultLavaMaterial;
     public Material lavaMaterialInWater;
     public bool playerInLava;
@@ -159,7 +162,19 @@ public class ChunkScript : MonoBehaviour
         objectPool = usm.objectPool;
         bedrock.transform.localScale = new Vector3(usm.worldGenerationPreset.chunkSize, 1, usm.worldGenerationPreset.chunkSize);
         bedrock.transform.localPosition = new Vector3(usm.worldGenerationPreset.chunkSize * 0.5f, bedrock.transform.localPosition.y, usm.worldGenerationPreset.chunkSize);
-
+        if(dimension == Dimension.Nether)
+        {
+            defaultLavaMaterial = netherLavaMat;
+            bedrock_nether.SetActive(true);
+            bedrock_nether.transform.localScale = new Vector3(usm.worldGenerationPreset.chunkSize, 1, usm.worldGenerationPreset.chunkSize);
+            bedrock_nether.transform.localPosition = new Vector3(usm.worldGenerationPreset.chunkSize * 0.5f, bedrock_nether.transform.localPosition.y, usm.worldGenerationPreset.chunkSize);
+        }
+        else
+        {
+            defaultLavaMaterial = overWorldLavaMat;
+            bedrock_nether.SetActive(false);
+        }
+        lavaMR.material = defaultLavaMaterial;
 
         waterSway = waterObj.GetComponent<WaterSway>();
         waterSway.ps = usm.player.GetComponent<PlayerScript>();
@@ -167,7 +182,10 @@ public class ChunkScript : MonoBehaviour
     public void Activate()
     {
         objectBundle.SetActive(true);
-        wg.StartCoroutine(wg.GenerateOres(this));
+        if (dimension != Dimension.Nether)
+        {
+            wg.StartCoroutine(wg.GenerateOres(this));
+        }
         activated = true;
     }
     public void Deactivate()
