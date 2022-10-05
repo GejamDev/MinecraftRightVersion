@@ -55,6 +55,7 @@ public class ChunkScript : MonoBehaviour
     public Material defaultLavaMaterial;
     public Material lavaMaterialInWater;
     public bool playerInLava;
+    public float lavaSurface;
 
 
 
@@ -94,14 +95,11 @@ public class ChunkScript : MonoBehaviour
 
 
 
-    [HideInInspector] public List<Vector3> lavaData = new List<Vector3>();
+    [HideInInspector] public float[,,] lavaData;
 
     [HideInInspector] public List<Vector3> vertices_lava = new List<Vector3>();
     [HideInInspector] public List<int> triangles_lava = new List<int>();
     [HideInInspector] public Dictionary<Vector3, int> verticesRangeDictionary_lava = new Dictionary<Vector3, int>();
-
-    [HideInInspector] public Dictionary<Vector3, WaterPointData> lavaPointDictionary = new Dictionary<Vector3, WaterPointData>();
-    [HideInInspector] public List<WaterPointData> lpdList = new List<WaterPointData>();
 
     [HideInInspector] public bool lavaBeingModified;
 
@@ -211,11 +209,6 @@ public class ChunkScript : MonoBehaviour
                 wm.modifiedChunksDataDictionary.Add(this, new UpdatedChunkData { cs = this, modifiedPoses = new List<Vector3>() });
             }
         }
-        if (!lm.modifiedChunkDataKeys.Contains(this))
-        {
-            lm.modifiedChunkDataKeys.Add(this);
-            lm.modifiedChunksDataDictionary.Add(this, new UpdatedChunkData { cs = this, modifiedPoses = new List<Vector3>() });
-        }
 
         if (wdr == null)
         {
@@ -251,11 +244,6 @@ public class ChunkScript : MonoBehaviour
         {
             wm.modifiedChunkDataKeys.Add(this);
             wm.modifiedChunksDataDictionary.Add(this, new UpdatedChunkData { cs = this, modifiedPoses = new List<Vector3>() });
-        }
-        if (!lm.modifiedChunkDataKeys.Contains(this))
-        {
-            lm.modifiedChunkDataKeys.Add(this);
-            lm.modifiedChunksDataDictionary.Add(this, new UpdatedChunkData { cs = this, modifiedPoses = new List<Vector3>() });
         }
     }
 

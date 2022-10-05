@@ -36,7 +36,7 @@ public class MeshGenerator : MonoBehaviour
     public float netherLavaHeight;
 
     public bool smoothTerrain;
-    public bool smoothWater;
+    public bool smoothLiquid;
     public int maxPossibleHeight;
 
     public float waterCollisionGenTime;
@@ -64,6 +64,7 @@ public class MeshGenerator : MonoBehaviour
     {
         cs.terrainMap = new float[width + 1, height + 1, width + 1];
         cs.terrainMap_pre = new float[width + 1, height + 1, width + 1];
+        cs.lavaData = new float[width + 1, height + 1, width + 1];
         yield return StartCoroutine(PopulateTerrainMap(cs));
         if (loadingTimeExists)
         {
@@ -182,6 +183,7 @@ public class MeshGenerator : MonoBehaviour
                     float lavaNoise = lavaNoiseMap[x, y, z];
                     if (lavaNoise < lavaSurfaceLevel && cs.terrainMap[x, y, z] <= terrainSuface)
                     {
+                        cs.lavaData[x, y - 1, z] = 1;
                         if (y >= 1)
                         {
                             bool onGround = false;
@@ -193,7 +195,7 @@ public class MeshGenerator : MonoBehaviour
                             {
                                 onGround = true;
                             }
-                            else if (cs.lavaData.Contains(new Vector3(x, y - 2, z)))
+                            else if (cs.lavaData[x, y - 2, z] <= cs.lavaSurface/*.Contains(new Vector3(x, y - 2, z))*/)
                             {
                                 onGround = true;
                             }
@@ -203,7 +205,7 @@ public class MeshGenerator : MonoBehaviour
                                 cs.terrainMap_pre[x, y, z] = 1;
                                 if (!hasSaveLavaData)
                                 {
-                                    cs.lavaData.Add(new Vector3(x, y - 1, z));
+                                    cs.lavaData[x, y-1, z] = 0;//.Add(new Vector3(x, y - 1, z));
                                 }
                             }
                         }
@@ -220,13 +222,16 @@ public class MeshGenerator : MonoBehaviour
                 cs.waterData.Add(v);
             }
         }
-        if (hasSaveLavaData)
-        {
-            foreach (Vector3Int v in sm.savedLavaData[cs.position])
-            {
-                cs.lavaData.Add(v);
-            }
-        }
+
+
+        //loading lava data is currently disabled due to big update
+        //if (hasSaveLavaData)
+        //{
+        //    foreach (Vector3Int v in sm.savedLavaData[cs.position])
+        //    {
+        //        cs.lavaData.Add(v);
+        //    }
+        //}
 
     }
     public IEnumerator PopulateTerrainMap_Nether(ChunkScript cs)
@@ -253,6 +258,7 @@ public class MeshGenerator : MonoBehaviour
                 cs.heightMap[x, z] = thisHeight;
                 for (int y = 0; y < height + 1; y++)
                 {
+                    cs.lavaData[x, y, z] = 1;
                     float groundNoise;
                     groundNoise = y - thisHeight;
 
@@ -298,7 +304,7 @@ public class MeshGenerator : MonoBehaviour
                     cs.terrainMap_pre[x, y, z] = val;
                     if (val > terrainSuface && y <=netherLavaHeight)
                     {
-                        cs.lavaData.Add(new Vector3(x, y, z));
+                        cs.lavaData[x, y, z] = 0;//.Add(new Vector3(x, y, z));
                     }
                 }
             }
@@ -350,13 +356,16 @@ public class MeshGenerator : MonoBehaviour
         //}
         #endregion
         //load data
-        if (hasSaveLavaData)
-        {
-            foreach (Vector3Int v in sm.nether_savedLavaData[cs.position])
-            {
-                cs.lavaData.Add(v);
-            }
-        }
+
+        //loading lava data is 
+        //currently disabled due to big update
+        //if (hasSaveLavaData)
+        //{
+        //    foreach (Vector3Int v in sm.nether_savedLavaData[cs.position])
+        //    {
+        //        cs.lavaData.Add(v);
+        //    }
+        //}
 
     }
 
@@ -919,42 +928,39 @@ public class MeshGenerator : MonoBehaviour
 
     public void ReGenerateLavaMesh(ChunkScript cs, List<Vector3> modifiedPos)
     {
-        if (cs.lavaPointDictionary.Count == 0)
-        {
-            return;
-        }
         int preVCount = cs.vertices_lava.Count;
         int preTCount = cs.triangles_lava.Count;
         cs.vertices_lava.Clear();
         cs.triangles_lava.Clear();
         cs.verticesRangeDictionary_lava.Clear();
 
-        List<Vector3> checkedPosList = new List<Vector3>();//<Vector3, bool>();
         for (int x = 0; x < width; x++)
         {
             for (int z = 0; z < width; z++)
             {
                 for (int y = 0; y < height; y++)
                 {
-                    if (!modifiedPos.Contains(new Vector3(x, y, z)))
-                    {
-                        WaterPointData lpd;
-                        if (cs.lavaPointDictionary.ContainsKey(new Vector3(x, y, z)))
-                        {
-                            lpd = cs.lavaPointDictionary[new Vector3(x, y, z)];
-                        }
-                        else
-                        {
-                            lpd = new WaterPointData();
-                            cs.lavaPointDictionary.Add(new Vector3(x, y, z), lpd);
-                            cs.lpdList.Add(lpd);
-                        }
-                        MarchLavaCubeWithExistingVertices(cs, lpd);
-                    }
-                    else
-                    {
-                        MarchLavaCube(cs, new Vector3(x, y, z), out bool needDelay, checkedPosList, out checkedPosList);
-                    }
+                    MarchLavaCube(cs, new Vector3Int(x, y, z), out bool needDelay);
+
+                    //yeeted 
+                    //if (!modifiedPos.Contains(new Vector3(x, y, z)))
+                    //{
+                    //    WaterPointData lpd;
+                    //    if (cs.lavaPointDictionary.ContainsKey(new Vector3(x, y, z)))
+                    //    {
+                    //        lpd = cs.lavaPointDictionary[new Vector3(x, y, z)];
+                    //    }
+                    //    else
+                    //    {
+                    //        lpd = new WaterPointData();
+                    //        cs.lavaPointDictionary.Add(new Vector3(x, y, z), lpd);
+                    //        cs.lpdList.Add(lpd);
+                    //    }
+                    //    MarchLavaCubeWithExistingVertices(cs, lpd);
+                    //}
+                    //else
+                    //{
+                    //}
                 }
             }
         }
@@ -968,12 +974,14 @@ public class MeshGenerator : MonoBehaviour
     public void GenerateLavaMesh(ChunkScript cs, bool delay, bool colGen)
     {
 
+
         StartCoroutine(GenerateLavaMesh_WaitForFinishedChunk(cs, delay, colGen));
 
     }
 
     IEnumerator GenerateLavaMesh_WaitForFinishedChunk(ChunkScript cs, bool delay, bool colGen)
     {
+
         #region wait
 
         switch (cs.dimension)
@@ -1012,29 +1020,8 @@ public class MeshGenerator : MonoBehaviour
 
 
 
-        if (cs.lavaData.Count == 0)
-        {
-            yield break;
-        }
-
         #endregion
-        List<Vector3> checkingPosList = new List<Vector3>();
-        foreach(Vector3 v in cs.lavaData)
-        {
-            for(int x = -1; x < 2; x++)
-            {
-                for (int y = -1; y < 2; y++)
-                {
-                    for (int z = -1; z < 2; z++)
-                    {
-                        if (!checkingPosList.Contains(v + new Vector3(x,y,z)) && 0 <= v.x + x && v.x+x<8 && 0 <= v.z + z && v.z + z < 8)
-                        {
-                            checkingPosList.Add(v + new Vector3(x,y,z));
-                        }
-                    }
-                }
-            }
-        }
+
 
         //for (int x = 0; x < width; x++)
         //{
@@ -1052,110 +1039,88 @@ public class MeshGenerator : MonoBehaviour
         //        }
         //    }
         //}
-        List<Vector3> checkedPosList = new List<Vector3>();
-
-        foreach (Vector3 v in checkingPosList)
+        for (int x = 0; x < width; x++)
         {
-            bool needDelay;
-            MarchLavaCube(cs, v, out needDelay, checkedPosList, out checkedPosList);
-            if (delay && needDelay)
+            for (int z = 0; z < width; z++)
             {
-                yield return new WaitForSeconds(0.01f);
+
+                for (int y = 0; y < height; y++)
+                {
+                    bool needDelay;
+                    MarchLavaCube(cs, new Vector3Int(x,y,z), out needDelay);
+                    if (delay && needDelay)
+                    {
+                        yield return new WaitForSeconds(0.01f);
+                    }
+                }
             }
         }
+
         BuildLavaMesh(cs, colGen ? lavaCollisionGenTime : 0);
     }
 
-    int GetCubeConfiguration_Lava(bool[] cube)
+    int GetCubeConfiguration_Lava(float[] cube)
     {
         int configurationIndex = 0;
         for (int i = 0; i < 8; i++)
         {
-            if (!cube[i])
+            if (cube[i] > terrainSuface)
             {
                 configurationIndex |= 1 << i;
             }
         }
 
         return configurationIndex;
+
+
     }
 
-    bool SampleTerrainLava(ChunkScript cs, Vector3Int point)
+    float SampleTerrainLava(ChunkScript cs, Vector3Int point)
     {
+        return cs.lavaData[point.x, point.y, point.z];
 
+        ////return cs.waterData.Contains(point);
+        ////return Random.Range(0, 10) * 0.1f;
 
-        //return cs.waterData.Contains(point);
-        //return Random.Range(0, 10) * 0.1f;
+        //if (
+        //    cs.lavaData.Contains(point)
 
-        if (
-            cs.lavaData.Contains(point)
+        //////next to water in chunk
+        ////|| cs.waterData.Contains(point + Vector3.right)
+        ////|| cs.waterData.Contains(point + Vector3.left)
+        ////|| cs.waterData.Contains(point + Vector3.forward)
+        ////|| cs.waterData.Contains(point + Vector3.back)
 
-        ////next to water in chunk
-        //|| cs.waterData.Contains(point + Vector3.right)
-        //|| cs.waterData.Contains(point + Vector3.left)
-        //|| cs.waterData.Contains(point + Vector3.forward)
-        //|| cs.waterData.Contains(point + Vector3.back)
+        //////next to water in other chunk
+        ////|| cl.chunkDictionary[cs.position + Vector2.right * wgPreset.chunkSize].cs.waterData.Contains(point + Vector3.left * wgPreset.chunkSize + Vector3.right)
+        ////|| cl.chunkDictionary[cs.position + Vector2.left * wgPreset.chunkSize].cs.waterData.Contains(point + Vector3.right * wgPreset.chunkSize + Vector3.left)
+        ////|| cl.chunkDictionary[cs.position + Vector2.up * wgPreset.chunkSize].cs.waterData.Contains(point + Vector3.back * wgPreset.chunkSize + Vector3.forward)
+        ////|| cl.chunkDictionary[cs.position + Vector2.down * wgPreset.chunkSize].cs.waterData.Contains(point + Vector3.forward * wgPreset.chunkSize + Vector3.back)
 
-        ////next to water in other chunk
-        //|| cl.chunkDictionary[cs.position + Vector2.right * wgPreset.chunkSize].cs.waterData.Contains(point + Vector3.left * wgPreset.chunkSize + Vector3.right)
-        //|| cl.chunkDictionary[cs.position + Vector2.left * wgPreset.chunkSize].cs.waterData.Contains(point + Vector3.right * wgPreset.chunkSize + Vector3.left)
-        //|| cl.chunkDictionary[cs.position + Vector2.up * wgPreset.chunkSize].cs.waterData.Contains(point + Vector3.back * wgPreset.chunkSize + Vector3.forward)
-        //|| cl.chunkDictionary[cs.position + Vector2.down * wgPreset.chunkSize].cs.waterData.Contains(point + Vector3.forward * wgPreset.chunkSize + Vector3.back)
-
-        )
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        //)
+        //{
+        //    return true;
+        //}
+        //else
+        //{
+        //    return false;
+        //}
     }
 
 
-    void MarchLavaCube(ChunkScript cs, Vector3 position, out bool needDelay, List<Vector3> checkedPos, out List<Vector3> checkedPosNew)
+    void MarchLavaCube(ChunkScript cs, Vector3Int position, out bool needDelay)
     {
-        checkedPosNew = checkedPos;
-        if (cs.lavaPointDictionary.ContainsKey(position))
-        {
-            cs.lavaPointDictionary.Remove(position);
-        }
 
-
-        WaterPointData lpd = new WaterPointData();
-        lpd.vertices = new List<Vector3>();
-        lpd.triangles = new List<int>();
-
-
-        bool[] cube = new bool[8];
+        float[] cube = new float[8];
         for (int i = 0; i < 8; i++)
         {
-            Vector3 v = position + CornerTable[i];
-            if (checkedPos.Contains(v))
-            {
-                cube[i] = true;
-            }
-            else
-            {
+            cube[i] = cs.lavaData[position.x + CornerTableX[i], position.y + CornerTableY[i], position.z + CornerTableZ[i]];
 
-                //cube[i] = false;
-                if (cs.lavaData.Contains(v))
-                {
-                    cube[i] = true;
-                    checkedPosNew.Add(v);
-                }
-                else
-                {
-                    cube[i] = false;
-                }
-            }
         }
 
         int configIndex = GetCubeConfiguration_Lava(cube);
         if (configIndex == 0 || configIndex == 255)
         {
-            cs.lavaPointDictionary.Add(position, lpd);
-            cs.lpdList.Add(lpd);
             needDelay = false;
             return;
         }
@@ -1169,62 +1134,69 @@ public class MeshGenerator : MonoBehaviour
 
                 if (indice == -1)
                 {
-                    cs.lavaPointDictionary.Add(position, lpd);
-                    cs.lpdList.Add(lpd);
                     return;
                 }
 
                 Vector3 vert1 = position + CornerTable[EdgeIndexes[indice, 0]];
                 Vector3 vert2 = position + CornerTable[EdgeIndexes[indice, 1]];
-
-
                 Vector3 vertPosition;
-                vertPosition = (vert1 + vert2) / 2f;
-                bool notCrossed;
-                int triangle = VertForIndice_Lava(cs, vertPosition, out notCrossed);
-                cs.triangles_lava.Add(triangle);
-                lpd.triangles.Add(triangle);
-                lpd.vertices.Add(vertPosition);
-                //if (notCrossed)
-                //{
-                //}
+
+                if (smoothLiquid)
+                {
+                    float vert1Sample = cube[EdgeIndexes[indice, 0]];
+                    float vert2Sample = cube[EdgeIndexes[indice, 1]];
+
+                    float difference = vert2Sample - vert1Sample;
+                    if(difference == 0)
+                    {
+                        difference = terrainSuface;
+                    }
+                    else
+                    {
+                        difference = (terrainSuface - vert1Sample) / difference;
+                    }
+                    vertPosition = vert1 + (vert2 - vert1) * difference;
+                }
+                else
+                {
+                    vertPosition = (vert1 + vert2) * 0.5f;
+                }
+                cs.triangles_lava.Add(VertForIndice_Lava(cs, vertPosition));
                 edgeIndex++;
             }
         }
-        cs.lavaPointDictionary.Add(position, lpd);
-        cs.lpdList.Add(lpd);
 
     }
 
-    void MarchLavaCubeWithExistingVertices(ChunkScript cs, WaterPointData lpd)
-    {
-        foreach (Vector3 v in lpd.vertices)
-        {
-            Vector3 vertPosition;
-            vertPosition = v;
-            bool notCrossed;
 
-            int triangle = VertForIndice_Lava(cs, vertPosition, out notCrossed);
-            if (notCrossed)
-            {
-                cs.vertices_lava.Add(vertPosition);
-            }
-            cs.triangles_lava.Add(triangle);
-        }
+    //currently disabled due to big update
+    //void MarchLavaCubeWithExistingVertices(ChunkScript cs, WaterPointData lpd)
+    //{
+    //    foreach (Vector3 v in lpd.vertices)
+    //    {
+    //        Vector3 vertPosition;
+    //        vertPosition = v;
+    //        bool notCrossed;
 
-    }
-    int VertForIndice_Lava(ChunkScript cs, Vector3 vert, out bool notCrossed)
+    //        int triangle = VertForIndice_Lava(cs, vertPosition, out notCrossed);
+    //        if (notCrossed)
+    //        {
+    //            cs.vertices_lava.Add(vertPosition);
+    //        }
+    //        cs.triangles_lava.Add(triangle);
+    //    }
+
+    //}
+    int VertForIndice_Lava(ChunkScript cs, Vector3 vert)
     {
 
         if (cs.verticesRangeDictionary_lava.ContainsKey(vert))
         {
-            notCrossed = false;
             return cs.verticesRangeDictionary_lava[vert];
         }
 
         cs.vertices_lava.Add(vert);
         AddLavaVerticesToDictionary(cs, vert);
-        notCrossed = true;
         return cs.vertices_lava.Count - 1;
     }
 
@@ -1238,6 +1210,7 @@ public class MeshGenerator : MonoBehaviour
 
     public void BuildLavaMesh(ChunkScript cs, float time)
     {
+
         Mesh mesh = new Mesh();
         mesh.vertices = cs.vertices_lava.ToArray();
         mesh.triangles = cs.triangles_lava.ToArray();
@@ -1256,21 +1229,23 @@ public class MeshGenerator : MonoBehaviour
         {
             Destroy(cs.lavaCollisionParent.GetChild(i).gameObject);
         }
-        StartCoroutine(BuildLavaCollision(time, cs));
+
+        //currently disabled due to big update
+        //StartCoroutine(BuildLavaCollision(time, cs));
     }
 
-    IEnumerator BuildLavaCollision(float time, ChunkScript cs)
-    {
-        if (time != 0)
-            yield return new WaitForSeconds(time);
+    //IEnumerator BuildLavaCollision(float time, ChunkScript cs)
+    //{
+    //    if (time != 0)
+    //        yield return new WaitForSeconds(time);
 
-        foreach (Vector3 v in cs.lavaData)
-        {
-            GameObject b = Instantiate(lavaColliderPrefab);
-            b.transform.position = v + cs.lavaObj.transform.position;
-            b.transform.SetParent(cs.lavaCollisionParent);
-        }
-    }
+    //    foreach (Vector3 v in cs.lavaData)
+    //    {
+    //        GameObject b = Instantiate(lavaColliderPrefab);
+    //        b.transform.position = v + cs.lavaObj.transform.position;
+    //        b.transform.SetParent(cs.lavaCollisionParent);
+    //    }
+    //}
 
 
 

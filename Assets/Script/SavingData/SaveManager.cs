@@ -110,46 +110,48 @@ public class SaveManager : MonoBehaviour
             }
         }
 
-        //lava
-        savedLavaData.Clear();
-        int curLavaIndex = 0;
-        for (int i = 0; i < data.lavaChunkData.GetLength(0); i++)
-        {
-            Vector2 chunkPos = new Vector2(data.lavaChunkData[i, 0], data.lavaChunkData[i, 1]);
-            savedLavaData.Add(chunkPos, new List<Vector3Int>());
-            for (int k = 0; k < data.lavaChunkData[i, 2]; k++)
-            {
-                Vector3Int lavaPos_global = new Vector3Int(data.lavaData[curLavaIndex * 3], data.lavaData[curLavaIndex * 3 + 1], data.lavaData[curLavaIndex * 3 + 2]);
-                Vector3Int lavaPos_local = lavaPos_global - new Vector3Int((int)chunkPos.x, 0, (int)chunkPos.y);
+        //currently disabled due to big update
 
-                savedLavaData[chunkPos].Add(lavaPos_local);
+        ////lava
+        //savedLavaData.Clear();
+        //int curLavaIndex = 0;
+        //for (int i = 0; i < data.lavaChunkData.GetLength(0); i++)
+        //{
+        //    Vector2 chunkPos = new Vector2(data.lavaChunkData[i, 0], data.lavaChunkData[i, 1]);
+        //    savedLavaData.Add(chunkPos, new List<Vector3Int>());
+        //    for (int k = 0; k < data.lavaChunkData[i, 2]; k++)
+        //    {
+        //        Vector3Int lavaPos_global = new Vector3Int(data.lavaData[curLavaIndex * 3], data.lavaData[curLavaIndex * 3 + 1], data.lavaData[curLavaIndex * 3 + 2]);
+        //        Vector3Int lavaPos_local = lavaPos_global - new Vector3Int((int)chunkPos.x, 0, (int)chunkPos.y);
 
-                curLavaIndex++;
-            }
-        }
+        //        savedLavaData[chunkPos].Add(lavaPos_local);
 
-        //nether lava
-        nether_savedLavaData.Clear();
-        int nether_curLavaIndex = 0;
-        if (data.nether_lavaChunkData == null)
-        {
-            data.nether_lavaChunkData = new int[0,0];
-            data.nether_lavaData = new int[0];
-        }
-        for (int i = 0; i < data.nether_lavaChunkData.GetLength(0); i++)
-        {
-            Vector2 chunkPos = new Vector2(data.nether_lavaChunkData[i, 0], data.nether_lavaChunkData[i, 1]);
-            nether_savedLavaData.Add(chunkPos, new List<Vector3Int>());
-            for (int k = 0; k < data.nether_lavaChunkData[i, 2]; k++)
-            {
-                Vector3Int lavaPos_global = new Vector3Int(data.nether_lavaData[nether_curLavaIndex * 3], data.nether_lavaData[nether_curLavaIndex * 3 + 1], data.nether_lavaData[nether_curLavaIndex * 3 + 2]);
-                Vector3Int lavaPos_local = lavaPos_global - new Vector3Int((int)chunkPos.x, 0, (int)chunkPos.y);
+        //        curLavaIndex++;
+        //    }
+        //}
 
-                nether_savedLavaData[chunkPos].Add(lavaPos_local);
+        ////nether lava
+        //nether_savedLavaData.Clear();
+        //int nether_curLavaIndex = 0;
+        //if (data.nether_lavaChunkData == null)
+        //{
+        //    data.nether_lavaChunkData = new int[0,0];
+        //    data.nether_lavaData = new int[0];
+        //}
+        //for (int i = 0; i < data.nether_lavaChunkData.GetLength(0); i++)
+        //{
+        //    Vector2 chunkPos = new Vector2(data.nether_lavaChunkData[i, 0], data.nether_lavaChunkData[i, 1]);
+        //    nether_savedLavaData.Add(chunkPos, new List<Vector3Int>());
+        //    for (int k = 0; k < data.nether_lavaChunkData[i, 2]; k++)
+        //    {
+        //        Vector3Int lavaPos_global = new Vector3Int(data.nether_lavaData[nether_curLavaIndex * 3], data.nether_lavaData[nether_curLavaIndex * 3 + 1], data.nether_lavaData[nether_curLavaIndex * 3 + 2]);
+        //        Vector3Int lavaPos_local = lavaPos_global - new Vector3Int((int)chunkPos.x, 0, (int)chunkPos.y);
 
-                nether_curLavaIndex++;
-            }
-        }
+        //        nether_savedLavaData[chunkPos].Add(lavaPos_local);
+
+        //        nether_curLavaIndex++;
+        //    }
+        //}
 
         //fire
         savedFireData.Clear();

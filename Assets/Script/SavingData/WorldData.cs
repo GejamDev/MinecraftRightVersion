@@ -20,10 +20,12 @@ public class WorldData
     public int[] playerInventory_amount;
     public int[,] waterChunkData;
     public int[] waterData;
-    public int[,] lavaChunkData;
-    public int[] lavaData;
-    public int[,] nether_lavaChunkData;
-    public int[] nether_lavaData;
+
+    //currently disabled due to big update
+    //public int[,] lavaChunkData;
+    //public int[] lavaData;
+    //public int[,] nether_lavaChunkData;
+    //public int[] nether_lavaData;
     public int[,] blockChunkData;
     public string[] blockData_blockType;
     public float[] blockData_transform;
@@ -190,109 +192,112 @@ public class WorldData
             waterData[i * 3 + 2] = (int)waterPoseList[i].z;
         }
 
-
-        //lava
-        int unloadedLavaSavedChunk = 0;
-        foreach (Vector2 v in usm.saveManager.savedLavaData.Keys)
-        {
-            if (!usm.chunkLoader.chunkDictionary.ContainsKey(v))
-            {
-                unloadedLavaSavedChunk++;
-            }
-        }
-        lavaChunkData = new int[usm.chunkLoader.chunkDictionary.Count + unloadedLavaSavedChunk, 3];
-        int lavaDataTotalCount = 0;
-        List<Vector3> lavaPoseList = new List<Vector3>();
-        int lavaChunkIndex = 0;
-        foreach (ChunkProperties cp in usm.chunkLoader.chunkDictionary.Values)
-        {
-            ChunkScript cs = cp.cs;
-            lavaDataTotalCount += cs.lavaData.Count;
-            lavaChunkData[lavaChunkIndex, 0] = (int)cs.position.x;
-            lavaChunkData[lavaChunkIndex, 1] = (int)cs.position.y;
-            lavaChunkData[lavaChunkIndex, 2] = (int)cs.lavaData.Count;
-            foreach (Vector3 v in cs.lavaData)
-            {
-                lavaPoseList.Add(v + new Vector3(cs.position.x, 0, cs.position.y));
-            }
-            lavaChunkIndex++;
-        }
-        foreach (Vector2 pos in usm.saveManager.savedLavaData.Keys)
-        {
-            if (!usm.chunkLoader.chunkDictionary.ContainsKey(pos))
-            {
-                lavaChunkData[lavaChunkIndex, 0] = (int)pos.x;
-                lavaChunkData[lavaChunkIndex, 1] = (int)pos.y;
-                lavaChunkData[lavaChunkIndex, 2] = usm.saveManager.savedLavaData[pos].Count;
-                foreach (Vector3 v in usm.saveManager.savedLavaData[pos])
-                {
-                    lavaDataTotalCount++;
-                    lavaPoseList.Add(v + new Vector3(pos.x, 0, pos.y));
-                }
-
-                lavaChunkIndex++;
-            }
-        }
-
-        lavaData = new int[lavaDataTotalCount * 3];
-        for (int i = 0; i < lavaPoseList.Count; i++)
-        {
-            lavaData[i * 3] = (int)lavaPoseList[i].x;
-            lavaData[i * 3 + 1] = (int)lavaPoseList[i].y;
-            lavaData[i * 3 + 2] = (int)lavaPoseList[i].z;
-        }
+        //lava save is 
+        //currently disabled due to big update
 
 
-        //nether lava
-        int nether_unloadedLavaSavedChunk = 0;
-        foreach (Vector2 v in usm.saveManager.nether_savedLavaData.Keys)
-        {
-            if (!usm.chunkLoader.nether_chunkDictionary.ContainsKey(v))
-            {
-                nether_unloadedLavaSavedChunk++;
-            }
-        }
-        nether_lavaChunkData = new int[usm.chunkLoader.nether_chunkDictionary.Count + nether_unloadedLavaSavedChunk, 3];
-        int nether_lavaDataTotalCount = 0;
-        List<Vector3> nether_lavaPoseList = new List<Vector3>();
-        int nether_lavaChunkIndex = 0;
-        foreach (ChunkProperties cp in usm.chunkLoader.nether_chunkDictionary.Values)
-        {
-            ChunkScript cs = cp.cs;
-            nether_lavaDataTotalCount += cs.lavaData.Count;
-            nether_lavaChunkData[nether_lavaChunkIndex, 0] = (int)cs.position.x;
-            nether_lavaChunkData[nether_lavaChunkIndex, 1] = (int)cs.position.y;
-            nether_lavaChunkData[nether_lavaChunkIndex, 2] = (int)cs.lavaData.Count;
-            foreach (Vector3 v in cs.lavaData)
-            {
-                nether_lavaPoseList.Add(v + new Vector3(cs.position.x, 0, cs.position.y));
-            }
-            nether_lavaChunkIndex++;
-        }
-        foreach (Vector2 pos in usm.saveManager.nether_savedLavaData.Keys)
-        {
-            if (!usm.chunkLoader.nether_chunkDictionary.ContainsKey(pos))
-            {
-                nether_lavaChunkData[nether_lavaChunkIndex, 0] = (int)pos.x;
-                nether_lavaChunkData[nether_lavaChunkIndex, 1] = (int)pos.y;
-                nether_lavaChunkData[nether_lavaChunkIndex, 2] = usm.saveManager.nether_savedLavaData[pos].Count;
-                foreach (Vector3 v in usm.saveManager.nether_savedLavaData[pos])
-                {
-                    nether_lavaDataTotalCount++;
-                    nether_lavaPoseList.Add(v + new Vector3(pos.x, 0, pos.y));
-                }
+        ////lava
+        //int unloadedLavaSavedChunk = 0;
+        //foreach (Vector2 v in usm.saveManager.savedLavaData.Keys)
+        //{
+        //    if (!usm.chunkLoader.chunkDictionary.ContainsKey(v))
+        //    {
+        //        unloadedLavaSavedChunk++;
+        //    }
+        //}
+        //lavaChunkData = new int[usm.chunkLoader.chunkDictionary.Count + unloadedLavaSavedChunk, 3];
+        //int lavaDataTotalCount = 0;
+        //List<Vector3> lavaPoseList = new List<Vector3>();
+        //int lavaChunkIndex = 0;
+        //foreach (ChunkProperties cp in usm.chunkLoader.chunkDictionary.Values)
+        //{
+        //    ChunkScript cs = cp.cs;
+        //    lavaDataTotalCount += cs.lavaData.Count;
+        //    lavaChunkData[lavaChunkIndex, 0] = (int)cs.position.x;
+        //    lavaChunkData[lavaChunkIndex, 1] = (int)cs.position.y;
+        //    lavaChunkData[lavaChunkIndex, 2] = (int)cs.lavaData.Count;
+        //    foreach (Vector3 v in cs.lavaData)
+        //    {
+        //        lavaPoseList.Add(v + new Vector3(cs.position.x, 0, cs.position.y));
+        //    }
+        //    lavaChunkIndex++;
+        //}
+        //foreach (Vector2 pos in usm.saveManager.savedLavaData.Keys)
+        //{
+        //    if (!usm.chunkLoader.chunkDictionary.ContainsKey(pos))
+        //    {
+        //        lavaChunkData[lavaChunkIndex, 0] = (int)pos.x;
+        //        lavaChunkData[lavaChunkIndex, 1] = (int)pos.y;
+        //        lavaChunkData[lavaChunkIndex, 2] = usm.saveManager.savedLavaData[pos].Count;
+        //        foreach (Vector3 v in usm.saveManager.savedLavaData[pos])
+        //        {
+        //            lavaDataTotalCount++;
+        //            lavaPoseList.Add(v + new Vector3(pos.x, 0, pos.y));
+        //        }
 
-                nether_lavaChunkIndex++;
-            }
-        }
+        //        lavaChunkIndex++;
+        //    }
+        //}
 
-        nether_lavaData = new int[nether_lavaDataTotalCount * 3];
-        for (int i = 0; i < nether_lavaPoseList.Count; i++)
-        {
-            nether_lavaData[i * 3] = (int)nether_lavaPoseList[i].x;
-            nether_lavaData[i * 3 + 1] = (int)nether_lavaPoseList[i].y;
-            nether_lavaData[i * 3 + 2] = (int)nether_lavaPoseList[i].z;
-        }
+        //lavaData = new int[lavaDataTotalCount * 3];
+        //for (int i = 0; i < lavaPoseList.Count; i++)
+        //{
+        //    lavaData[i * 3] = (int)lavaPoseList[i].x;
+        //    lavaData[i * 3 + 1] = (int)lavaPoseList[i].y;
+        //    lavaData[i * 3 + 2] = (int)lavaPoseList[i].z;
+        //}
+
+
+        ////nether lava
+        //int nether_unloadedLavaSavedChunk = 0;
+        //foreach (Vector2 v in usm.saveManager.nether_savedLavaData.Keys)
+        //{
+        //    if (!usm.chunkLoader.nether_chunkDictionary.ContainsKey(v))
+        //    {
+        //        nether_unloadedLavaSavedChunk++;
+        //    }
+        //}
+        //nether_lavaChunkData = new int[usm.chunkLoader.nether_chunkDictionary.Count + nether_unloadedLavaSavedChunk, 3];
+        //int nether_lavaDataTotalCount = 0;
+        //List<Vector3> nether_lavaPoseList = new List<Vector3>();
+        //int nether_lavaChunkIndex = 0;
+        //foreach (ChunkProperties cp in usm.chunkLoader.nether_chunkDictionary.Values)
+        //{
+        //    ChunkScript cs = cp.cs;
+        //    nether_lavaDataTotalCount += cs.lavaData.Count;
+        //    nether_lavaChunkData[nether_lavaChunkIndex, 0] = (int)cs.position.x;
+        //    nether_lavaChunkData[nether_lavaChunkIndex, 1] = (int)cs.position.y;
+        //    nether_lavaChunkData[nether_lavaChunkIndex, 2] = (int)cs.lavaData.Count;
+        //    foreach (Vector3 v in cs.lavaData)
+        //    {
+        //        nether_lavaPoseList.Add(v + new Vector3(cs.position.x, 0, cs.position.y));
+        //    }
+        //    nether_lavaChunkIndex++;
+        //}
+        //foreach (Vector2 pos in usm.saveManager.nether_savedLavaData.Keys)
+        //{
+        //    if (!usm.chunkLoader.nether_chunkDictionary.ContainsKey(pos))
+        //    {
+        //        nether_lavaChunkData[nether_lavaChunkIndex, 0] = (int)pos.x;
+        //        nether_lavaChunkData[nether_lavaChunkIndex, 1] = (int)pos.y;
+        //        nether_lavaChunkData[nether_lavaChunkIndex, 2] = usm.saveManager.nether_savedLavaData[pos].Count;
+        //        foreach (Vector3 v in usm.saveManager.nether_savedLavaData[pos])
+        //        {
+        //            nether_lavaDataTotalCount++;
+        //            nether_lavaPoseList.Add(v + new Vector3(pos.x, 0, pos.y));
+        //        }
+
+        //        nether_lavaChunkIndex++;
+        //    }
+        //}
+
+        //nether_lavaData = new int[nether_lavaDataTotalCount * 3];
+        //for (int i = 0; i < nether_lavaPoseList.Count; i++)
+        //{
+        //    nether_lavaData[i * 3] = (int)nether_lavaPoseList[i].x;
+        //    nether_lavaData[i * 3 + 1] = (int)nether_lavaPoseList[i].y;
+        //    nether_lavaData[i * 3 + 2] = (int)nether_lavaPoseList[i].z;
+        //}
 
 
 

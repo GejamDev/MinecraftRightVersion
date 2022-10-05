@@ -6180,7 +6180,7 @@ MonoBehaviour:
   rockStartHeight: 65
   netherLavaHeight: 28
   smoothTerrain: 1
-  smoothWater: 0
+  smoothLiquid: 1
   maxPossibleHeight: 97
   waterCollisionGenTime: 0.5
   lavaCollisionGenTime: 0.5
@@ -13410,7 +13410,7 @@ MonoBehaviour:
   loadingTime: 0.05
   firstTimeLoadingFrequency: 3
   loadingFrequency: 1
-  viewDistance: 4
+  viewDistance: 12
   enabledChunkPositionList: []
   activatedChunkList: []
   netherActivatedChunkList: []

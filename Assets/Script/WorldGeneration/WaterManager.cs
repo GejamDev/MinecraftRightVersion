@@ -465,30 +465,32 @@ public class WaterManager : MonoBehaviour
 
         if (modified)
         {
-            bool touchLava = ConflictionWithLava(cs, modifiedWaterData).Count != 0;
-            if (touchLava)
-            {
-                List<Vector3> conf = ConflictionWithLava(cs, modifiedWaterData);
-                foreach (Vector3 v in conf)
-                {
-                    PlaceObsidian(cs, v);
-                    modifiedWaterData.Remove(v);
-                    cs.lavaData.Remove(v);
-                }
-                if (lm.modifiedChunkDataKeys.Contains(cs))
-                {
-                    foreach(Vector3 v  in SpecialFeatures.CoverListWithWalls(conf))
-                    {
-                        if(!lm.modifiedChunksDataDictionary[cs].modifiedPoses.Contains(v))
-                            lm.modifiedChunksDataDictionary[cs].modifiedPoses.Add(v);
-                    }
-                }
-                else
-                {
-                    lm.modifiedChunksDataDictionary.Add(cs, new UpdatedChunkData { cs = cs, modifiedPoses = SpecialFeatures.CoverListWithWalls(conf) });
-                    lm.modifiedChunkDataKeys.Add(cs);
-                }
-            }
+            //confliction with lava is 
+            //currently disabled due to big update
+            //bool touchLava = ConflictionWithLava(cs, modifiedWaterData).Count != 0;
+            //if (touchLava)
+            //{
+            //    List<Vector3> conf = ConflictionWithLava(cs, modifiedWaterData);
+            //    foreach (Vector3 v in conf)
+            //    {
+            //        PlaceObsidian(cs, v);
+            //        modifiedWaterData.Remove(v);
+            //        cs.lavaData.Remove(v);
+            //    }
+            //    if (lm.modifiedChunkDataKeys.Contains(cs))
+            //    {
+            //        foreach(Vector3 v  in SpecialFeatures.CoverListWithWalls(conf))
+            //        {
+            //            if(!lm.modifiedChunksDataDictionary[cs].modifiedPoses.Contains(v))
+            //                lm.modifiedChunksDataDictionary[cs].modifiedPoses.Add(v);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        lm.modifiedChunksDataDictionary.Add(cs, new UpdatedChunkData { cs = cs, modifiedPoses = SpecialFeatures.CoverListWithWalls(conf) });
+            //        lm.modifiedChunkDataKeys.Add(cs);
+            //    }
+            //}
 
             cs.waterData = modifiedWaterData;
             modifiedChunksDataDictionary.Add(cs, new UpdatedChunkData { cs = cs, modifiedPoses= modifiedPos });
@@ -803,46 +805,51 @@ public class WaterManager : MonoBehaviour
 
         yield return null;
     }
-    List<Vector3> ConflictionWithLava(ChunkScript cs, List<Vector3> input)
-    {
-        List<Vector3> result = new List<Vector3>();
-        foreach(Vector3 v in input)
-        {
-            if (cs.lavaData.Contains(v))
-            {
-                result.Add(v);
-            }
-        }
-        return result;
-    }
+
+    //currently disabled due to big update
+    //List<Vector3> ConflictionWithLava(ChunkScript cs, List<Vector3> input)
+    //{
+    //    List<Vector3> result = new List<Vector3>();
+    //    foreach(Vector3 v in input)
+    //    {
+    //        if (cs.lavaData.Contains(v))
+    //        {
+    //            result.Add(v);
+    //        }
+    //    }
+    //    return result;
+    //}
     IEnumerator PourWater_ApplyData(ChunkScript cs, List<Vector3> addedPoses, float delay)
     {
         if (addedPoses.Count == 0)
             yield break;
-        bool touchLava = ConflictionWithLava(cs, addedPoses).Count != 0;
-        if (touchLava)
-        {
-            List<Vector3> conf = ConflictionWithLava(cs, addedPoses);
-            foreach (Vector3 v in conf)
-            {
-                cs.waterData.Remove(v);
-                cs.lavaData.Remove(v);
-                PlaceObsidian(cs, v);
-            }
-            if (lm.modifiedChunkDataKeys.Contains(cs))
-            {
-                foreach (Vector3 v in SpecialFeatures.CoverListWithWalls(conf))
-                {
-                    if (!lm.modifiedChunksDataDictionary[cs].modifiedPoses.Contains(v))
-                        lm.modifiedChunksDataDictionary[cs].modifiedPoses.Add(v);
-                }
-            }
-            else
-            {
-                lm.modifiedChunksDataDictionary.Add(cs, new UpdatedChunkData { cs = cs, modifiedPoses = SpecialFeatures.CoverListWithWalls(conf) });
-                lm.modifiedChunkDataKeys.Add(cs);
-            }
-        }
+
+        //confliction with lava is
+        //currently disabled due to big update
+        //bool touchLava = ConflictionWithLava(cs, addedPoses).Count != 0;
+        //if (touchLava)
+        //{
+        //    List<Vector3> conf = ConflictionWithLava(cs, addedPoses);
+        //    foreach (Vector3 v in conf)
+        //    {
+        //        cs.waterData.Remove(v);
+        //        cs.lavaData.Remove(v);
+        //        PlaceObsidian(cs, v);
+        //    }
+        //    if (lm.modifiedChunkDataKeys.Contains(cs))
+        //    {
+        //        foreach (Vector3 v in SpecialFeatures.CoverListWithWalls(conf))
+        //        {
+        //            if (!lm.modifiedChunksDataDictionary[cs].modifiedPoses.Contains(v))
+        //                lm.modifiedChunksDataDictionary[cs].modifiedPoses.Add(v);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        lm.modifiedChunksDataDictionary.Add(cs, new UpdatedChunkData { cs = cs, modifiedPoses = SpecialFeatures.CoverListWithWalls(conf) });
+        //        lm.modifiedChunkDataKeys.Add(cs);
+        //    }
+        //}
 
         List<Vector3> modifiedPoses = new List<Vector3>(addedPoses); 
         
