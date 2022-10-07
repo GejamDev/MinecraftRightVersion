@@ -38,7 +38,7 @@ public class Custom_R_LavaBucket : MonoBehaviour
         reloaded = false;
         InventoryCell usedCell = im.inventoryCellList[im.curInventorySlot];
         handAnim.SetTrigger(item.usingAnimationName);
-
+        Debug.Log(0);
         RaycastHit hit_ground;
         if (Physics.Raycast(cam.position, cam.forward, out hit_ground, maxDistance, groundLayer))
         {
@@ -47,8 +47,9 @@ public class Custom_R_LavaBucket : MonoBehaviour
             ChunkScript chunk = hit_ground.collider.transform.parent.parent.GetComponent<ChunkScript>();
 
 
-            //pour water
-            StartCoroutine(lm.PourLava(chunk, pouringPos, pourRadius, delay));
+            Debug.Log(1);
+            //pour lava
+            StartCoroutine(lm.PourLava(pouringPos, pourRadius, delay));
 
 
             //swap item

@@ -56,6 +56,9 @@ public class ChunkScript : MonoBehaviour
     public Material lavaMaterialInWater;
     public bool playerInLava;
     public float lavaSurface;
+    public GameObject lavaColliderPrefab;
+    public GameObject[,,] lavaCollisions;
+    public bool lavaCollisionSetuped;
 
 
 
@@ -109,6 +112,32 @@ public class ChunkScript : MonoBehaviour
     [HideInInspector] public List<BlockData> blockDataList = new List<BlockData>();
     [HideInInspector] public List<Vector3> fireData = new List<Vector3>();
     [HideInInspector] public Dictionary<Vector3, FireScript> fireDictionary = new Dictionary<Vector3, FireScript>();
+
+    private IEnumerator Start()
+    {
+        //lavaCollisionSetuped = false;
+        //lavaCollisions = new GameObject[lavaData.GetLength(0), lavaData.GetLength(1), lavaData.GetLength(2)];
+        //for (int y = 0; y < lavaData.GetLength(1); y++)
+        //{
+        //    for (int x = 0; x < lavaData.GetLength(0); x++)
+        //    {
+        //        for (int z = 0; z < lavaData.GetLength(2); z++)
+        //        {
+        //            if (lavaData[x, y, z] <= mg.terrainSuface)
+        //            {
+        //                GameObject b = Instantiate(lavaColliderPrefab);
+        //                b.transform.position = new Vector3(x, y, z) + lavaObj.transform.position;
+        //                b.transform.SetParent(lavaCollisionParent);
+        //                lavaCollisions[x, y, z] = b;
+        //            }
+        //        }
+        //    }
+        //    yield return new WaitForSeconds(0.1f);
+        //}
+        //Debug.Log("lava col gen finished");
+        //lavaCollisionSetuped = true;
+        yield return new WaitForSeconds(0.1f);
+    }
 
 
 
@@ -236,6 +265,15 @@ public class ChunkScript : MonoBehaviour
                 }
             }
         }
+        if (!lm.chunkToUpdateList.Contains(this))
+        {
+            lm.chunkToUpdateList.Add(this);
+        }
+    }
+    public void RegenerateLavaMesh()
+    {
+
+        mg.ReGenerateLavaMesh(this);
     }
 
     public void ReGenerateLiquidMesh()

@@ -62,6 +62,7 @@ public class Custom_R_Bucket : MonoBehaviour
         }
         void DoLava()
         {
+            Debug.Log(1);
             Vector3 dryingPos = hit_lava.point;
 
             ChunkScript chunk = hit_lava.collider.transform.parent.parent.parent.GetComponent<ChunkScript>();

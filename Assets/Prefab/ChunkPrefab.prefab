@@ -200,6 +200,10 @@ MonoBehaviour:
   defaultLavaMaterial: {fileID: 2100000, guid: 63668abd61f6d63409f3e483c7fc8025, type: 2}
   lavaMaterialInWater: {fileID: 2100000, guid: 611e0d1f48ed48040874d1768ff4fa2f, type: 2}
   playerInLava: 0
+  lavaSurface: 0
+  lavaColliderPrefab: {fileID: 2954709350843875963, guid: 2bd0b8f19d4c6394b945305fdce8edda,
+    type: 3}
+  lavaCollisionSetuped: 0
   fpc: {fileID: 0}
   mr: {fileID: 4975608904498575665}
   mc: {fileID: 253079332667348645}
@@ -218,10 +222,8 @@ MonoBehaviour:
   wpdList: []
   waterBeingModified: 0
   generatingMesh: 0
-  lavaData: []
   vertices_lava: []
   triangles_lava: 
-  lpdList: []
   lavaBeingModified: 0
   ores: []
   blockDataList: []

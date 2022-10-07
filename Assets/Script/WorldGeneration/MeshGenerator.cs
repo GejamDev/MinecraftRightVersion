@@ -105,7 +105,6 @@ public class MeshGenerator : MonoBehaviour
 
         bool hasSavedWaterData = sm.savedWaterData.ContainsKey(cs.position);
         bool hasSaveLavaData = sm.savedLavaData.ContainsKey(cs.position);
-
         for (int x = 0; x < width + 1; x++)
         {
 
@@ -132,6 +131,7 @@ public class MeshGenerator : MonoBehaviour
                             cs.waterData.Add(new Vector3(x, y - 1, z));
                         }
                     }
+
 
 
 
@@ -164,6 +164,8 @@ public class MeshGenerator : MonoBehaviour
                             cs.terrainMap[x, y, z] = terrainSuface + 0.1f; //+ Mathf.Clamp(noiseMap2D[x, (z + Mathf.Abs(y)) % 5] * 1, 0.1f, 1);
                             cs.terrainMap_pre[x, y, z] = terrainSuface + 0.1f;//Mathf.Clamp(noiseMap2D[x, (z + Mathf.Abs(y)) % 5] * 1, 0.1f, 1);
                         }
+
+                        cs.lavaData[x, y, z] = 1;
                     }
                 }
                 yield return new WaitForSeconds(0.01f);
@@ -183,7 +185,10 @@ public class MeshGenerator : MonoBehaviour
                     float lavaNoise = lavaNoiseMap[x, y, z];
                     if (lavaNoise < lavaSurfaceLevel && cs.terrainMap[x, y, z] <= terrainSuface)
                     {
-                        cs.lavaData[x, y - 1, z] = 1;
+                        if (y >= 1)
+                        {
+                            cs.lavaData[x, y - 1, z] = 1;
+                        }
                         if (y >= 1)
                         {
                             bool onGround = false;
@@ -667,7 +672,6 @@ public class MeshGenerator : MonoBehaviour
         cs.backChunk = cl.chunkDictionary[cs.position + Vector2.down * wgPreset.chunkSize].cs;
 
 
-
         List<Vector3> checkingPosList = new List<Vector3>();
         foreach (Vector3 v in cs.waterData)
         {
@@ -926,8 +930,9 @@ public class MeshGenerator : MonoBehaviour
 
     #region lava
 
-    public void ReGenerateLavaMesh(ChunkScript cs, List<Vector3> modifiedPos)
+    public void ReGenerateLavaMesh(ChunkScript cs)
     {
+
         int preVCount = cs.vertices_lava.Count;
         int preTCount = cs.triangles_lava.Count;
         cs.vertices_lava.Clear();
@@ -964,6 +969,7 @@ public class MeshGenerator : MonoBehaviour
                 }
             }
         }
+
 
         BuildLavaMesh(cs, 0);
 
@@ -1222,30 +1228,42 @@ public class MeshGenerator : MonoBehaviour
         if (cs.playerInLava)
         {
             cs.FlipLavaMesh();
-        }
+        } 
 
-        //generate collision
-        for (int i = 0; i < cs.lavaCollisionParent.childCount; i++)
-        {
-            Destroy(cs.lavaCollisionParent.GetChild(i).gameObject);
-        }
-
-        //currently disabled due to big update
         //StartCoroutine(BuildLavaCollision(time, cs));
     }
 
-    //IEnumerator BuildLavaCollision(float time, ChunkScript cs)
-    //{
-    //    if (time != 0)
-    //        yield return new WaitForSeconds(time);
+    IEnumerator BuildLavaCollision(float time, ChunkScript cs)
+    {
+        if (time != 0)
+            yield return new WaitForSeconds(time);
 
-    //    foreach (Vector3 v in cs.lavaData)
-    //    {
-    //        GameObject b = Instantiate(lavaColliderPrefab);
-    //        b.transform.position = v + cs.lavaObj.transform.position;
-    //        b.transform.SetParent(cs.lavaCollisionParent);
-    //    }
-    //}
+        yield return new WaitUntil(() => cs.lavaCollisionSetuped);
+        for(int x = 0; x< cs.lavaData.GetLength(0); x++)
+        {
+            for (int y = 0; y < cs.lavaData.GetLength(1); y++)
+            {
+                for (int z = 0; z < cs.lavaData.GetLength(2); z++)
+                {
+                    if (cs.lavaCollisions[x, y, z] == null)
+                    {
+                        if (cs.lavaData[x, y, z] <= terrainSuface)
+                        {
+                            GameObject b = Instantiate(lavaColliderPrefab);
+                            b.transform.position = new Vector3(x, y, z) + cs.lavaObj.transform.position;
+                            b.transform.SetParent(cs.lavaCollisionParent);
+                            b.SetActive(true);
+                            cs.lavaCollisions[x, y, z] = b;
+                        }
+                    }
+                    else
+                    {
+                        cs.lavaCollisions[x, y, z].SetActive(cs.lavaData[x, y, z] <= terrainSuface);
+                    }
+                }
+            }
+        }
+    }
 
 
 

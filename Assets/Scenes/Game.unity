@@ -13410,7 +13410,7 @@ MonoBehaviour:
   loadingTime: 0.05
   firstTimeLoadingFrequency: 3
   loadingFrequency: 1
-  viewDistance: 12
+  viewDistance: 4
   enabledChunkPositionList: []
   activatedChunkList: []
   netherActivatedChunkList: []
@@ -15907,6 +15907,11 @@ PrefabInstance:
       propertyPath: volumeLayer.m_Bits
       value: 2147483648
       objectReference: {fileID: 0}
+    - target: {fileID: 4459864850019384736, guid: 6bacecc4f3df9584198879c73a6b6c36,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4459864850019384738, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
       propertyPath: m_RootOrder
@@ -16121,6 +16126,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: -196.704
+      objectReference: {fileID: 0}
+    - target: {fileID: 4459864851508666808, guid: 6bacecc4f3df9584198879c73a6b6c36,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4459864851551516593, guid: 6bacecc4f3df9584198879c73a6b6c36,
         type: 3}
@@ -17324,8 +17334,79 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usm: {fileID: 1992538525}
   updateTick: 0.2
-  modifiedChunkDataKeys: []
+  drainSpeed: 5
+  drainSpeedByDistanceCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -0.45314127
+      outSlope: -0.45314127
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.18708864
+    - serializedVersion: 3
+      time: 0.87834215
+      value: 0.2575512
+      inSlope: -1.4811484
+      outSlope: -1.4811484
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -2.1170125
+      outSlope: -2.1170125
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  pourSpeed: 5
+  pourSpeedByDistanceCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -0.6720148
+      outSlope: -0.6720148
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.6284594
+      value: 0.577666
+      inSlope: -1.1134002
+      outSlope: -1.1134002
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -1.5547856
+      outSlope: -1.5547856
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  modifiedChunkList: []
+  chunkToUpdateList: []
   lavaFireTime: 5
+  fallSpeed: 3
+  spreadSpeed: 2
 --- !u!1 &2122501835
 GameObject:
   m_ObjectHideFlags: 0
@@ -17373,7 +17454,7 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: c208128b3178f7647a13f0f0bc0ca292, type: 2}
   handAnim: {fileID: 2084923680}
   maxDistance: 8
-  drainRadius: 3
+  drainRadius: 4
   delay: 0.1
   waterLayer:
     serializedVersion: 2
