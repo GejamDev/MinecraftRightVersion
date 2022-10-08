@@ -135,8 +135,8 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _AlbedoColor: {r: 0.15, g: 0.161, b: 0.16, a: 1}
-    - _Color: {r: 0.8301887, g: 0.777392, b: 0.08223567, a: 1}
-    - _EmissionColor: {r: 667.709, g: 361.6179, b: 0, a: 1}
+    - _Color: {r: 1, g: 0.37277246, b: 0, a: 1}
+    - _EmissionColor: {r: 103.96829, g: 57.488354, b: 0, a: 1}
     - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
     - _FoamSoft: {r: 0.25, g: 0.6, b: 1, a: 0}
     - _MirrorColor: {r: 1, g: 1, b: 1, a: 0.5}

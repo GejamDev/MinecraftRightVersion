@@ -26,6 +26,7 @@ public class LavaManager : MonoBehaviour
     [Header("Lava Update")]
     public float fallSpeed;
     public float spreadSpeed;
+    public float drySpeed;
 
 
     void Awake()
@@ -516,10 +517,7 @@ public class LavaManager : MonoBehaviour
             UpdateLavaData(cs, out updated);
             if (updated)
             {
-                if (!modifiedChunkList.Contains(cs))
-                {
-                    modifiedChunkList.Add(cs);
-                }
+                AddChunkToModifiedList(cs);
             }
         }
         chunkToUpdateList.Clear();
@@ -545,108 +543,200 @@ public class LavaManager : MonoBehaviour
                     {
                         //Debug.Log("checked");
                         Vector3Int pos = new Vector3Int(x, y, z);
-                        if(CanPlaceLavaAt(cs, new Vector3Int(x, y - 1, z)))
+                        Vector3Int pos_global = new Vector3Int(x, y, z) + new Vector3Int((int)cs.position.x, 0, (int)cs.position.y);
+                        if (CanPlaceLavaAt(cs, pos + Vector3Int.down))
                         {
                             //fall
-                            ModifyWorldLavaData(new Vector3Int(x, y, z) + new Vector3Int((int)cs.position.x, 0, (int)cs.position.y), fallSpeed * Time.deltaTime);
-                            ModifyWorldLavaData(new Vector3Int(x, y - 1, z) + new Vector3Int((int)cs.position.x, 0, (int)cs.position.y), -fallSpeed * Time.deltaTime);
+                            updated = true;
+                            ModifyWorldLavaData(pos_global, fallSpeed * Time.deltaTime);
+                            ModifyWorldLavaData(pos_global + Vector3Int.down, -fallSpeed * Time.deltaTime * 2);
                         }
-                        else 
+                        else if (HasGroundAt(cs, pos))
                         {
+                            //dry
+                            int point = 0;
+                            if (HasLavaAt(cs, pos + Vector3Int.right))
+                                point++;
+                            if (HasLavaAt(cs, pos + Vector3Int.left))
+                                point++;
+                            if (HasLavaAt(cs, pos + new Vector3Int(0, 0, 1)))
+                                point++;
+                            if (HasLavaAt(cs, pos + new Vector3Int(0, 0, -1)))
+                                point++;
+                            if (point <= 2)
+                            {
+                                Debug.Log("dry");
+                                updated = true;
+                                ModifyWorldLavaData(pos_global, drySpeed * Time.deltaTime);
+                                Debug.Log(pos + ":" + cs.lavaData[x, y, z]);
+                            }
+
+
+
+                            #region spread(disabled)
                             //spread
-                            List<Vector3Int> spreadingPoses = new List<Vector3Int>();
-                            if (CanPlaceLavaAt(cs, pos + Vector3Int.right))
-                            {
-                                spreadingPoses.Add(pos + Vector3Int.right);
-                            }
-                            if (CanPlaceLavaAt(cs, pos + Vector3Int.left))
-                            {
-                                spreadingPoses.Add(pos + Vector3Int.left);
-                            }
-                            if (CanPlaceLavaAt(cs, pos + new Vector3Int(0,0,1)))
-                            {
-                                spreadingPoses.Add(pos + new Vector3Int(0, 0, 1));
-                            }
-                            if (CanPlaceLavaAt(cs, pos + new Vector3Int(0, 0, -1)))
-                            {
-                                spreadingPoses.Add(pos + new Vector3Int(0, 0, -1));
-                            }
-                            if (CanPlaceLavaAt(cs, pos + new Vector3Int(1, 0, 1)))
-                            {
-                                spreadingPoses.Add(pos + new Vector3Int(1, 0, 1));
-                            }
-                            if (CanPlaceLavaAt(cs, pos + new Vector3Int(1, 0, -1)))
-                            {
-                                spreadingPoses.Add(pos + new Vector3Int(1, 0, -1));
-                            }
-                            if (CanPlaceLavaAt(cs, pos + new Vector3Int(-1, 0, 1)))
-                            {
-                                spreadingPoses.Add(pos + new Vector3Int(-1, 0, 1));
-                            }
-                            if (CanPlaceLavaAt(cs, pos + new Vector3Int(-1, 0, -1)))
-                            {
-                                spreadingPoses.Add(pos + new Vector3Int(-1, 0, -1));
-                            }
-                            float speed = -spreadSpeed / spreadingPoses.Count * Time.deltaTime;
-                            if (spreadingPoses.Count != 0)
-                            {
-                                ModifyWorldLavaData(pos, -speed);
-                            }
-                            foreach(Vector3Int v in spreadingPoses)
-                            {
-                                ModifyWorldLavaData(v + new Vector3Int((int)cs.position.x, 0, (int)cs.position.y), speed);
-                            }
+                            //List<Vector3Int> spreadingPoses = new List<Vector3Int>();
+                            //if (CanPlaceLavaAt(cs, pos + Vector3Int.right))
+                            //{
+                            //    spreadingPoses.Add(pos + Vector3Int.right);
+                            //}
+                            //if (CanPlaceLavaAt(cs, pos + Vector3Int.left))
+                            //{
+                            //    spreadingPoses.Add(pos + Vector3Int.left);
+                            //}
+                            //if (CanPlaceLavaAt(cs, pos + new Vector3Int(0, 0, 1)))
+                            //{
+                            //    spreadingPoses.Add(pos + new Vector3Int(0, 0, 1));
+                            //}
+                            //if (CanPlaceLavaAt(cs, pos + new Vector3Int(0, 0, -1)))
+                            //{
+                            //    spreadingPoses.Add(pos + new Vector3Int(0, 0, -1));
+                            //}
+                            //if (CanPlaceLavaAt(cs, pos + new Vector3Int(1, 0, 1)))
+                            //{
+                            //    spreadingPoses.Add(pos + new Vector3Int(1, 0, 1));
+                            //}
+                            //if (CanPlaceLavaAt(cs, pos + new Vector3Int(1, 0, -1)))
+                            //{
+                            //    spreadingPoses.Add(pos + new Vector3Int(1, 0, -1));
+                            //}
+                            //if (CanPlaceLavaAt(cs, pos + new Vector3Int(-1, 0, 1)))
+                            //{
+                            //    spreadingPoses.Add(pos + new Vector3Int(-1, 0, 1));
+                            //}
+                            //if (CanPlaceLavaAt(cs, pos + new Vector3Int(-1, 0, -1)))
+                            //{
+                            //    spreadingPoses.Add(pos + new Vector3Int(-1, 0, -1));
+                            //}
+                            //float speed = -spreadSpeed / spreadingPoses.Count * Time.deltaTime;
+                            //if (spreadingPoses.Count != 0)
+                            //{
+                            //    ModifyWorldLavaData(pos + new Vector3Int((int)cs.position.x, 0, (int)cs.position.y), -speed * 3);
+                            //}
+                            //foreach (Vector3Int v in spreadingPoses)
+                            //{
+                            //    ModifyWorldLavaData(v + new Vector3Int((int)cs.position.x, 0, (int)cs.position.y), speed);
+                            //}
+                            #endregion
                         }
+
+
+
 
                     }
                     else
                     {
                         //Debug.Log("didn't checked");
                     }
+                    cs.lavaData[x, y, z] = Mathf.Clamp(cs.lavaData[x, y, z], -1, 1);
+
                 }
             }
         }
     }
     bool CanPlaceLavaAt(ChunkScript cs, Vector3Int localPos)
     {
-        //warning:
-        //this method only considered when the checking pos is within the chunks surrounding the original chunk
-        if (localPos.x < 0)
+        while(localPos.x<0 || localPos.x>=chunkSize || localPos.z <0 || localPos.z >= chunkSize)
         {
-            cs = cs.leftChunk;
-            localPos += new Vector3Int(chunkSize, 0, 0);
-        }
-        else if(localPos.x>=chunkSize)
-        {
-            cs = cs.rightChunk;
-            localPos += new Vector3Int(-chunkSize, 0, 0);
-        }
-        if (localPos.z < 0)
-        {
-            cs = cs.backChunk;
-            localPos += new Vector3Int(0, 0, chunkSize);
-        }
-        else if (localPos.z >= chunkSize)
-        {
-            cs = cs.frontChunk;
-            localPos += new Vector3Int(0, 0, -chunkSize);
-        }
+            if (localPos.x < 0)
+            {
+                cs = cs.leftChunk;
+                localPos += new Vector3Int(chunkSize, 0, 0);
+            }
+            else if (localPos.x >= chunkSize)
+            {
+                cs = cs.rightChunk;
+                localPos += new Vector3Int(-chunkSize, 0, 0);
+            }
+            if (localPos.z < 0)
+            {
+                cs = cs.backChunk;
+                localPos += new Vector3Int(0, 0, chunkSize);
+            }
+            else if (localPos.z >= chunkSize)
+            {
+                cs = cs.frontChunk;
+                localPos += new Vector3Int(0, 0, -chunkSize);
+            }
 
+        }
 
 
 
 
         if (localPos.y <= 0)
             return false;
-        if (cs.terrainMap[localPos.x, localPos.y, localPos.z] <= mg.terrainSuface)
+        if (cs.terrainMap[localPos.x, localPos.y + 1, localPos.z] <= mg.terrainSuface)
             return false;
-        if (cs.lavaData[localPos.x, localPos.y, localPos.z] <= mg.terrainSuface)
+        if (cs.lavaData[localPos.x, localPos.y, localPos.z] <= mg.terrainSuface - 0.2f)
             return false;
         if (cs.HasBlockAt(localPos))
             return false;
 
 
+
+
         return true;
+
+    }
+    bool HasLavaAt(ChunkScript cs, Vector3Int localPos)
+    {
+
+        while (localPos.x < 0 || localPos.x >= chunkSize || localPos.z < 0 || localPos.z >= chunkSize)
+        {
+            if (localPos.x < 0)
+            {
+                cs = cs.leftChunk;
+                localPos += new Vector3Int(chunkSize, 0, 0);
+            }
+            else if (localPos.x >= chunkSize)
+            {
+                cs = cs.rightChunk;
+                localPos += new Vector3Int(-chunkSize, 0, 0);
+            }
+            if (localPos.z < 0)
+            {
+                cs = cs.backChunk;
+                localPos += new Vector3Int(0, 0, chunkSize);
+            }
+            else if (localPos.z >= chunkSize)
+            {
+                cs = cs.frontChunk;
+                localPos += new Vector3Int(0, 0, -chunkSize);
+            }
+
+        }
+        return cs.lavaData[localPos.x, localPos.y, localPos.z] <= mg.terrainSuface;
+
+
+    }
+    bool HasGroundAt(ChunkScript cs, Vector3Int localPos)
+    {
+        while (localPos.x < 0 || localPos.x >= chunkSize || localPos.z < 0 || localPos.z >= chunkSize)
+        {
+            if (localPos.x < 0)
+            {
+                cs = cs.leftChunk;
+                localPos += new Vector3Int(chunkSize, 0, 0);
+            }
+            else if (localPos.x >= chunkSize)
+            {
+                cs = cs.rightChunk;
+                localPos += new Vector3Int(-chunkSize, 0, 0);
+            }
+            if (localPos.z < 0)
+            {
+                cs = cs.backChunk;
+                localPos += new Vector3Int(0, 0, chunkSize);
+            }
+            else if (localPos.z >= chunkSize)
+            {
+                cs = cs.frontChunk;
+                localPos += new Vector3Int(0, 0, -chunkSize);
+            }
+
+        }
+        return cs.terrainMap[localPos.x, localPos.y, localPos.z] <= mg.terrainSuface;
 
     }
     void ModifyWorldLavaData(Vector3Int pos, float addingValue)
@@ -656,17 +746,19 @@ public class LavaManager : MonoBehaviour
         Vector3Int modifyingPos = pos;
         Vector2 chunkPos = new Vector2(modifyingPos.x >= 0 ? Mathf.Floor(modifyingPos.x / chunkSize) * chunkSize : -Mathf.Floor((-modifyingPos.x) / chunkSize) * chunkSize - chunkSize,
             modifyingPos.z >= 0 ? Mathf.Floor(modifyingPos.z / chunkSize) * chunkSize : -Mathf.Floor((-modifyingPos.z) / chunkSize) * chunkSize - chunkSize);
-        Debug.Log(chunkPos);
+
         ChunkScript modifyingCs = modifyingDictionary[chunkPos].cs;
         Vector3Int mp_loc = modifyingPos - Vector3Int.FloorToInt(new Vector3(chunkPos.x, 0, chunkPos.y));
 
         //check if it collides with terrain
-        if (modifyingCs.terrainMap[mp_loc.x, mp_loc.y, mp_loc.z] <= mg.terrainSuface)
+        if (modifyingCs.terrainMap[mp_loc.x, mp_loc.y + 1, mp_loc.z] <= mg.terrainSuface)
         {
+            Debug.Log("coll");
             //collided with terrain
         }
-        else if (modifyingCs.HasBlockAt(new Vector3Int(mp_loc.x, mp_loc.y, mp_loc.z)))
+        else if (modifyingCs.HasBlockAt(new Vector3Int(mp_loc.x, mp_loc.y + 1, mp_loc.z)))
         {
+            Debug.Log("coll");
             //collided with block
         }
         else
@@ -993,7 +1085,6 @@ public class LavaManager : MonoBehaviour
         Vector3 curPouringPosition = pourPos;
         Dictionary<Vector2, ChunkProperties> modifyingDictionary = dtm.currentDimesnion == Dimension.OverWorld ? cl.chunkDictionary : cl.nether_chunkDictionary;
 
-        Debug.Log(2);
         for (float x = -pourDistance; x <= pourDistance; x++)
         {
             for (float z = -pourDistance; z <= pourDistance; z++)
@@ -1005,69 +1096,67 @@ public class LavaManager : MonoBehaviour
                         float dis = Mathf.Sqrt(x * x + y * y + z * z);
                         if (dis <= pourDistance)
                         {
-                            Debug.Log(3);
                             float power = pourSpeed * pourSpeedByDistanceCurve.Evaluate(dis / pourDistance);
-                            Debug.Log("power:" + power);
 
                             Vector3Int modifyingPos = Vector3Int.FloorToInt(curPouringPosition) + new Vector3Int((int)x, (int)y, (int)z);
                             Vector2 chunkPos = new Vector2(modifyingPos.x >= 0 ? Mathf.Floor(modifyingPos.x / chunkSize) * chunkSize : -Mathf.Floor((-modifyingPos.x) / chunkSize) * chunkSize - chunkSize,
                                 modifyingPos.z >= 0 ? Mathf.Floor(modifyingPos.z / chunkSize) * chunkSize : -Mathf.Floor((-modifyingPos.z) / chunkSize) * chunkSize - chunkSize);
-                            ChunkScript modifyingCs = modifyingDictionary[chunkPos].cs;
+                            ChunkScript cs = modifyingDictionary[chunkPos].cs;
                             Vector3Int mp_loc = modifyingPos - Vector3Int.FloorToInt(new Vector3(chunkPos.x, 0, chunkPos.y));
 
+
                             //check if it collides with terrain
-                            if(modifyingCs.terrainMap[mp_loc.x, mp_loc.y, mp_loc.z] <= mg.terrainSuface)
+                            if (cs.terrainMap[mp_loc.x, mp_loc.y, mp_loc.z] <= mg.terrainSuface)
                             {
                                 //collided with terrain
                             }
-                            else if(modifyingCs.HasBlockAt(new Vector3Int(mp_loc.x, mp_loc.y, mp_loc.z)))
+                            else if(cs.HasBlockAt(new Vector3Int(mp_loc.x, mp_loc.y, mp_loc.z)))
                             {
                                 //collided with block
                             }
                             else
                             {
-                                Debug.Log(4);
-                                modifyingCs.lavaData[mp_loc.x, mp_loc.y, mp_loc.z] -= power;
-                                AddChunkToModifiedList(modifyingCs);
+                                cs.lavaData[mp_loc.x, mp_loc.y, mp_loc.z] -= power;
+                                AddChunkToModifiedList(cs);
                                 if (mp_loc.x == 0)
                                 {
-                                    modifyingCs.leftChunk.lavaData[chunkSize, mp_loc.y, mp_loc.z] -= power;
-                                    AddChunkToModifiedList(modifyingCs.leftChunk);
+                                    cs.leftChunk.lavaData[chunkSize, mp_loc.y, mp_loc.z] -= power;
+                                    AddChunkToModifiedList(cs.leftChunk);
                                     if (mp_loc.z == 0)
                                     {
-                                        modifyingCs.leftChunk.backChunk.lavaData[chunkSize, mp_loc.y, chunkSize] -= power;
-                                        AddChunkToModifiedList(modifyingCs.leftChunk.backChunk);
+                                        cs.leftChunk.backChunk.lavaData[chunkSize, mp_loc.y, chunkSize] -= power;
+                                        AddChunkToModifiedList(cs.leftChunk.backChunk);
                                     }
                                     else if (mp_loc.z == chunkSize)
                                     {
-                                        modifyingCs.leftChunk.frontChunk.lavaData[chunkSize, mp_loc.y, 0] -= power;
-                                        AddChunkToModifiedList(modifyingCs.leftChunk.frontChunk);
+                                        cs.leftChunk.frontChunk.lavaData[chunkSize, mp_loc.y, 0] -= power;
+                                        AddChunkToModifiedList(cs.leftChunk.frontChunk);
                                     }
                                 }
                                 else if (mp_loc.x == chunkSize)
                                 {
-                                    modifyingCs.rightChunk.lavaData[0, mp_loc.y, mp_loc.z] -= power;
-                                    AddChunkToModifiedList(modifyingCs.rightChunk);
+                                    cs.rightChunk.lavaData[0, mp_loc.y, mp_loc.z] -= power;
+                                    AddChunkToModifiedList(cs.rightChunk);
                                     if (mp_loc.z == 0)
                                     {
-                                        modifyingCs.rightChunk.backChunk.lavaData[0, mp_loc.y, chunkSize] -= power;
-                                        AddChunkToModifiedList(modifyingCs.rightChunk.backChunk);
+                                        cs.rightChunk.backChunk.lavaData[0, mp_loc.y, chunkSize] -= power;
+                                        AddChunkToModifiedList(cs.rightChunk.backChunk);
                                     }
                                     else if (mp_loc.z == chunkSize)
                                     {
-                                        modifyingCs.rightChunk.frontChunk.lavaData[0, mp_loc.y, 0] -= power;
-                                        AddChunkToModifiedList(modifyingCs.rightChunk.frontChunk);
+                                        cs.rightChunk.frontChunk.lavaData[0, mp_loc.y, 0] -= power;
+                                        AddChunkToModifiedList(cs.rightChunk.frontChunk);
                                     }
                                 }
                                 if (mp_loc.z == 0)
                                 {
-                                    modifyingCs.backChunk.lavaData[mp_loc.x, mp_loc.y, chunkSize] -= power;
-                                    AddChunkToModifiedList(modifyingCs.backChunk);
+                                    cs.backChunk.lavaData[mp_loc.x, mp_loc.y, chunkSize] -= power;
+                                    AddChunkToModifiedList(cs.backChunk);
                                 }
                                 else if (mp_loc.z == chunkSize)
                                 {
-                                    modifyingCs.frontChunk.lavaData[mp_loc.x, mp_loc.y, 0] -= power;
-                                    AddChunkToModifiedList(modifyingCs.frontChunk);
+                                    cs.frontChunk.lavaData[mp_loc.x, mp_loc.y, 0] -= power;
+                                    AddChunkToModifiedList(cs.frontChunk);
                                 }
                             }
                         }
@@ -1077,7 +1166,7 @@ public class LavaManager : MonoBehaviour
         }
 
 
-        Debug.Log(5);
+
 
         #endregion
         yield break;

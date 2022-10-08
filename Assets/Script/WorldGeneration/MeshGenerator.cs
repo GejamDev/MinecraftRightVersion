@@ -134,9 +134,6 @@ public class MeshGenerator : MonoBehaviour
 
 
 
-
-
-
                     //groundNoise = Mathf.Clamp(groundNoise, -2, 2);
 
 
@@ -165,8 +162,8 @@ public class MeshGenerator : MonoBehaviour
                             cs.terrainMap_pre[x, y, z] = terrainSuface + 0.1f;//Mathf.Clamp(noiseMap2D[x, (z + Mathf.Abs(y)) % 5] * 1, 0.1f, 1);
                         }
 
-                        cs.lavaData[x, y, z] = 1;
                     }
+                    cs.lavaData[x, y, z] = 1;
                 }
                 yield return new WaitForSeconds(0.01f);
             }
@@ -1162,6 +1159,8 @@ public class MeshGenerator : MonoBehaviour
                         difference = (terrainSuface - vert1Sample) / difference;
                     }
                     vertPosition = vert1 + (vert2 - vert1) * difference;
+                    //vertPosition += Vector3.up * difference *1;
+                    //vertPosition = vert1 + (vert2 - vert1) * (terrainSuface - vert1Sample) / (vert2Sample - vert1Sample);
                 }
                 else
                 {

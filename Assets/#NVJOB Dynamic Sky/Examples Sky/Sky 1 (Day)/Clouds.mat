@@ -106,15 +106,15 @@ Material:
     - _DetailNormalMapScale: 1
     - _Distance: 0
     - _DstBlend: 0
-    - _Fluffiness: 0.9
+    - _Fluffiness: 3.32
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _IntensityInput: 1.68
-    - _IntensityOutput: 0.74
-    - _IntensityT1: 1.5
-    - _IntensityT2: 1.4
-    - _IntensityT3: -0.57
+    - _IntensityInput: 3.99
+    - _IntensityOutput: -0.3
+    - _IntensityT1: 2.37
+    - _IntensityT2: 2
+    - _IntensityT3: -1.03
     - _IntensityTAll: 1.6
     - _Level0: 0
     - _Level1: 10
@@ -142,7 +142,7 @@ Material:
     - _VectorY3: -1.2
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.8773585, g: 0.8773585, b: 0.8773585, a: 0.73333335}
+    - _Color: {r: 899.51373, g: 899.51373, b: 899.51373, a: 1}
     - _Emission: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Level0Color: {r: 0.37, g: 0.78, b: 0.92, a: 1}

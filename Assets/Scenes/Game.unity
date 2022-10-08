@@ -16452,7 +16452,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1909838208}
   m_LocalRotation: {x: -0, y: 0.1942358, z: -0, w: -0.9809549}
-  m_LocalPosition: {x: -522, y: -112, z: -461}
+  m_LocalPosition: {x: -737, y: -112, z: -688}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -17407,6 +17407,7 @@ MonoBehaviour:
   lavaFireTime: 5
   fallSpeed: 3
   spreadSpeed: 2
+  drySpeed: 0.3
 --- !u!1 &2122501835
 GameObject:
   m_ObjectHideFlags: 0

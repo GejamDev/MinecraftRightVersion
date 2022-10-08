@@ -49,13 +49,13 @@ MonoBehaviour:
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 1, g: 1, b: 1, a: 0}
     key5: {r: 1, g: 1, b: 1, a: 0}
-    key6: {r: 1, g: 1, b: 1, a: 0}
+    key6: {r: 0.9843137, g: 1, b: 0.8666667, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 0
     ctime1: 32768
     ctime2: 33423
     ctime3: 58982
-    ctime4: 59637
+    ctime4: 60138
     ctime5: 65535
     ctime6: 65535
     ctime7: 0
