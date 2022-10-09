@@ -20,6 +20,7 @@ public class WorldGenerator : MonoBehaviour
     NetherPortalGenerationManager npgm;
 
     public GameObject chunkPrefab;
+    public GameObject smallRockPrefab;
     public Transform worldBundle;
     public Transform netherBundle;
     public float grassGenerationLoadingTime;
@@ -160,6 +161,17 @@ public class WorldGenerator : MonoBehaviour
 
 
         cs.Activate();
+
+        int smallRockCount = Random.Range(0, 5);
+        for(int i = 0; i < smallRockCount; i++)
+        {
+            GameObject b = Instantiate(smallRockPrefab);
+            b.transform.SetParent(cs.objectBundle.transform);
+            Vector2 pos = new Vector2(Random.Range(0, 8f), Random.Range(0, 8f));
+            b.transform.localPosition = new Vector3(pos.x, cs.heightMap[Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y)] + 0.5f, pos.y);
+            b.transform.eulerAngles = new Vector3(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360));
+            b.transform.localScale *= Random.Range(0.3f, 2);
+        }
 
 
     }

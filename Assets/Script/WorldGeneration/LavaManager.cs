@@ -565,10 +565,10 @@ public class LavaManager : MonoBehaviour
                                 point++;
                             if (point <= 2)
                             {
-                                Debug.Log("dry");
+
                                 updated = true;
                                 ModifyWorldLavaData(pos_global, drySpeed * Time.deltaTime);
-                                Debug.Log(pos + ":" + cs.lavaData[x, y, z]);
+
                             }
 
 

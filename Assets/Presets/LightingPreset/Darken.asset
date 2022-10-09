@@ -101,24 +101,24 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   blackColor:
     serializedVersion: 2
-    key0: {r: 0, g: 0, b: 0, a: 0.5882353}
-    key1: {r: 0, g: 0, b: 0, a: 0.5882353}
+    key0: {r: 0, g: 0, b: 0, a: 1}
+    key1: {r: 0, g: 0, b: 0, a: 1}
     key2: {r: 0, g: 0, b: 0, a: 0}
     key3: {r: 1, g: 1, b: 1, a: 0}
     key4: {r: 1, g: 1, b: 1, a: 0}
     key5: {r: 1, g: 1, b: 1, a: 0}
     key6: {r: 1, g: 1, b: 1, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 33423
-    ctime1: 58982
+    ctime0: 0
+    ctime1: 65535
     ctime2: 58982
     ctime3: 63608
     ctime4: 65535
     ctime5: 65535
     ctime6: 65535
     ctime7: 0
-    atime0: 33594
-    atime1: 58926
+    atime0: 0
+    atime1: 65535
     atime2: 59753
     atime3: 65535
     atime4: 65535
@@ -209,6 +209,30 @@ MonoBehaviour:
       weightedMode: 0
       inWeight: 0.60846955
       outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  bloomIntensity:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4

@@ -58,7 +58,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 18c9e94dd61f38949a78534f943fee84, type: 2}
+  - {fileID: 2100000, guid: 66f8d045c4ebf2040b15064a1aa14a64, type: 2}
   - {fileID: 2100000, guid: f7ebf90318e22d14ba2b9db3099952a4, type: 2}
   - {fileID: 2100000, guid: bec39a1b7e10f5f49ad8e94069500dfc, type: 2}
   m_StaticBatchInfo:
@@ -297,7 +297,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 18c9e94dd61f38949a78534f943fee84, type: 2}
+  - {fileID: 2100000, guid: 66f8d045c4ebf2040b15064a1aa14a64, type: 2}
   - {fileID: 2100000, guid: bec39a1b7e10f5f49ad8e94069500dfc, type: 2}
   - {fileID: 2100000, guid: f7ebf90318e22d14ba2b9db3099952a4, type: 2}
   m_StaticBatchInfo:
@@ -630,7 +630,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 18c9e94dd61f38949a78534f943fee84, type: 2}
+  - {fileID: 2100000, guid: 66f8d045c4ebf2040b15064a1aa14a64, type: 2}
   - {fileID: 2100000, guid: 70bee14d4bd2fd24ebea680e8d3182ac, type: 2}
   - {fileID: 2100000, guid: 70bee14d4bd2fd24ebea680e8d3182ac, type: 2}
   m_StaticBatchInfo:
@@ -798,7 +798,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 18c9e94dd61f38949a78534f943fee84, type: 2}
+  - {fileID: 2100000, guid: 66f8d045c4ebf2040b15064a1aa14a64, type: 2}
   - {fileID: 2100000, guid: 3b8ff1d6385765745ba80fd548778135, type: 2}
   - {fileID: 2100000, guid: 3b8ff1d6385765745ba80fd548778135, type: 2}
   m_StaticBatchInfo:
@@ -879,7 +879,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 18c9e94dd61f38949a78534f943fee84, type: 2}
+  - {fileID: 2100000, guid: 66f8d045c4ebf2040b15064a1aa14a64, type: 2}
   - {fileID: 2100000, guid: 3b8ff1d6385765745ba80fd548778135, type: 2}
   - {fileID: 2100000, guid: 3b8ff1d6385765745ba80fd548778135, type: 2}
   m_StaticBatchInfo:
@@ -1053,7 +1053,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 18c9e94dd61f38949a78534f943fee84, type: 2}
+  - {fileID: 2100000, guid: 66f8d045c4ebf2040b15064a1aa14a64, type: 2}
   - {fileID: 2100000, guid: 66f8d045c4ebf2040b15064a1aa14a64, type: 2}
   - {fileID: 2100000, guid: 66f8d045c4ebf2040b15064a1aa14a64, type: 2}
   m_StaticBatchInfo:
@@ -1306,7 +1306,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 18c9e94dd61f38949a78534f943fee84, type: 2}
+  - {fileID: 2100000, guid: 66f8d045c4ebf2040b15064a1aa14a64, type: 2}
   - {fileID: 2100000, guid: 70bee14d4bd2fd24ebea680e8d3182ac, type: 2}
   - {fileID: 2100000, guid: 70bee14d4bd2fd24ebea680e8d3182ac, type: 2}
   m_StaticBatchInfo:
@@ -1909,7 +1909,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 18c9e94dd61f38949a78534f943fee84, type: 2}
+  - {fileID: 2100000, guid: 66f8d045c4ebf2040b15064a1aa14a64, type: 2}
   - {fileID: 2100000, guid: 679e0e655cae962469c14d21feeb9fa5, type: 2}
   - {fileID: 2100000, guid: 679e0e655cae962469c14d21feeb9fa5, type: 2}
   m_StaticBatchInfo:
@@ -1990,7 +1990,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 18c9e94dd61f38949a78534f943fee84, type: 2}
+  - {fileID: 2100000, guid: 66f8d045c4ebf2040b15064a1aa14a64, type: 2}
   - {fileID: 2100000, guid: 66f8d045c4ebf2040b15064a1aa14a64, type: 2}
   - {fileID: 2100000, guid: 66f8d045c4ebf2040b15064a1aa14a64, type: 2}
   m_StaticBatchInfo:
@@ -2104,7 +2104,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 18c9e94dd61f38949a78534f943fee84, type: 2}
+  - {fileID: 2100000, guid: 66f8d045c4ebf2040b15064a1aa14a64, type: 2}
   - {fileID: 2100000, guid: 679e0e655cae962469c14d21feeb9fa5, type: 2}
   - {fileID: 2100000, guid: 679e0e655cae962469c14d21feeb9fa5, type: 2}
   m_StaticBatchInfo:

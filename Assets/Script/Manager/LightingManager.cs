@@ -5,7 +5,8 @@ public class LightingManager : MonoBehaviour
 {
     public UniversalScriptManager usm;
     DimensionTransportationManager dtm;
-
+    public PostProcessVolume volume;
+    Bloom bloom;
 
     //Scene References
     public Light DirectionalLight;
@@ -38,6 +39,7 @@ public class LightingManager : MonoBehaviour
         dtm = usm.dimensionTransportationManager;
         bd = usm.brightnessDetector;
         cl = usm.chunkLoader;
+        /*bloom = */volume.profile.TryGetSettings(out bloom);
     }
 
     private void Update()
@@ -98,7 +100,7 @@ public class LightingManager : MonoBehaviour
         {
             blackColor.color = curLP.blackColor.Evaluate(timePercent);
         }
-
+        bloom.intensity.value = Mathf.Lerp(curLP.bloomIntensity.Evaluate(timePercent), Preset_darken.bloomIntensity.Evaluate(0), 1 - bd.brightness);
     }
 
     //Try to find a directional light to use if we haven't set one
@@ -148,6 +150,7 @@ public class LightingManager : MonoBehaviour
     {
         if (dtm.currentDimesnion == Dimension.Nether)
             return origin;
+        Debug.Log(bd.brightness);
         return origin * (bd.brightness) + darken * (1 - bd.brightness);
     }
 }

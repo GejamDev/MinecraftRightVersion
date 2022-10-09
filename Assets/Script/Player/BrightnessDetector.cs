@@ -13,7 +13,6 @@ public class BrightnessDetector : MonoBehaviour
     public int totalcount;
     private void Awake()
     {
-
         for (float x = -detectionArea * 0.5f; x <= detectionArea * 0.5f; x += detectionThiccness)
         {
             for (float y = -detectionArea * 0.5f; y <= detectionArea * 0.5f; y += detectionThiccness)

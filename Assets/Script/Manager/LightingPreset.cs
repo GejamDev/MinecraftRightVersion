@@ -10,4 +10,5 @@ public class LightingPreset : ScriptableObject
     public Gradient blackColor;
     public AnimationCurve lightingIntensity;
     public AnimationCurve SunMoonRotation;
+    public AnimationCurve bloomIntensity;
 }

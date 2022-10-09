@@ -70,7 +70,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _GrassHeight: 2.5
+    - _GrassHeight: 3.5
     - _GrassWidth: 0.2
     - _MaxDist: 40
     - _Metallic: 0
@@ -79,7 +79,7 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _Rad: 0
-    - _Radius: 0.3
+    - _Radius: 0.8
     - _RandomHeight: -0.02
     - _Rigidness: 50
     - _SmoothnessTextureChannel: 0

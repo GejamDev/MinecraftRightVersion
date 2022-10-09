@@ -5421,6 +5421,8 @@ MonoBehaviour:
   usm: {fileID: 1992538525}
   chunkPrefab: {fileID: 5723810378054214725, guid: 9c0c1f2dc55b3c04fb11a74cf5f75cee,
     type: 3}
+  smallRockPrefab: {fileID: 6328528192698183550, guid: a31438463331c8443ac4a5bee6875b3a,
+    type: 3}
   worldBundle: {fileID: 306988574}
   netherBundle: {fileID: 874910047}
   grassGenerationLoadingTime: 0.01
@@ -12975,7 +12977,7 @@ MonoBehaviour:
     smallGrasObject: {fileID: 1955703387130314686, guid: b77863467e5a45b46980de2f9eb40e71,
       type: 3}
     grassNoisePreset: {fileID: 11400000, guid: bcd65afa9e55ee349bdefdd3bcc3592e, type: 2}
-    minGrassYScale: 0.25
+    minGrassYScale: 0.15
     treeObject: {fileID: 8461326858445700706, guid: ca927507424d30942a9d8234f1c68e5e,
       type: 3}
     treeNoisePreset: {fileID: 11400000, guid: ff2f43a2befc876439ccfed008614afa, type: 2}
@@ -13336,6 +13338,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   usm: {fileID: 1992538525}
+  volume: {fileID: 1754412999}
   DirectionalLight: {fileID: 705507994}
   Preset: {fileID: 11400000, guid: 0c174f64528b4b642a30bac414f8afdf, type: 2}
   Preset_nether: {fileID: 11400000, guid: ca075b8a402ca4c41839f4d968867551, type: 2}
@@ -14414,7 +14417,7 @@ MonoBehaviour:
   ceilingLayer:
     serializedVersion: 2
     m_Bits: 768
-  strightness: 7
+  strightness: 1
   totalcount: 5
 --- !u!1 &1348152443
 GameObject:
